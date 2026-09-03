@@ -163,3 +163,17 @@ export function formatDateBR(date: Date | string): string {
 export function parseISODate(dateStr: string): Date {
   return new Date(dateStr);
 }
+
+/**
+ * Formats a Date into a local "YYYY-MM-DD" key, using the browser's local
+ * timezone instead of UTC. This prevents off-by-one-day errors when the
+ * local date differs from the UTC date (e.g. late evening in UTC-3).
+ * @param date - Date to format
+ * @returns Local date key in "YYYY-MM-DD" format
+ */
+export function toLocalDateKey(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}

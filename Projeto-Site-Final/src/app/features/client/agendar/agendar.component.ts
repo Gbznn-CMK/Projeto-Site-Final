@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Agendamento, MetodoPagamento, Prestador, Servico, TimeSlot, Usuario } from '../../../core/models/types';
@@ -9,11 +10,12 @@ import { DisponibilidadeService } from '../../../core/services/disponibilidade.s
 import { PrestadorService } from '../../../core/services/prestador.service';
 import { ServicoService } from '../../../core/services/servico.service';
 import { CurrencyPipe, DurationPipe } from '../../../shared/pipes/formatting.pipes';
+import { toLocalDateKey } from '../../../shared/utils/time.utils';
 
 @Component({
   selector: 'app-agendar',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CurrencyPipe, DurationPipe],
+  imports: [NgIf, NgFor, DatePipe, FormsModule, RouterLink, CurrencyPipe, DurationPipe],
   template: `
     <section class="booking-page">
       <a class="back-link" [routerLink]="['/prestador', prestador?.id]">← Voltar para o perfil</a>
@@ -164,12 +166,14 @@ export class AgendarComponent implements OnInit {
   selectedTime = '';
   payment: MetodoPagamento = 'pix';
   notes = '';
-  minimumDate = new Date().toISOString().split('T')[0];
+  minimumDate = toLocalDateKey(new Date());
   loading = true;
   loadingSlots = false;
   saving = false;
   errorMessage = '';
   successMessage = '';
+  reschedulingAppointmentId = '';
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private route: ActivatedRoute,
@@ -184,9 +188,13 @@ export class AgendarComponent implements OnInit {
   ngOnInit() {
     const prestadorId = this.route.snapshot.paramMap.get('prestadorId');
     const serviceId = this.route.snapshot.queryParamMap.get('servico');
+    this.reschedulingAppointmentId = this.route.snapshot.queryParamMap.get('reagendar') || '';
     this.currentUser = undefined;
 
-    this.authService.getCurrentUser().subscribe(user => this.currentUser = user || undefined);
+    this.authService
+      .getCurrentUser()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(user => (this.currentUser = user || undefined));
 
     if (!prestadorId) {
       this.errorMessage = 'Prestador não informado.';
@@ -241,7 +249,6 @@ export class AgendarComponent implements OnInit {
     const selectedDate = new Date(`${this.date}T00:00:00`);
     this.disponibilidadeService.getHorariosDisponiveis(
       this.prestador.id,
-      this.selectedService.id,
       selectedDate,
       this.selectedService.duracaoMinutos
     ).subscribe({
@@ -277,10 +284,20 @@ export class AgendarComponent implements OnInit {
       notas: this.notes.trim() || undefined
     };
 
-    this.agendamentoService.create(agendamento).subscribe({
+    const saveRequest = this.reschedulingAppointmentId
+      ? this.agendamentoService.reschedule(
+        this.reschedulingAppointmentId,
+        agendamento.dataHora,
+        this.currentUser.id
+      )
+      : this.agendamentoService.create(agendamento);
+
+    saveRequest.subscribe({
       next: created => {
         this.saving = false;
-        this.successMessage = `Agendamento criado com sucesso. Código: ${created.id}`;
+        this.router.navigate(['/meus-agendamentos'], {
+          queryParams: { agendamento: created.id, criado: 'sucesso' }
+        });
       },
       error: error => {
         this.saving = false;

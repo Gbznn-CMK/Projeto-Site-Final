@@ -1,18 +1,14 @@
-import { Injectable } from '@angular/core';
-import { Router, CanActivateFn } from '@angular/router';
-import { AuthService } from '../services/auth.service';
 import { inject } from '@angular/core';
+import { Router, CanActivateFn } from '@angular/router';
 import { getLocalStorage } from '../utils/storage';
+import { StorageKeys } from '../utils/storage-keys';
 
 export const authGuard: CanActivateFn = (route, state) => {
-  const authService = inject(AuthService);
   const router = inject(Router);
 
-  const isAuth = authService.isAuthenticated();
-  
-  // Use a simple check - if there's a token in localStorage
-  const token = getLocalStorage()?.getItem('nahora_token');
-  
+  // Simple check: a stored token indicates an authenticated session.
+  const token = getLocalStorage()?.getItem(StorageKeys.TOKEN);
+
   if (token) {
     return true;
   }

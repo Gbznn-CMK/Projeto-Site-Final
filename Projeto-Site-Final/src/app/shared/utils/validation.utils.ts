@@ -3,8 +3,6 @@
  */
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_REGEX = /^(\(\d{2}\)\s?)?\d{4,5}-\d{4}$/;
-const BRAZILIAN_PHONE_REGEX = /^\(?(\d{2})\)?\s?9?\d{4}-\d{4}$/;
 
 /**
  * Validates email address

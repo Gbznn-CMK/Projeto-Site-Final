@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Prestador, Servico } from '../../../core/models/types';
 import { PrestadorService } from '../../../core/services/prestador.service';
@@ -9,7 +9,7 @@ import { CurrencyPipe, DurationPipe } from '../../../shared/pipes/formatting.pip
 @Component({
   selector: 'app-perfil-prestador',
   standalone: true,
-  imports: [CommonModule, RouterLink, CurrencyPipe, DurationPipe],
+  imports: [NgIf, NgFor, RouterLink, CurrencyPipe, DurationPipe],
   template: `
     <section class="profile-page">
       <a class="back-link" routerLink="/prestadores">← Voltar para prestadores</a>

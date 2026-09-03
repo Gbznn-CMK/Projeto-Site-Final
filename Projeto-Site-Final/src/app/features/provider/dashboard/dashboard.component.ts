@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgIf, NgFor, DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Agendamento, Prestador, Servico, Usuario } from '../../../core/models/types';
 import { AgendamentoService } from '../../../core/services/agendamento.service';
@@ -11,7 +11,7 @@ import { AppointmentCardComponent } from '../../../shared/components/appointment
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, AppointmentCardComponent],
+  imports: [NgIf, NgFor, DecimalPipe, RouterLink, AppointmentCardComponent],
   template: `
     <section class="dashboard-page">
       <header class="page-heading">

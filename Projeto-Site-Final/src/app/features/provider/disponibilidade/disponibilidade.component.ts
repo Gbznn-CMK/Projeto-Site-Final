@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Disponibilidade, Bloqueio, Usuario } from '../../../core/models/types';
 import { AuthService } from '../../../core/services/auth.service';
 import { DisponibilidadeService } from '../../../core/services/disponibilidade.service';
 import { PrestadorService } from '../../../core/services/prestador.service';
+import { toLocalDateKey } from '../../../shared/utils/time.utils';
 
 @Component({
   selector: 'app-disponibilidade',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [NgIf, NgFor, DatePipe, FormsModule],
   template: `
     <section class="availability-page">
       <header class="page-heading"><div><p class="eyebrow">Área do prestador</p><h1>Disponibilidade</h1><p class="subtitle">Defina quando seus clientes podem reservar um horário.</p></div></header>
@@ -37,13 +39,16 @@ export class DisponibilidadeComponent implements OnInit {
   schedule: Disponibilidade[] = [];
   blocks: Bloqueio[] = [];
   loading = true; saving = false; blocking = false; errorMessage = ''; successMessage = '';
-  blockDate = ''; blockHour = ''; blockDuration = 60; blockReason = ''; minimumDate = new Date().toISOString().split('T')[0];
+  blockDate = ''; blockHour = ''; blockDuration = 60; blockReason = ''; minimumDate = toLocalDateKey(new Date());
+  private readonly destroyRef = inject(DestroyRef);
   private prestadorId = '';
 
   constructor(private authService: AuthService, private prestadorService: PrestadorService, private availabilityService: DisponibilidadeService) {}
 
   ngOnInit() {
-    this.authService.getCurrentUser().subscribe((user: Usuario | null) => {
+    this.authService.getCurrentUser()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((user: Usuario | null) => {
       if (!user) { this.loading = false; return; }
       this.prestadorService.getByUsuarioId(user.id).subscribe(prestador => { if (prestador) { this.prestadorId = prestador.id; this.loadData(); } else this.loading = false; });
     });

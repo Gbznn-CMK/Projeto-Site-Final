@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { Agendamento, Prestador, Servico, Usuario } from '../../../core/models/types';
+import { NgIf, NgFor } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
+import { Agendamento, Usuario } from '../../../core/models/types';
 import { AgendamentoService } from '../../../core/services/agendamento.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { PrestadorService } from '../../../core/services/prestador.service';
@@ -11,7 +11,7 @@ import { AppointmentCardComponent } from '../../../shared/components/appointment
 @Component({
   selector: 'app-meus-agendamentos',
   standalone: true,
-  imports: [CommonModule, RouterLink, AppointmentCardComponent],
+  imports: [NgIf, NgFor, RouterLink, AppointmentCardComponent],
   template: `
     <section class="appointments-page">
       <div class="page-heading">
@@ -33,6 +33,8 @@ import { AppointmentCardComponent } from '../../../shared/components/appointment
           [providerName]="item.providerName"
           [serviceName]="item.serviceName"
           [isUpcoming]="isUpcoming(item.agendamento)"
+          (view)="viewAppointment($event)"
+          (reschedule)="rescheduleAppointment($event)"
           (cancel)="cancelAppointment($event)"
         ></app-appointment-card>
       </div>
@@ -69,7 +71,8 @@ export class MeusAgendamentosComponent implements OnInit {
     private authService: AuthService,
     private agendamentoService: AgendamentoService,
     private prestadorService: PrestadorService,
-    private servicoService: ServicoService
+    private servicoService: ServicoService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -111,6 +114,19 @@ export class MeusAgendamentosComponent implements OnInit {
 
   isUpcoming(agendamento: Agendamento): boolean {
     return agendamento.status !== 'cancelado' && new Date(agendamento.dataHora).getTime() > Date.now();
+  }
+
+  viewAppointment(agendamento: Agendamento) {
+    this.router.navigate(['/prestador', agendamento.prestadorId]);
+  }
+
+  rescheduleAppointment(agendamento: Agendamento) {
+    this.router.navigate(['/agendar', agendamento.prestadorId], {
+      queryParams: {
+        servico: agendamento.servicoId,
+        reagendar: agendamento.id
+      }
+    });
   }
 
   cancelAppointment(agendamento: Agendamento) {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Prestador } from '../../../core/models/types';
@@ -11,7 +11,7 @@ import { ProviderCardComponent } from '../../../shared/components/provider-card/
 @Component({
   selector: 'app-buscar-prestadores',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProviderCardComponent],
+  imports: [NgIf, NgFor, FormsModule, ProviderCardComponent],
   template: `
     <section class="search-page">
       <div class="page-heading">

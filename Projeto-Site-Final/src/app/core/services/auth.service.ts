@@ -1,14 +1,14 @@
-import { Injectable, signal } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { Usuario, TipoUsuario, LoginRequest, CadastroRequest, AuthResponse } from '../models/types';
 import { MOCK_USUARIOS } from '../data/mock-data';
 import { getLocalStorage } from '../utils/storage';
+import { StorageKeys } from '../utils/storage-keys';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly PREFIX = 'nahora_';
   private currentUser$ = new BehaviorSubject<Usuario | null>(null);
   private isAuthenticated$ = new BehaviorSubject<boolean>(false);
 
@@ -30,25 +30,25 @@ export class AuthService {
         this.isAuthenticated$.next(true);
       }
     } catch {
-      getLocalStorage()?.removeItem(`${this.PREFIX}token`);
+      getLocalStorage()?.removeItem(StorageKeys.TOKEN);
     }
   }
 
   private getUsuarios(): Usuario[] {
-    const data = getLocalStorage()?.getItem(`${this.PREFIX}usuarios`);
+    const data = getLocalStorage()?.getItem(StorageKeys.USUARIOS);
     return data ? JSON.parse(data) : MOCK_USUARIOS;
   }
 
   private saveUsuarios(usuarios: Usuario[]) {
-    getLocalStorage()?.setItem(`${this.PREFIX}usuarios`, JSON.stringify(usuarios));
+    getLocalStorage()?.setItem(StorageKeys.USUARIOS, JSON.stringify(usuarios));
   }
 
   private getToken(): string | null {
-    return getLocalStorage()?.getItem(`${this.PREFIX}token`) ?? null;
+    return getLocalStorage()?.getItem(StorageKeys.TOKEN) ?? null;
   }
 
   private setToken(token: string) {
-    getLocalStorage()?.setItem(`${this.PREFIX}token`, token);
+    getLocalStorage()?.setItem(StorageKeys.TOKEN, token);
   }
 
   private generateToken(userId: string): string {
@@ -60,63 +60,52 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<AuthResponse> {
-    return new Observable(observer => {
-      setTimeout(() => {
-        const usuarios = this.getUsuarios();
-        const user = usuarios.find(u => u.email === email);
+    const usuarios = this.getUsuarios();
+    const user = usuarios.find(u => u.email === email);
 
-        if (user) {
-          const token = this.generateToken(user.id);
-          this.setToken(token);
-          this.currentUser$.next(user);
-          this.isAuthenticated$.next(true);
-          observer.next({ usuario: user, token });
-          observer.complete();
-        } else {
-          observer.error(new Error('Email ou senha inválidos'));
-        }
-      }, 500);
-    });
+    if (!user) {
+      return throwError(() => new Error('Email ou senha inválidos'));
+    }
+
+    const token = this.generateToken(user.id);
+    this.setToken(token);
+    this.currentUser$.next(user);
+    this.isAuthenticated$.next(true);
+    return of({ usuario: user, token });
   }
 
   signup(request: CadastroRequest): Observable<AuthResponse> {
-    return new Observable(observer => {
-      setTimeout(() => {
-        const usuarios = this.getUsuarios();
+    const usuarios = this.getUsuarios();
 
-        // Check if email already exists
-        if (usuarios.some(u => u.email === request.email)) {
-          observer.error(new Error('Email já cadastrado'));
-          return;
-        }
+    // Check if email already exists
+    if (usuarios.some(u => u.email === request.email)) {
+      return throwError(() => new Error('Email já cadastrado'));
+    }
 
-        // Create new user
-        const newUser: Usuario = {
-          id: `user-${Date.now()}`,
-          nome: request.nome,
-          email: request.email,
-          telefone: request.telefone,
-          tipo: request.tipo,
-          dataCadastro: new Date().toISOString()
-        };
+    // Create new user
+    const newUser: Usuario = {
+      id: `user-${Date.now()}`,
+      nome: request.nome,
+      email: request.email,
+      telefone: request.telefone,
+      tipo: request.tipo,
+      dataCadastro: new Date().toISOString()
+    };
 
-        usuarios.push(newUser);
-        this.saveUsuarios(usuarios);
+    usuarios.push(newUser);
+    this.saveUsuarios(usuarios);
 
-        // Login automatically
-        const token = this.generateToken(newUser.id);
-        this.setToken(token);
-        this.currentUser$.next(newUser);
-        this.isAuthenticated$.next(true);
+    // Login automatically
+    const token = this.generateToken(newUser.id);
+    this.setToken(token);
+    this.currentUser$.next(newUser);
+    this.isAuthenticated$.next(true);
 
-        observer.next({ usuario: newUser, token });
-        observer.complete();
-      }, 500);
-    });
+    return of({ usuario: newUser, token });
   }
 
   logout(): void {
-    getLocalStorage()?.removeItem(`${this.PREFIX}token`);
+    getLocalStorage()?.removeItem(StorageKeys.TOKEN);
     this.currentUser$.next(null);
     this.isAuthenticated$.next(false);
   }

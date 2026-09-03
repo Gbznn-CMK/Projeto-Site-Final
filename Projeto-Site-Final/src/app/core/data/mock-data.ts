@@ -1,5 +1,6 @@
 import { Usuario, Prestador, Servico, Agendamento, Disponibilidade, Bloqueio, ChamadoSac, CATEGORIAS_SERVICOS } from '../models/types';
 import { getLocalStorage } from '../utils/storage';
+import { StorageKeys } from '../utils/storage-keys';
 
 // Mock Users
 export const MOCK_USUARIOS: Usuario[] = [
@@ -394,26 +395,25 @@ export const MOCK_CHAMADOS: ChamadoSac[] = [];
 
 // Function to initialize mock data to localStorage
 export function initializeMockData() {
-  const prefix = 'nahora_';
   const storage = getLocalStorage();
 
   if (!storage) {
     return;
   }
-  
+
   // Only initialize if not already done
-  if (storage.getItem(`${prefix}initialized`)) {
+  if (storage.getItem(StorageKeys.INITIALIZED)) {
     return;
   }
 
-  storage.setItem(`${prefix}usuarios`, JSON.stringify(MOCK_USUARIOS));
-  storage.setItem(`${prefix}prestadores`, JSON.stringify(MOCK_PRESTADORES));
-  storage.setItem(`${prefix}servicos`, JSON.stringify(MOCK_SERVICOS));
-  storage.setItem(`${prefix}agendamentos`, JSON.stringify(MOCK_AGENDAMENTOS));
-  storage.setItem(`${prefix}disponibilidades`, JSON.stringify(MOCK_DISPONIBILIDADES));
-  storage.setItem(`${prefix}bloqueios`, JSON.stringify(MOCK_BLOQUEIOS));
-  storage.setItem(`${prefix}chamados`, JSON.stringify(MOCK_CHAMADOS));
-  storage.setItem(`${prefix}favoritos`, JSON.stringify({})); // userId -> [prestadorIds]
-  
-  storage.setItem(`${prefix}initialized`, 'true');
+  storage.setItem(StorageKeys.USUARIOS, JSON.stringify(MOCK_USUARIOS));
+  storage.setItem(StorageKeys.PRESTADORES, JSON.stringify(MOCK_PRESTADORES));
+  storage.setItem(StorageKeys.SERVICOS, JSON.stringify(MOCK_SERVICOS));
+  storage.setItem(StorageKeys.AGENDAMENTOS, JSON.stringify(MOCK_AGENDAMENTOS));
+  storage.setItem(StorageKeys.DISPONIBILIDADES, JSON.stringify(MOCK_DISPONIBILIDADES));
+  storage.setItem(StorageKeys.BLOQUEIOS, JSON.stringify(MOCK_BLOQUEIOS));
+  storage.setItem(StorageKeys.CHAMADOS, JSON.stringify(MOCK_CHAMADOS));
+  storage.setItem(StorageKeys.FAVORITOS, JSON.stringify({})); // userId -> [prestadorIds]
+
+  storage.setItem(StorageKeys.INITIALIZED, 'true');
 }

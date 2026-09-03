@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Prestador } from '../../../core/models/types';
 import { AuthService } from '../../../core/services/auth.service';
@@ -10,7 +10,7 @@ import { ProviderCardComponent } from '../../../shared/components/provider-card/
 @Component({
   selector: 'app-favoritos',
   standalone: true,
-  imports: [CommonModule, RouterLink, ProviderCardComponent],
+  imports: [NgIf, NgFor, RouterLink, ProviderCardComponent],
   template: `
     <section class="favorites-page">
       <div class="page-heading">

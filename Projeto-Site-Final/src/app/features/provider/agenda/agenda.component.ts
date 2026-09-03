@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
 import { Agendamento, StatusAgendamento, Usuario } from '../../../core/models/types';
 import { AgendamentoService } from '../../../core/services/agendamento.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -12,7 +12,7 @@ import { DateTimePipe, CurrencyPipe } from '../../../shared/pipes/formatting.pip
 @Component({
   selector: 'app-agenda',
   standalone: true,
-  imports: [CommonModule, StatusBadgeComponent, DateTimePipe, CurrencyPipe],
+  imports: [NgIf, NgFor, StatusBadgeComponent, DateTimePipe, CurrencyPipe],
   template: `
     <section class="agenda-page">
       <header class="page-heading"><div><p class="eyebrow">Área do prestador</p><h1>Minha agenda</h1><p class="subtitle">Gerencie seus atendimentos e mantenha seus horários em dia.</p></div></header>

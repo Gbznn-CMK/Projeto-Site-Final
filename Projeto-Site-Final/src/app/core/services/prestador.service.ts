@@ -1,22 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { Prestador, CATEGORIAS_SERVICOS } from '../models/types';
 import { MOCK_PRESTADORES } from '../data/mock-data';
 import { getLocalStorage } from '../utils/storage';
+import { StorageKeys } from '../utils/storage-keys';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PrestadorService {
-  private readonly PREFIX = 'nahora_';
-
   private getPrestadores(): Prestador[] {
-    const data = getLocalStorage()?.getItem(`${this.PREFIX}prestadores`);
+    const data = getLocalStorage()?.getItem(StorageKeys.PRESTADORES);
     return data ? JSON.parse(data) : MOCK_PRESTADORES;
   }
 
   private savePrestadores(prestadores: Prestador[]) {
-    getLocalStorage()?.setItem(`${this.PREFIX}prestadores`, JSON.stringify(prestadores));
+    getLocalStorage()?.setItem(StorageKeys.PRESTADORES, JSON.stringify(prestadores));
   }
 
   getAll(): Observable<Prestador[]> {
@@ -66,53 +65,36 @@ export class PrestadorService {
   }
 
   create(prestador: Prestador): Observable<Prestador> {
-    return new Observable(observer => {
-      setTimeout(() => {
-        const prestadores = this.getPrestadores();
-        const newPrestador = {
-          ...prestador,
-          id: `prest-${Date.now()}`,
-          dataCadastro: new Date().toISOString()
-        };
-        prestadores.push(newPrestador);
-        this.savePrestadores(prestadores);
-        observer.next(newPrestador);
-        observer.complete();
-      }, 300);
-    });
+    const prestadores = this.getPrestadores();
+    const newPrestador = {
+      ...prestador,
+      id: `prest-${Date.now()}`,
+      dataCadastro: new Date().toISOString()
+    };
+    prestadores.push(newPrestador);
+    this.savePrestadores(prestadores);
+    return of(newPrestador);
   }
 
   update(prestador: Prestador): Observable<Prestador> {
-    return new Observable(observer => {
-      setTimeout(() => {
-        const prestadores = this.getPrestadores();
-        const index = prestadores.findIndex(p => p.id === prestador.id);
-        if (index >= 0) {
-          prestadores[index] = prestador;
-          this.savePrestadores(prestadores);
-          observer.next(prestador);
-        } else {
-          observer.error(new Error('Prestador não encontrado'));
-        }
-        observer.complete();
-      }, 300);
-    });
+    const prestadores = this.getPrestadores();
+    const index = prestadores.findIndex(p => p.id === prestador.id);
+    if (index >= 0) {
+      prestadores[index] = prestador;
+      this.savePrestadores(prestadores);
+      return of(prestador);
+    }
+    return throwError(() => new Error('Prestador não encontrado'));
   }
 
   delete(id: string): Observable<void> {
-    return new Observable(observer => {
-      setTimeout(() => {
-        const prestadores = this.getPrestadores();
-        const index = prestadores.findIndex(p => p.id === id);
-        if (index >= 0) {
-          prestadores.splice(index, 1);
-          this.savePrestadores(prestadores);
-          observer.next();
-        } else {
-          observer.error(new Error('Prestador não encontrado'));
-        }
-        observer.complete();
-      }, 300);
-    });
+    const prestadores = this.getPrestadores();
+    const index = prestadores.findIndex(p => p.id === id);
+    if (index >= 0) {
+      prestadores.splice(index, 1);
+      this.savePrestadores(prestadores);
+      return of(undefined);
+    }
+    return throwError(() => new Error('Prestador não encontrado'));
   }
 }
