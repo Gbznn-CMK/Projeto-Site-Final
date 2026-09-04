@@ -2,3 +2,42 @@
   display: block;
   min-height: 100dvh;
 }
+
+.page-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 75% 20%, #3863bd 0, transparent 35%),
+    linear-gradient(145deg, #112a62, #24428f 75%);
+  transform: translateX(-100%);
+}
+
+.page-transition.active {
+  animation: page-wipe 900ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+@keyframes page-wipe {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  38% {
+    transform: translateX(0);
+  }
+
+  62% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition.active {
+    animation-duration: 1ms;
+  }
+}

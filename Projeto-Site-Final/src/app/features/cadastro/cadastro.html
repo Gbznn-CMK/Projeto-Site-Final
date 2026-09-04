@@ -1,11 +1,195 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro</title>
-</head>
-<body>
+<main class="register">
+  <section class="brand-panel" aria-labelledby="brand-title">
+    <a class="brand" routerLink="/login" aria-label="NaHora Serv, página de login">
+      <span class="brand-mark" aria-hidden="true">N</span>
+      <span>NaHora<strong>Serv</strong></span>
+    </a>
 
-</body>
-</html>
+    <div class="brand-copy">
+      <p class="eyebrow">Faça parte da NaHora Serv</p>
+
+      <h1 id="brand-title" class="brand-headline">
+        Cadastre-se e tenha acesso a serviços de forma rápida e prática
+      </h1>
+
+      <p>
+        Crie sua conta para encontrar profissionais, escolher horários e acompanhar seus
+        agendamentos.
+      </p>
+    </div>
+    <div class="calendar-art" aria-hidden="true">
+      <img src="assets/images/calendar-art.svg" alt="" />
+    </div>
+  </section>
+  <section class="register-panel" aria-labelledby="register-title">
+    <div class="heading">
+      <p class="eyebrow blue">Comece agora</p>
+
+      <h2 id="register-title" class="headline">Crie sua conta</h2>
+
+      <p>Preencha os campos abaixo para criar sua conta e começar a agendar serviços.</p>
+    </div>
+    <div class="register-content">
+        
+      <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+        <fieldset class="user-type-field">
+  <legend>Como você deseja utilizar a NaHora Serv?</legend>
+
+  <div class="user-type-options" role="radiogroup">
+    <button
+      type="button"
+      class="user-type-option"
+      [class.selected]="registerForm.controls.tipoUsuario.value === 'cliente'"
+      [attr.aria-pressed]="
+        registerForm.controls.tipoUsuario.value === 'cliente'
+      "
+      (click)="selectUserType('cliente')"
+    >
+      <span class="user-type-icon" aria-hidden="true">👤</span>
+
+      <strong>Sou cliente</strong>
+
+      <span>Quero contratar serviços</span>
+    </button>
+
+    <button
+      type="button"
+      class="user-type-option"
+      [class.selected]="registerForm.controls.tipoUsuario.value === 'prestador'"
+      [attr.aria-pressed]="
+        registerForm.controls.tipoUsuario.value === 'prestador'
+      "
+      (click)="selectUserType('prestador')"
+    >
+      <span class="user-type-icon" aria-hidden="true">🛠️</span>
+
+      <strong>Sou prestador</strong>
+
+      <span>Quero oferecer meus serviços</span>
+    </button>
+  </div>
+
+  @if (registerForm.controls.tipoUsuario.invalid &&
+  registerForm.controls.tipoUsuario.touched) {
+    <small class="error-message">
+      Selecione uma opção para continuar.
+    </small>
+  }
+</fieldset>
+        <div class="form-group">
+          <label for="nome">Nome completo</label>
+
+          <input
+            id="nome"
+            type="text"
+            formControlName="nome"
+            autocomplete="name"
+            placeholder="Digite seu nome completo"
+            [class.invalid]="isInvalid('nome')"
+          />
+
+          @if (isInvalid('nome')) {
+            @if (registerForm.controls.nome.hasError('required')) {
+              <small class="error-message">O nome é obrigatório.</small>
+            } @else {
+              <small class="error-message">Informe seu nome completo.</small>
+            }
+          }
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            autocomplete="email"
+            placeholder="Digite seu email"
+            [class.invalid]="isInvalid('email')"
+          />
+          @if (isInvalid('email')) {
+            @if (registerForm.controls.email.hasError('required')) {
+              <small class="error-message">O email é obrigatório.</small>
+            } @else {
+              <small class="error-message">Informe um email válido.</small>
+            }
+          }
+        </div>
+        <div class="form-group">
+          <label for="senha">Senha</label>
+          <div class="password-field">
+            <input
+              id="senha"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="senha"
+              autocomplete="new-password"
+              placeholder="Digite sua senha"
+              [class.invalid]="isInvalid('senha')"
+            />
+
+            <button
+              type="button"
+              (click)="showPassword = !showPassword"
+              [attr.aria-label]="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
+            >
+              {{ showPassword ? 'Ocultar' : 'Mostrar' }}
+            </button>
+          </div>
+          @if (isInvalid('senha')) {
+            @if (registerForm.controls.senha.hasError('required')) {
+              <small class="error-message">A senha é obrigatória.</small>
+            } @else {
+              <small class="error-message">A senha deve ter ao menos 8 caracteres.</small>
+            }
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="confirmarSenha">Confirmar Senha</label>
+          <div class="password-field">
+            <input
+              id="confirmarSenha"
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              formControlName="confirmarSenha"
+              autocomplete="new-password"
+              placeholder="Confirme sua senha"
+              [class.invalid]="isInvalid('confirmarSenha')"
+            />
+            <button
+              type="button"
+              (click)="showConfirmPassword = !showConfirmPassword"
+              [attr.aria-label]="
+                showConfirmPassword
+                  ? 'Ocultar confirmação de senha'
+                  : 'Mostrar confirmação de senha'
+              "
+            >
+              {{ showConfirmPassword ? 'Ocultar' : 'Mostrar' }}
+            </button>
+          </div>
+          @if (isInvalid('confirmarSenha')) {
+            @if (registerForm.controls.confirmarSenha.hasError('required')) {
+              <small class="error-message">A confirmação de senha é obrigatória.</small>
+            }
+          } @else if (registerForm.controls.confirmarSenha.hasError('minlength')) {
+            <small class="error-message"> A confirmação deve ter ao menos 8 caracteres. </small>
+          } @else if (registerForm.hasError('passwordsMismatch')) {
+            <small class="error-message"> As senhas não coincidem. </small>
+          }
+        </div>
+
+        <button class="primary-button" type="submit">Criar conta</button>
+      </form>
+      @if (registerMessage) {
+        <p class="success-message" role="status" aria-live="polite">
+          {{ registerMessage }}
+        </p>
+      }
+    </div>
+    <p class="login-link">
+      Já possui uma conta?
+      <a routerLink="/login">Entrar</a>
+    </p>
+  </section>
+</main>
