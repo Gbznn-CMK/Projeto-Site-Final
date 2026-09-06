@@ -1,0 +1,118 @@
+.container-lista {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: Arial, sans-serif;
+}
+
+.cabecalho-lista {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.subtitulo {
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #64748b;
+}
+
+.titulo-secao {
+  color: #1E3A8A;
+  margin: 4px 0 0 0;
+  font-size: 1.8rem;
+}
+
+.btn-novo {
+  background-color: #1E3A8A;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-novo:hover {
+  background-color: #152b68;
+}
+
+.grid-agendamentos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card-agendamento {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+}
+
+.card-agendamento.cancelado {
+  opacity: 0.6;
+  background: #f8fafc;
+}
+
+.topo-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.topo-card h3 {
+  margin: 0;
+  color: #1E3A8A;
+}
+
+.badge-status {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.badge-status.status-cancelado {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.detalhes p {
+  margin: 6px 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.btn-cancelar {
+  margin-top: 14px;
+  background: none;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancelar:hover {
+  background-color: #ef4444;
+  color: white;
+}
+
+.box-vazio {
+  text-align: center;
+  padding: 40px;
+  background: white;
+  border-radius: 12px;
+  color: #64748b;
+}
