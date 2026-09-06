@@ -1,0 +1,194 @@
+<div class="layout-app">
+  <div class="conteudo-principal">
+
+    <!-- ETAPA 2: SERVIÇOS -->
+    @if (passoAtual === 2) {
+      <div class="secao-centralizada">
+
+        <h2 class="titulo-secao">Selecione o Serviço</h2>
+
+        <div class="grid-servicos">
+          @for (s of servicosDisponiveis; track s.id) {
+
+            <div class="card-servico" (click)="selecionarServico(s)">
+
+              <div class="info-servico">
+                <h3>{{ s.nome }}</h3>
+                <span class="duracao">⏱️ {{ s.duracao }}</span>
+              </div>
+
+              <div class="preco-servico">
+                <strong>{{ s.preco }}</strong>
+                <span class="btn-selecionar">Selecionar →</span>
+              </div>
+
+            </div>
+
+          }
+        </div>
+
+      </div>
+    }
+
+    <!-- ETAPA 3: DATA E HORÁRIO -->
+    @if (passoAtual === 3) {
+      <div class="secao-centralizada">
+
+        <button
+          class="btn-voltar"
+          type="button"
+          (click)="passoAtual = 2">
+          ← Voltar
+        </button>
+
+        <h2 class="titulo-secao">Data e Horário</h2>
+
+        <div class="box-formulario">
+
+          <label for="data">Selecione a Data:</label>
+
+          <input
+            type="date"
+            id="data"
+            #dataInput
+            [value]="dataSelecionada"
+          />
+
+          <label for="horario">Selecione o Horário:</label>
+
+          <input
+            type="time"
+            id="horario"
+            #horarioInput
+            [value]="horarioSelecionado"
+          />
+
+          <button
+            type="button"
+            class="btn-avancar"
+            (click)="confirmarDataHora(dataInput.value, horarioInput.value)">
+            Continuar
+          </button>
+
+        </div>
+
+      </div>
+    }
+
+    <!-- ETAPA 4: CONFIRMAÇÃO -->
+    @if (passoAtual === 4) {
+      <div class="secao-centralizada">
+
+        <button
+          class="btn-voltar"
+          type="button"
+          (click)="passoAtual = 3">
+          ← Voltar
+        </button>
+
+        <h2 class="titulo-secao">
+          Confirmação do Agendamento
+        </h2>
+
+        <div class="box-resumo">
+
+          <div class="resumo-item">
+            <span>Estabelecimento</span>
+            <strong>Barbearia Gemeos</strong>
+          </div>
+
+          <div class="resumo-item">
+            <span>Serviço</span>
+            <strong>{{ servicoSelecionado.nome }}</strong>
+          </div>
+
+          <div class="resumo-item">
+            <span>Valor</span>
+            <strong>{{ servicoSelecionado.preco }}</strong>
+          </div>
+
+          <div class="resumo-item">
+            <span>Data</span>
+            <strong>{{ dataSelecionada }}</strong>
+          </div>
+
+          <div class="resumo-item">
+            <span>Horário</span>
+            <strong>{{ horarioSelecionado }}</strong>
+          </div>
+
+          <button
+            type="button"
+            class="btn-confirmar"
+            (click)="finalizarAgendamento()">
+            Confirmar Agendamento
+          </button>
+
+        </div>
+
+      </div>
+    }
+
+    <!-- ETAPA 5: SUCESSO -->
+    @if (passoAtual === 5) {
+      <div class="secao-centralizada tela-sucesso">
+
+        <div class="icone-sucesso">
+          ✓
+        </div>
+
+        <h2 class="titulo-secao sucesso">
+          Agendamento Realizado!
+        </h2>
+
+        <p class="subtitulo-sucesso">
+          Seu agendamento foi confirmado com sucesso.
+        </p>
+
+        <div class="box-resumo sucesso-box">
+
+          <div class="resumo-estabelecimento">
+            <span>📍 Estabelecimento</span>
+            <strong>Barbearia Gemeos</strong>
+          </div>
+
+          <div class="linha-resumo"></div>
+
+          <div class="resumo-detalhes">
+
+            <div class="detalhe">
+              <span>Serviço</span>
+              <strong>{{ servicoSelecionado.nome }}</strong>
+            </div>
+
+            <div class="detalhe">
+              <span>Data</span>
+              <strong>{{ dataSelecionada }}</strong>
+            </div>
+
+            <div class="detalhe">
+              <span>Horário</span>
+              <strong>{{ horarioSelecionado }}</strong>
+            </div>
+
+            <div class="detalhe">
+              <span>Valor</span>
+              <strong>{{ servicoSelecionado.preco }}</strong>
+            </div>
+
+          </div>
+
+          <button
+            type="button"
+            class="btn-confirmar"
+            (click)="reiniciar()">
+            Fazer Novo Agendamento
+          </button>
+
+        </div>
+
+      </div>
+    }
+
+  </div>
+</div>
