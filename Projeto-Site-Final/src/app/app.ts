@@ -38,6 +38,6 @@ export class App {
 
   private startTransition(): void {
     this.isTransitioning.set(false);
-    this.isTransitioning.set(true);
+    requestAnimationFrame(() => this.isTransitioning.set(true));
   }
 }
