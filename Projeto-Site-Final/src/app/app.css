@@ -30,12 +30,8 @@
     opacity: 1;
   }
 
+  50%,
   64% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-
-  50% {
     transform: translateX(0);
     opacity: 1;
   }
