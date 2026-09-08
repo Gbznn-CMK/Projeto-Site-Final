@@ -3,7 +3,11 @@
   "version": 1,
   "cli": {
     "packageManager": "npm",
+<<<<<<<< HEAD:angular.json
     "analytics": "cc8286ee-f100-40f2-acd7-2838f663500b"
+========
+    "analytics": false
+>>>>>>>> origin/master:Projeto-Site-Final/angular.json
   },
   "newProjectRoot": "projects",
   "projects": {
