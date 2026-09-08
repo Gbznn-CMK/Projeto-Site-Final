@@ -12,23 +12,32 @@
     radial-gradient(circle at 75% 20%, #3863bd 0, transparent 35%),
     linear-gradient(145deg, #112a62, #24428f 75%);
   transform: translateX(-100%);
+  opacity: 0;
 }
 
 .page-transition.active {
-  animation: page-wipe 900ms cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  animation: page-wipe 1200ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
 
 @keyframes page-wipe {
   0% {
-    transform: translateX(-100%);
+    transform: translateX(0);
+    opacity: 0;
   }
 
-  38% {
+  24% {
     transform: translateX(0);
+    opacity: 1;
   }
 
-  62% {
+  64% {
     transform: translateX(0);
+    opacity: 1;
+  }
+
+  50% {
+    transform: translateX(0);
+    opacity: 1;
   }
 
   100% {

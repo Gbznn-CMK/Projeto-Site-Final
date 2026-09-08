@@ -38,9 +38,6 @@ export class App {
 
   private startTransition(): void {
     this.isTransitioning.set(false);
-
-    setTimeout(() => {
-      this.isTransitioning.set(true);
-    });
+    this.isTransitioning.set(true);
   }
 }
