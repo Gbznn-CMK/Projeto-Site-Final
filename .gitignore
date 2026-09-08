@@ -1,4 +1,20 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# Dependencies
+Projeto-Site-Final/node_modules/
+
+# Angular build output and cache
+Projeto-Site-Final/dist/
+Projeto-Site-Final/.angular/
+
+# Local environment files
+Projeto-Site-Final/.env
+Projeto-Site-Final/.env.*
+!Projeto-Site-Final/.env.example
+
+# Editor and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # Compiled output
 /dist
