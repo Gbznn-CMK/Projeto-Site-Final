@@ -36,6 +36,7 @@ main{
 form{
     position: relative;
     z-index: 1;
+    box-shadow: 3px 3px 3px  #000;
 }
 .form-info{
     display: flex;
