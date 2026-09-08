@@ -8,9 +8,7 @@ import {
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-
 type UserType = 'cliente' | 'prestador';
-
 
 @Component({
   selector: 'app-cadastro',
@@ -18,7 +16,6 @@ type UserType = 'cliente' | 'prestador';
   templateUrl: './cadastro.html',
   styleUrl: './cadastro.css',
 })
-
 export class CadastroComponent {
   showPassword = false;
   showConfirmPassword = false;
@@ -26,7 +23,7 @@ export class CadastroComponent {
 
   readonly registerForm = new FormBuilder().nonNullable.group(
     {
-        tipoUsuario: ['', [Validators.required]],
+      tipoUsuario: ['', [Validators.required]],
       nome: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       senha: ['', [Validators.required, Validators.minLength(8)]],
@@ -36,7 +33,6 @@ export class CadastroComponent {
   );
 
   selectUserType(type: 'cliente' | 'prestador'): void {
-    
     this.registerForm.controls.tipoUsuario.setValue(type);
     this.registerForm.controls.tipoUsuario.markAsTouched();
   }
