@@ -1,0 +1,63 @@
+<div class="app-container">
+
+  <aside class="sidebar">
+    <div class="top-icons">
+      <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i></a>
+      <a href="#" class="nav-item"><i class="fa-solid fa-calendar-days"></i></a>
+      <a href="#" class="nav-item"><i class="fa-regular fa-star"></i></a>
+      <a href="#" class="nav-item"><i class="fa-solid fa-gear"></i></a>
+    </div>
+    <div class="bottom-icons">
+      <a href="#" class="nav-item"><i class="fa-regular fa-user"></i></a>
+      <a href="#" class="nav-item"><i class="fa-solid fa-ellipsis-vertical"></i></a>
+      <div class="status-bar"></div>
+    </div>
+  </aside>
+
+  <!-- Conteúdo Principal -->
+  <main class="main-content">
+    <header class="top-bar">
+      <button class="filter-btn"><i class="fa-solid fa-filter"></i></button>
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <!-- Binding bidirecional com FormsModule -->
+        <input 
+          type="text" 
+          placeholder="Buscar por nome, categoria ou endereço...">
+      </div>
+      <button class="notification-btn"><i class="fa-regular fa-bell"></i></button>
+    </header>
+
+    <!-- Lista Filtrada com *ngFor -->
+    <section class="cards-grid">
+      <div class="card" *ngFor="let item of profissionaisFiltrados">
+        <img [src]="item.imagem" [alt]="item.nome" class="card-img">
+        <div class="card-body">
+          <h3>{{ item.nome }}</h3>
+          <p class="info-line"><i class="fa-solid fa-location-dot"></i> {{ item.endereco }}</p>
+          <p class="info-line"><i class="fa-regular fa-clock"></i> {{ item.horario }}</p>
+          <p class="info-line">
+            <i class="fa-solid fa-calculator"></i> 
+            Agendamento {{ item.disponivel ? 'Disponível' : 'Indisponível' }}
+          </p>
+
+          <div class="card-footer">
+            <button 
+              *ngIf="item.disponivel" 
+              class="btn btn-add">
+              Adicionar <i class="fa-solid fa-circle-plus"></i>
+            </button>
+            <button 
+              *ngIf="!item.disponivel" 
+              class="btn btn-disabled" 
+              disabled>
+              Indisponível <i class="fa-solid fa-circle-minus"></i>
+            </button>
+            
+            <button class="btn-star"><i class="fa-solid fa-star"></i></button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
