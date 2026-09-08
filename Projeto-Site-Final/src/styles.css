@@ -4,6 +4,9 @@
   box-sizing: border-box;
   font-family: Arial, Helvetica, sans-serif;
 }
+main{
+  border: 10px;
+}
 .img-avatar{
     height: 175px;
     width: 200px;
@@ -24,10 +27,11 @@
     position: relative;
   max-width: 700px;
   margin: 0 auto;
-  border: 2px solid #333;
+  border: 4px solid #333;
   border-radius: 20px;
   padding: 30px 40px;
   overflow: hidden;
+  z-index: 2;
 }
 form{
     position: relative;
@@ -62,24 +66,22 @@ body{
     background-color: #fff;
     height: 100vh;
     overflow-x: hidden;
-}
+    
+} 
 .img-fundo{
-    position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 250px;
-  height: 250px;
-  background: url('imagens/imagemde\ fundo\ 00.jpg') no-repeat center / contain;
-  opacity: 0.8;
-  z-index: 0;
+  background-image: url('/imagens/WhatsApp_Image_2026-09-08_at_14.21.20-removebg-preview.png');
+  display: flex;
+justify-content: center;
+width: 2000px;
+top: 50% ;
+left: 50%;
 }
 .app-container {
   display: flex;
   height: 100vh;
 }
 
-/* Sidebar estilo escuro / azul */
+
 .sidebar {
   width: 70px;
   background-color: #1c3d8a;
@@ -117,14 +119,13 @@ body{
   margin-top: 10px;
 }
 
-/* Conteúdo Principal */
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-/* Topbar / Barra de Busca */
+
 .top-bar {
   background-color: #dcdcdc;
   height: 60px;
@@ -165,7 +166,7 @@ body{
   font-size: 14px;
 }
 
-/* Cards Grid */
+
 .cards-grid {
   padding: 30px;
   display: flex;
