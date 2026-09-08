@@ -1,1 +1,259 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.img-avatar{
+    height: 175px;
+    width: 200px;
+    border-radius: 50%;
+    background: #000;
+}
+.text-topo{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px;
+}
+.text-princi{
+    font-size: 20px;
+    font-weight: 500px;
+}
+.card-info{
+    position: relative;
+  max-width: 700px;
+  margin: 0 auto;
+  border: 2px solid #333;
+  border-radius: 20px;
+  padding: 30px 40px;
+  overflow: hidden;
+}
+form{
+    position: relative;
+    z-index: 1;
+}
+.form-info{
+    display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 25px;
+}
+fieldset{
+    border: none;
+    flex: 1;
+}
+.field-icone{
+    display: flex;
+  align-items: center;
+  gap: 8px;
+}
+input{
+    border: none;
+  border-bottom: 1px solid #333;
+  background: transparent;
+  width: 100%;
+  padding: 4px 0;
+  font-family: serif;
+  font-size: 16px;
+  outline: none;
+}
+body{
+    background-color: #fff;
+    height: 100vh;
+    overflow-x: hidden;
+}
+.img-fundo{
+    position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: 250px;
+  background: url('imagens/imagemde\ fundo\ 00.jpg') no-repeat center / contain;
+  opacity: 0.8;
+  z-index: 0;
+}
+.app-container {
+  display: flex;
+  height: 100vh;
+}
+
+/* Sidebar estilo escuro / azul */
+.sidebar {
+  width: 70px;
+  background-color: #1c3d8a;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.top-icons, .bottom-icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.nav-item {
+  color: #ffffff;
+  font-size: 22px;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.nav-item:hover, .nav-item.active {
+  opacity: 1;
+}
+
+.status-bar {
+  width: 40px;
+  height: 12px;
+  background-color: #cc0000;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+/* Conteúdo Principal */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Topbar / Barra de Busca */
+.top-bar {
+  background-color: #dcdcdc;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 15px;
+}
+
+.filter-btn, .notification-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #333;
+  cursor: pointer;
+}
+
+.search-box {
+  flex: 1;
+  max-width: 500px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: #666;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 8px 12px 8px 35px;
+  border-radius: 15px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 14px;
+}
+
+/* Cards Grid */
+.cards-grid {
+  padding: 30px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 15px;
+  width: 280px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #eaeaea;
+}
+
+.card-img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 15px 15px 0 0;
+}
+
+.card-body {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.card-body h3 {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.info-line {
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.info-line i {
+  font-size: 14px;
+}
+
+.card-footer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.btn {
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-add {
+  background-color: #10b981;
+}
+
+.btn-disabled {
+  background-color: #ef4444;
+  cursor: not-allowed;
+}
+
+.btn-star {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #000;
+  cursor: pointer;
+}
+
