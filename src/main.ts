@@ -1,6 +1,6 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
-import { NovoAgendamentoComponent } from './app/features/agendamentos/pages/novo-agendamento/novo-agendamento';
+import { App } from './app/app';
 
-bootstrapApplication(NovoAgendamentoComponent, appConfig)
+bootstrapApplication(App, appConfig)
   .catch((err) => console.error(err));

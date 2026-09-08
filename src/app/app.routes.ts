@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { NovoAgendamentoComponent } from './features/agendamentos/pages/novo-agendamento/novo-agendamento';
-import { ListaAgendamentosComponent } from './features/agendamentos/pages/lista-agendamentos/lista-agendamentos';
+import { HomeCliente } from './features/home-cliente/home-cliente';
+import { HomePrestador } from './features/home-prestador/home-prestador';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'novo-agendamento', pathMatch: 'full' },
-  { path: 'novo-agendamento', component: NovoAgendamentoComponent },
-  { path: 'agendamentos', component: ListaAgendamentosComponent }
+  { path: '', redirectTo: 'home-cliente', pathMatch: 'full' },
+  { path: 'home-cliente', component: HomeCliente },
+  { path: 'home-prestador', component: HomePrestador },
 ];

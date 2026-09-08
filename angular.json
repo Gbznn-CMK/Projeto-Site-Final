@@ -3,11 +3,15 @@
   "version": 1,
   "cli": {
     "packageManager": "npm",
-    "analytics": "02fa1634-bb07-45ef-b2fd-ea2a2f7bbd3e"
+<<<<<<<< HEAD:angular.json
+    "analytics": "cc8286ee-f100-40f2-acd7-2838f663500b"
+========
+    "analytics": false
+>>>>>>>> origin/master:Projeto-Site-Final/angular.json
   },
   "newProjectRoot": "projects",
   "projects": {
-    "agendamento": {
+    "Projeto-Site-Final": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -65,10 +69,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "agendamento:build:production"
+              "buildTarget": "Projeto-Site-Final:build:production"
             },
             "development": {
-              "buildTarget": "agendamento:build:development"
+              "buildTarget": "Projeto-Site-Final:build:development"
             }
           },
           "defaultConfiguration": "development"
