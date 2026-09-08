@@ -1,12 +1,43 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {
+  NavigationEnd,
+  NavigationStart,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('Projeto-Site-Final');
+  readonly isTransitioning = signal(false);
+
+  private initialNavigationCompleted = false;
+
+  constructor(private readonly router: Router) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.initialNavigationCompleted = true;
+      }
+
+      if (
+        event instanceof NavigationStart &&
+        this.initialNavigationCompleted
+      ) {
+        this.startTransition();
+      }
+    });
+  }
+
+  finishTransition(): void {
+    this.isTransitioning.set(false);
+  }
+
+  private startTransition(): void {
+    this.isTransitioning.set(false);
+    requestAnimationFrame(() => this.isTransitioning.set(true));
+  }
 }
