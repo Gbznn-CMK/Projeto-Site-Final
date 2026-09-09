@@ -16,34 +16,34 @@
 
     <div class="nav-group">
       <div class="nav-label">CLIENTE</div>
-      <a class="nav-item active">
+      <a class="nav-item active" routerLink="/home-cliente" aria-current="page">
         <img class="nav-icon" src="/img/botao-home.png" alt="">
         <span class="label">Início</span>
       </a>
-      <a class="nav-item">
+      <a class="nav-item" routerLink="/home-cliente" fragment="busca-prestadores">
         <img class="nav-icon" src="/img/buscar.png" alt="">
         <span class="label">Buscar</span>
       </a>
-      <a class="nav-item">
+      <a class="nav-item" routerLink="/agendamentos">
         <img class="nav-icon" src="/img/dias-do-calendario.png" alt="">
         <span class="label">Agendamentos</span>
       </a>
-      <a class="nav-item">
+      <button type="button" class="nav-item" (click)="onlyFavorites = true">
         <img class="nav-icon" src="/img/estrela-favotios.png" alt="">
         <span class="label">Favoritos</span>
-      </a>
+      </button>
     </div>
 
     <div class="nav-group">
       <div class="nav-label">SUPORTE</div>
-      <a class="nav-item">
+      <span class="nav-item nav-item-disabled" aria-disabled="true" title="Suporte em breve">
         <img class="nav-icon" src="/img/SAC.png" alt="">
         <span class="label">SAC</span>
-      </a>
-      <a class="nav-item">
+      </span>
+      <span class="nav-item nav-item-disabled" aria-disabled="true" title="Configurações em breve">
         <img class="nav-icon" src="/img/configuracoes.png" alt="">
         <span class="label">Configurações</span>
-      </a>
+      </span>
     </div>
 
     <div class="sidebar-spacer"></div>
@@ -72,7 +72,7 @@
 
   <div class="main" [class.collapsed]="collapsed">
     <header class="topbar">
-      <div class="search-shell">
+      <div class="search-shell" id="busca-prestadores">
         <img src="/img/procurar.png" alt="" class="search-icon">
         <input type="search" placeholder="Pesquisar prestadores, serviços..." aria-label="Pesquisar prestadores e serviços" [value]="searchTerm" (input)="searchTerm = $any($event.target).value">
       </div>
@@ -135,11 +135,11 @@
           <h1>Olá, Nome</h1>
           <p>Seu próximo atendimento pode começar com uma escolha simples.</p>
         </div>
-        <button class="hero-btn">Encontrar um serviço</button>
+        <a class="hero-btn" routerLink="/home-cliente" fragment="busca-prestadores">Encontrar um serviço</a>
       </section>
 
       <div class="quick-row">
-        <div class="quick-card">
+        <a class="quick-card" routerLink="/home-cliente" fragment="busca-prestadores">
           <div class="quick-icon">
             <img src="/img/procurar.png" alt="">
           </div>
@@ -147,8 +147,8 @@
             <h3>Buscar prestadores</h3>
             <p>Encontre profissionais perto de você</p>
           </div>
-        </div>
-        <div class="quick-card">
+        </a>
+        <a class="quick-card" routerLink="/agendamentos">
           <div class="quick-icon">
             <img src="/img/agendamento.png" alt="">
           </div>
@@ -156,15 +156,15 @@
             <h3>Meus agendamentos</h3>
             <p>Veja seus próximos horários</p>
           </div>
-        </div>
+        </a>
       </div>
 
       <div class="section-head">
         <div>
           <span>PARA VOCÊ</span>
-          <h2>Prestadores em destaque</h2>
+          <h2 id="prestadores-destaque">Prestadores em destaque</h2>
         </div>
-        <a href="#">Ver todos</a>
+        <a routerLink="/home-cliente" fragment="prestadores-destaque">Ver todos</a>
       </div>
 
       <div class="provider-grid">
@@ -193,8 +193,8 @@
               {{ provider.hours }}</div>
             <div class="provider-rating">{{ provider.stars }} <span>{{ provider.rating }}</span></div>
             <div class="provider-actions">
-              <button type="button" class="profile-btn">Ver Perfil</button>
-              <button type="button" class="schedule-btn">Agendar</button>
+              <button type="button" class="profile-btn" disabled>Ver Perfil</button>
+              <a class="schedule-btn" routerLink="/agendamentos/novo">Agendar</a>
             </div>
           </div>
         </article>
