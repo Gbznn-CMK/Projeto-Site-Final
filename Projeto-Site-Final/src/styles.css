@@ -4,57 +4,56 @@
   box-sizing: border-box;
   font-family: Arial, Helvetica, sans-serif;
 }
-main{
+main {
   border: 10px;
 }
-.img-avatar{
-    height: 175px;
-    width: 200px;
-    border-radius: 50%;
-    background: #000;
+.img-avatar {
+  height: 90px;
+  width: 90px;
+  border-radius: 50%;
+  background: #000;
+  object-fit: cover;
 }
-.text-topo{
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 16px;
+.text-topo {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px;
 }
-.text-princi{
-    font-size: 20px;
-    font-weight: 500px;
+.txt-princi {
+  font-size: 20px;
+  font-weight: 500;
 }
-.card-info{
-    position: relative;
-  max-width: 700px;
-  margin: 0 auto;
-  border: 4px solid #333;
+.card-info {
+  position: relative;
+  max-width: 620px;
+  margin: 20px auto;
+  border: 2px solid #333;
   border-radius: 20px;
-  padding: 30px 40px;
-  overflow: hidden;
-  z-index: 2;
+  padding: 24px 32px;
 }
-form{
-    position: relative;
-    z-index: 1;
-    box-shadow: 3px 3px 3px  #000;
+form {
+  position: relative;
+  z-index: 1;
+
 }
-.form-info{
-    display: flex;
+.form-info {
+  display: flex;
   justify-content: space-between;
   gap: 40px;
   margin-bottom: 25px;
 }
-fieldset{
-    border: none;
-    flex: 1;
+fieldset {
+  border: none;
+  flex: 1;
 }
-.field-icone{
-    display: flex;
+.field-icone {
+  display: flex;
   align-items: center;
   gap: 8px;
 }
-input{
-    border: none;
+input {
+  border: none;
   border-bottom: 1px solid #333;
   background: transparent;
   width: 100%;
@@ -63,25 +62,29 @@ input{
   font-size: 16px;
   outline: none;
 }
-body{
-    background-color: #fff;
-    height: 100vh;
-    overflow-x: hidden;
-    
-} 
-.img-fundo{
-  background-image: url('/imagens/WhatsApp_Image_2026-09-08_at_14.21.20-removebg-preview.png');
-  display: flex;
-justify-content: center;
-width: 2000px;
-top: 50% ;
-left: 50%;
+body {
+  background-color: #fff;
+  height: 100vh;
+  overflow-x: hidden;
+}
+.img-fundo {
+  width: 50rem;
+  position: absolute;
+  left: 28rem;
+  opacity: 40%;
 }
 .app-container {
   display: flex;
   height: 100vh;
 }
 
+  .quadrado{
+    padding: 40px;
+    border: 1px solid black;
+    margin: 35px;
+    border-radius: 20px;
+  
+  }
 
 .sidebar {
   width: 70px;
@@ -93,7 +96,8 @@ left: 50%;
   padding: 20px 0;
 }
 
-.top-icons, .bottom-icons {
+
+.bottom-icons {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -108,7 +112,8 @@ left: 50%;
   transition: opacity 0.2s;
 }
 
-.nav-item:hover, .nav-item.active {
+.nav-item:hover,
+.nav-item.active {
   opacity: 1;
 }
 
@@ -126,7 +131,6 @@ left: 50%;
   flex-direction: column;
 }
 
-
 .top-bar {
   background-color: #dcdcdc;
   height: 60px;
@@ -136,7 +140,8 @@ left: 50%;
   gap: 15px;
 }
 
-.filter-btn, .notification-btn {
+.filter-btn,
+.notification-btn {
   background: none;
   border: none;
   font-size: 20px;
@@ -166,7 +171,6 @@ left: 50%;
   outline: none;
   font-size: 14px;
 }
-
 
 .cards-grid {
   padding: 30px;
@@ -258,4 +262,3 @@ left: 50%;
   color: #000;
   cursor: pointer;
 }
-

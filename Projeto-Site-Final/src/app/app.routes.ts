@@ -14,6 +14,7 @@ export const routes: Routes = [
     {
         path:'Perfil',
         loadComponent :() =>
-        import ('./Features/perfil-user/perfil-user').then((m)=>m.PerfilUser)
+        import ('./Features/perfil-user/perfil-user').then((m)=>m.perfilUser)
     }
 ];
+
