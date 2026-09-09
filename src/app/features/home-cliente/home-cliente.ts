@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Component, HostListener } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/services/auth';
 
 @Component({
   selector: 'app-home-cliente',
@@ -11,7 +12,10 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './home-cliente.css',
 })
 export class HomeCliente {
-  constructor(private readonly router: Router) {}
+  constructor(
+    private readonly router: Router,
+    private readonly auth: AuthService,
+  ) {}
 
   collapsed = false;
   mobileExpanded = false;
@@ -127,6 +131,7 @@ export class HomeCliente {
 
   logout(): void {
     this.profileMenuOpen = false;
+    this.auth.logout();
     void this.router.navigate(['/login']);
   }
 

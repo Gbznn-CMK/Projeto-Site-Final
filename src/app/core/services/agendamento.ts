@@ -1,43 +1,19 @@
 import { Injectable } from '@angular/core';
+import { Agendamento, Servico } from '../models/agendamento';
 
-export interface Servico {
-  id: number;
-  nome: string;
-  duracao: string;
-  preco: string;
-}
-
-export interface Agendamento {
-  id: number;
-  empresa: string;
-  servico: string;
-  valor: string;
-  data: string;
-  horario: string;
-  status: 'Pendente' | 'Confirmado' | 'Cancelado';
-}
+export type { Agendamento, Servico } from '../models/agendamento';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AgendamentoService {
-  agendamentos: Agendamento[] = [
-    {
-      id: 1,
-      empresa: 'Barbearia Gemeos',
-      servico: 'Corte Completo',
-      valor: 'R$ 45,00',
-      data: '2026-09-06',
-      horario: '14:22',
-      status: 'Confirmado'
-    }
-  ];
+  private readonly storageKey = 'nahora-agendamentos';
 
   obterAgendamentos(): Agendamento[] {
-    return this.agendamentos;
+    return this.read();
   }
 
-  adicionarAgendamento(estabelecimento: string, servico: Servico, data: string, horario: string) {
+  adicionarAgendamento(estabelecimento: string, servico: Servico, data: string, horario: string): Agendamento {
     const novo: Agendamento = {
       id: Date.now(),
       empresa: estabelecimento,
@@ -48,13 +24,45 @@ export class AgendamentoService {
       status: 'Confirmado'
     };
 
-    this.agendamentos.unshift(novo);
+    const agendamentos = this.read();
+    agendamentos.unshift(novo);
+    this.write(agendamentos);
+    return novo;
   }
 
-  cancelarAgendamento(id: number) {
-    const item = this.agendamentos.find(a => a.id === id);
+  cancelarAgendamento(id: number): boolean {
+    const agendamentos = this.read();
+    const item = agendamentos.find(a => a.id === id);
     if (item) {
       item.status = 'Cancelado';
+      this.write(agendamentos);
+      return true;
+    }
+    return false;
+  }
+
+  private read(): Agendamento[] {
+    if (typeof localStorage === 'undefined') {
+      return [];
+    }
+
+    const raw = localStorage.getItem(this.storageKey);
+    if (!raw) {
+      return [];
+    }
+
+    try {
+      const parsed: unknown = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed as Agendamento[] : [];
+    } catch {
+      localStorage.removeItem(this.storageKey);
+      return [];
+    }
+  }
+
+  private write(agendamentos: Agendamento[]): void {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(this.storageKey, JSON.stringify(agendamentos));
     }
   }
 }

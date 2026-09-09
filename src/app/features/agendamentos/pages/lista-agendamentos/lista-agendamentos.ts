@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 // Imports com o nome exato da interface (Agendamento)
 import { AgendamentoService } from '../../../../core/services/agendamento';
-import { Agendamento } from '../../../../core/services/agendamento';
+import { Agendamento } from '../../../../core/models/agendamento';
 
 @Component({
   selector: 'app-lista-agendamentos',

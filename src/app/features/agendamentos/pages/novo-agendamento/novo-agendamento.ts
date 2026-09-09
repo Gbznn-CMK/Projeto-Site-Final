@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-// Imports separados:
 import { AgendamentoService } from '../../../../core/services/agendamento';
-import { Servico } from '../../../../core/services/agendamento';
+import { Servico } from '../../../../core/models/agendamento';
 
 @Component({
   selector: 'app-novo-agendamento',
@@ -20,8 +19,8 @@ export class NovoAgendamentoComponent {
   ];
 
   servicoSelecionado: Servico = this.servicosDisponiveis[0];
-  dataSelecionada: string = '2026-09-06';
-  horarioSelecionado: string = '14:22';
+  dataSelecionada = '';
+  horarioSelecionado = '';
 
   constructor(
     public agendamentoService: AgendamentoService,
@@ -33,34 +32,24 @@ export class NovoAgendamentoComponent {
     this.passoAtual = 3;
   }
 
-  confirmarDataHora(data: string, horario: string) {
-    this.dataSelecionada = data || '2026-09-06';
-    this.horarioSelecionado = horario || '14:22';
+  confirmarDataHora(data: string, horario: string): void {
+    if (!data || !horario) {
+      return;
+    }
+    this.dataSelecionada = data;
+    this.horarioSelecionado = horario;
     this.passoAtual = 4;
   }
 
-finalizarAgendamento() {
-  console.log('CLIQUEI NO BOTÃO');
-
-  this.agendamentoService.adicionarAgendamento(
+  finalizarAgendamento(): void {
+    this.agendamentoService.adicionarAgendamento(
     'Barbearia Gemeos',
     this.servicoSelecionado,
     this.dataSelecionada,
     this.horarioSelecionado
-  );
-
-  console.log('AGENDAMENTO SALVO');
-  console.log(this.agendamentoService.obterAgendamentos());
-
-  this.router.navigate(['/agendamentos']).then((sucesso) => {
-    console.log('NAVEGAÇÃO:', sucesso);
-
-    if (!sucesso) {
-      console.log('NÃO CONSEGUIU NAVEGAR');
-      this.passoAtual = 5;
-    }
-  });
-}
+    );
+    void this.router.navigate(['/agendamentos']);
+  }
 
   reiniciar() {
     this.passoAtual = 2;
