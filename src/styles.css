@@ -1,21 +1,38 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap');
+@import './app/features/home-cliente/home-cliente.css';
+@import './app/features/home-prestador/home-prestador.css';
+@import './app/features/cadastro/cadastro.css';
 
 :root {
-  --navy: #101a33;
+  --navy-900: #112a62;
+  --navy-800: #172554;
+  --navy: #24428f;
   --navy-2: #1b2848;
   --navy-3: #26355e;
+  --navy-tint: #3863bd;
   --accent: #1fb574;
   --accent-dark: #17945e;
   --accent-soft: #e4f7ee;
+  --accent-mint: #66e196;
+  --success: #1e9e57;
+  --success-dark: #168448;
   --danger: #f04438;
   --danger-dark: #d3352a;
+  --danger-text: #c02626;
   --bg: #f3f5f8;
+  --bg-alt: #f8fafc;
   --card: #ffffff;
   --text: #1c2333;
   --text-muted: #6b7280;
   --border: #e6e9ef;
   --sidebar-w: 252px;
   --sidebar-w-collapsed: 78px;
+  --font-body: 'Inter', sans-serif;
+  --font-display: 'Sora', sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --shadow-card: 0 12px 30px rgba(16, 26, 51, 0.16);
 }
 
 * {
@@ -31,7 +48,7 @@ body {
 
 body {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   background: var(--bg);
   color: var(--text);
   overflow-x: hidden;
@@ -46,5 +63,5 @@ h1,
 h2,
 h3,
 .brand-name {
-  font-family: 'Sora', sans-serif;
+  font-family: var(--font-display);
 }

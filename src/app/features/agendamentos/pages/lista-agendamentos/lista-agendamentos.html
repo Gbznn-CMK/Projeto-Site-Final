@@ -9,7 +9,7 @@
     </div>
 
     @if (agendamentos.length === 0) {
-      <div class="sem-agendamentos">
+      <div class="box-vazio">
         <p>Nenhum agendamento encontrado.</p>
       </div>
     } @else {
@@ -18,7 +18,7 @@
           <div class="card-agendamento" [class.cancelado]="item.status === 'Cancelado'">
             <div class="topo-card">
               <h3>{{ item.empresa }}</h3>
-              <span class="badge" [class.badge-cancelado]="item.status === 'Cancelado'">
+              <span class="badge-status" [class.badge-cancelado]="item.status === 'Cancelado'">
                 {{ item.status }}
               </span>
             </div>
