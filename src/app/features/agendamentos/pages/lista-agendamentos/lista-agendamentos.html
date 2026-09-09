@@ -1,0 +1,44 @@
+<div class="layout-app">
+  <div class="conteudo-principal">
+    
+    <div class="cabecalho-lista">
+      <h2>Meus Agendamentos</h2>
+      <button type="button" class="btn-novo" (click)="novoAgendamento()">
+        + Novo Agendamento
+      </button>
+    </div>
+
+    @if (agendamentos.length === 0) {
+      <div class="sem-agendamentos">
+        <p>Nenhum agendamento encontrado.</p>
+      </div>
+    } @else {
+      <div class="grid-agendamentos">
+        @for (item of agendamentos; track item.id) {
+          <div class="card-agendamento" [class.cancelado]="item.status === 'Cancelado'">
+            <div class="topo-card">
+              <h3>{{ item.estabelecimento }}</h3>
+              <span class="badge" [class.badge-cancelado]="item.status === 'Cancelado'">
+                {{ item.status }}
+              </span>
+            </div>
+
+            <div class="detalhes-card">
+              <p><strong>Serviço:</strong> {{ item.servico }}</p>
+              <p><strong>Valor:</strong> {{ item.preco }}</p>
+              <p><strong>Data:</strong> {{ item.data }}</p>
+              <p><strong>Horário:</strong> {{ item.horario }}</p>
+            </div>
+
+            @if (item.status === 'Confirmado') {
+              <button type="button" class="btn-cancelar" (click)="cancelar(item.id)">
+                Cancelar Agendamento
+              </button>
+            }
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>
