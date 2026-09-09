@@ -9,12 +9,12 @@ export interface Servico {
 
 export interface Agendamento {
   id: number;
-  estabelecimento: string;
+  empresa: string;
   servico: string;
-  preco: string;
+  valor: string;
   data: string;
   horario: string;
-  status: 'Confirmado' | 'Cancelado';
+  status: 'Pendente' | 'Confirmado' | 'Cancelado';
 }
 
 @Injectable({
@@ -24,9 +24,9 @@ export class AgendamentoService {
   agendamentos: Agendamento[] = [
     {
       id: 1,
-      estabelecimento: 'Barbearia Gemeos',
+      empresa: 'Barbearia Gemeos',
       servico: 'Corte Completo',
-      preco: 'R$ 45,00',
+      valor: 'R$ 45,00',
       data: '2026-09-06',
       horario: '14:22',
       status: 'Confirmado'
@@ -40,9 +40,9 @@ export class AgendamentoService {
   adicionarAgendamento(estabelecimento: string, servico: Servico, data: string, horario: string) {
     const novo: Agendamento = {
       id: Date.now(),
-      estabelecimento: estabelecimento,
+      empresa: estabelecimento,
       servico: servico?.nome || 'Corte Completo',
-      preco: servico?.preco || 'R$ 45,00',
+      valor: servico?.preco || 'R$ 45,00',
       data: data || '2026-09-06',
       horario: horario || '14:00',
       status: 'Confirmado'
