@@ -1,0 +1,13 @@
+<h2>Favoritos</h2>
+
+@if (lojas().length === 0) {
+  <p>Você ainda não tem lojas favoritas.</p>
+} @else {
+  @for (loja of lojas(); track loja.id) {
+    <div class="card-loja">
+      <h3>{{ loja.nome }}</h3>
+      <p>{{ loja.endereco }}</p>
+      <app-botao-favorito [lojaId]="loja.id" [ativoInicial]="true"></app-botao-favorito>
+    </div>
+  }
+}
