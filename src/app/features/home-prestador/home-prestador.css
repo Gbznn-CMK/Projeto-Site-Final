@@ -154,6 +154,14 @@
   overflow: hidden;
   transition: background .15s ease, color .15s ease;
 }
+.nav-item-disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+.nav-item-disabled:hover {
+  background: transparent;
+  color: #cbd4e9;
+}
 
 .nav-item:hover {
   background: var(--navy-3);

@@ -21,6 +21,8 @@ export class CadastroComponent {
   showConfirmPassword = false;
   registerMessage = '';
 
+  
+
   readonly registerForm = new FormBuilder().nonNullable.group(
     {
       tipoUsuario: ['', [Validators.required]],

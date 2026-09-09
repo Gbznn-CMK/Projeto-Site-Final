@@ -1,15 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Component, HostListener } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home-cliente',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './home-cliente.html',
   styleUrl: './home-cliente.css',
 })
 export class HomeCliente {
+  constructor(private readonly router: Router) {}
+
   collapsed = false;
   mobileExpanded = false;
   profileMenuOpen = false;
@@ -124,6 +127,7 @@ export class HomeCliente {
 
   logout(): void {
     this.profileMenuOpen = false;
+    void this.router.navigate(['/login']);
   }
 
   closeMobileMenu(): void {

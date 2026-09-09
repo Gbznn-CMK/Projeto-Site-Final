@@ -1,15 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Component, HostListener } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home-prestador',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './home-prestador.html',
   styleUrl: './home-prestador.css',
 })
 export class HomePrestador {
+  constructor(private readonly router: Router) {}
+
   collapsed = false;
   profileMenuOpen = false;
   searchTerm = '';
@@ -37,6 +40,7 @@ export class HomePrestador {
 
   logout(): void {
     this.profileMenuOpen = false;
+    void this.router.navigate(['/login']);
   }
 
   @HostListener('window:resize')
