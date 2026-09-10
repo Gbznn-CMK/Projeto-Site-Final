@@ -1,4 +1,4 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, Input, output, signal } from '@angular/core';
 import { FavoritosService } from '../../services/favoritos';
 
 @Component({
@@ -12,6 +12,7 @@ export class BotaoFavoritoComponent {
   @Input() set ativoInicial(v: boolean) { this.ativo.set(v); }
 
   ativo = signal(false);
+  readonly favoritoAlterado = output<boolean>();
 
   constructor(private favoritosService: FavoritosService) {}
 
@@ -20,6 +21,9 @@ export class BotaoFavoritoComponent {
       ? this.favoritosService.desfavoritar(this.lojaId)
       : this.favoritosService.favoritar(this.lojaId);
 
-    acao.subscribe(() => this.ativo.update(v => !v));
+    acao.subscribe(() => {
+      this.ativo.update(v => !v);
+      this.favoritoAlterado.emit(this.ativo());
+    });
   }
 }

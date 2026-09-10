@@ -31,6 +31,17 @@ describe('CadastroComponent', () => {
     expect(component.registerForm.hasError('passwordsMismatch')).toBe(true);
   });
 
+  it('does not show a mismatch while the confirmation is empty', () => {
+    component.selectUserType('cliente');
+    component.registerForm.patchValue({
+      nome: 'Ana',
+      email: 'ana@example.com',
+      senha: '12345678',
+    });
+
+    expect(component.registerForm.hasError('passwordsMismatch')).toBe(false);
+  });
+
   it('registers a valid account', () => {
     component.selectUserType('cliente');
     component.registerForm.patchValue({

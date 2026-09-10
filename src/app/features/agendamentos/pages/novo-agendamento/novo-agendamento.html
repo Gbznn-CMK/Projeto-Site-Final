@@ -1,16 +1,18 @@
 <div class="layout-app">
   <div class="conteudo-principal">
+    <button class="btn-voltar" type="button" (click)="voltarParaHome()">← Voltar para a home</button>
 
     <!-- ETAPA 2: SERVIÇOS -->
     @if (passoAtual === 2) {
       <div class="secao-centralizada">
 
+        <p class="contexto-agendamento">{{ estabelecimento }} · {{ categoriaEstabelecimento }}</p>
         <h2 class="titulo-secao">Selecione o Serviço</h2>
 
         <div class="grid-servicos">
           @for (s of servicosDisponiveis; track s.id) {
 
-            <div class="card-servico" (click)="selecionarServico(s)">
+            <button type="button" class="card-servico" (click)="selecionarServico(s)">
 
               <div class="info-servico">
                 <h3>{{ s.nome }}</h3>
@@ -21,8 +23,7 @@
                 <strong>{{ s.preco }}</strong>
                 <span class="btn-selecionar">Selecionar →</span>
               </div>
-
-            </div>
+            </button>
 
           }
         </div>
@@ -52,6 +53,8 @@
             id="data"
             #dataInput
             [value]="dataSelecionada"
+            [min]="dataMinima"
+            aria-describedby="erro-data-hora"
           />
 
           <label for="horario">Selecione o Horário:</label>
@@ -61,7 +64,12 @@
             id="horario"
             #horarioInput
             [value]="horarioSelecionado"
+            aria-describedby="erro-data-hora"
           />
+
+          @if (erroDataHora) {
+            <p id="erro-data-hora" class="erro-formulario" role="alert">{{ erroDataHora }}</p>
+          }
 
           <button
             type="button"
@@ -94,22 +102,22 @@
 
           <div class="resumo-item">
             <span>Estabelecimento</span>
-            <strong>Barbearia Gemeos</strong>
+            <strong>{{ estabelecimento }}</strong>
           </div>
 
           <div class="resumo-item">
             <span>Serviço</span>
-            <strong>{{ servicoSelecionado.nome }}</strong>
+            <strong>{{ servicoSelecionado?.nome }}</strong>
           </div>
 
           <div class="resumo-item">
             <span>Valor</span>
-            <strong>{{ servicoSelecionado.preco }}</strong>
+            <strong>{{ servicoSelecionado?.preco }}</strong>
           </div>
 
           <div class="resumo-item">
             <span>Data</span>
-            <strong>{{ dataSelecionada }}</strong>
+            <strong>{{ dataSelecionada | date:'dd/MM/yyyy' }}</strong>
           </div>
 
           <div class="resumo-item">
@@ -149,7 +157,7 @@
 
           <div class="resumo-estabelecimento">
             <span>📍 Estabelecimento</span>
-            <strong>Barbearia Gemeos</strong>
+            <strong>{{ estabelecimento }}</strong>
           </div>
 
           <div class="linha-resumo"></div>
@@ -158,12 +166,12 @@
 
             <div class="detalhe">
               <span>Serviço</span>
-              <strong>{{ servicoSelecionado.nome }}</strong>
+              <strong>{{ servicoSelecionado?.nome }}</strong>
             </div>
 
             <div class="detalhe">
               <span>Data</span>
-              <strong>{{ dataSelecionada }}</strong>
+              <strong>{{ dataSelecionada | date:'dd/MM/yyyy' }}</strong>
             </div>
 
             <div class="detalhe">
@@ -173,17 +181,15 @@
 
             <div class="detalhe">
               <span>Valor</span>
-              <strong>{{ servicoSelecionado.preco }}</strong>
+              <strong>{{ servicoSelecionado?.preco }}</strong>
             </div>
 
           </div>
 
-          <button
-            type="button"
-            class="btn-confirmar"
-            (click)="reiniciar()">
-            Fazer Novo Agendamento
-          </button>
+          <div class="acoes-sucesso">
+            <button type="button" class="btn-confirmar" (click)="verAgendamentos()">Ver meus agendamentos</button>
+            <button type="button" class="btn-secundario" (click)="voltarParaHome()">Voltar para início</button>
+          </div>
 
         </div>
 

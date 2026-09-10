@@ -61,9 +61,9 @@
 
     <div class="sidebar-profile">
       <div class="profile-row">
-        <div class="avatar">N</div>
+        <div class="avatar">{{ userInitial }}</div>
         <div class="profile-info">
-          <strong>Nome</strong>
+          <strong>{{ userName }}</strong>
           <small>Prestador</small>
         </div>
         <button
@@ -74,6 +74,13 @@
           <img src="/img/menu-pontos-vertical.png" alt="">
         </button>
       </div>
+      @if (profileMenuOpen) {
+        <div class="profile-popover">
+          <strong>{{ userName }}</strong>
+          <span>Perfil do prestador</span>
+          <button type="button" (click)="logout()">Sair da conta</button>
+        </div>
+      }
 
       <button
         type="button"
@@ -139,10 +146,16 @@
 
       <div class="topbar-spacer"></div>
 
-      <button class="icon-btn" title="Notificações">
+      <button class="icon-btn" title="Notificações" type="button" (click)="toggleNotifications()" [attr.aria-expanded]="notificationsOpen">
         <img src="/img/sino.png" alt="">
         <span class="badge">2</span>
       </button>
+      @if (notificationsOpen) {
+        <div class="notification-menu" role="status">
+          <strong>Notificações</strong>
+          <p>Você tem 2 atendimentos para revisar.</p>
+        </div>
+      }
     </header>
 
     <div class="content">
@@ -160,7 +173,7 @@
         <article class="metric-card">
           <div class="metric-copy">
             <span>Agendamentos ativos</span>
-            <strong>0</strong>
+            <strong>{{ agendamentosAtivos }}</strong>
           </div>
           <div class="metric-icon metric-icon-calendar">
             <img src="/img/agendamenteo-ativ.png" alt="">
@@ -190,7 +203,7 @@
         <article class="metric-card">
           <div class="metric-copy">
             <span>Receita prevista</span>
-            <strong>0.00</strong>
+            <strong>{{ receitaPrevista }}</strong>
           </div>
           <div class="metric-icon metric-icon-revenue">
             <img src="/img/receita.png" alt="">
@@ -207,12 +220,14 @@
           <a routerLink="/agendamentos">Abrir agenda <span aria-hidden="true">›</span></a>
         </div>
 
-        <div class="agenda-empty">
-          <div class="agenda-empty-icon">
-            <img src="/img/agendamento.png" alt="">
-          </div>
-          <strong>Nenhum atendimento próximo</strong>
-          <p>Novos agendamentos aparecerão aqui.</p>
+        <div class="agenda-list">
+          @for (item of agendaDemo; track item.horario) {
+            <article class="agenda-item">
+              <time>{{ item.horario }}</time>
+              <div><strong>{{ item.cliente }}</strong><span>{{ item.servico }}</span></div>
+              <span class="agenda-status">Confirmado</span>
+            </article>
+          }
         </div>
       </section>
     </div>

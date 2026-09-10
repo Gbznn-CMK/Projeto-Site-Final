@@ -1,44 +1,123 @@
-<div class="layout-app">
-  <div class="conteudo-principal">
-    
-    <div class="cabecalho-lista">
-      <h2>Meus Agendamentos</h2>
-      <button type="button" class="btn-novo" (click)="novoAgendamento()">
-        + Novo Agendamento
+<div class="app" [class.collapsed-layout]="collapsed">
+  <aside class="sidebar" [class.collapsed]="collapsed" [class.expanded-mobile]="mobileExpanded">
+    <div class="sidebar-head">
+      <div class="logo-mark">
+        <img src="/img/Logo-branca.png" alt="NaHora Serv" class="logo-img">
+      </div>
+      <span class="brand-name">NaHora Serv</span>
+      <button type="button" class="collapse-btn" title="Recolher/expandir menu" (click)="toggleSidebar()">
+        <img src="/img/seta-pequena-direita.png" alt="" aria-hidden="true">
       </button>
     </div>
 
-    @if (agendamentos.length === 0) {
-      <div class="box-vazio">
-        <p>Nenhum agendamento encontrado.</p>
+    <nav class="sidebar-nav" aria-label="Menu do cliente">
+      <div class="nav-group">
+        <div class="nav-label">CLIENTE</div>
+        <a class="nav-item" routerLink="/home-cliente">
+          <img class="nav-icon" src="/img/botao-home.png" alt="">
+          <span class="label">Início</span>
+        </a>
+        <a class="nav-item" routerLink="/home-cliente" fragment="busca-prestadores">
+          <img class="nav-icon" src="/img/buscar.png" alt="">
+          <span class="label">Buscar</span>
+        </a>
+        <a class="nav-item active" routerLink="/agendamentos" aria-current="page">
+          <img class="nav-icon" src="/img/dias-do-calendario.png" alt="">
+          <span class="label">Agendamentos</span>
+        </a>
+        <a class="nav-item" routerLink="/favoritos">
+          <img class="nav-icon" src="/img/estrela-favotios.png" alt="">
+          <span class="label">Favoritos</span>
+        </a>
       </div>
-    } @else {
-      <div class="grid-agendamentos">
-        @for (item of agendamentos; track item.id) {
-          <div class="card-agendamento" [class.cancelado]="item.status === 'Cancelado'">
-            <div class="topo-card">
-              <h3>{{ item.empresa }}</h3>
-              <span class="badge-status" [class.badge-cancelado]="item.status === 'Cancelado'">
-                {{ item.status }}
-              </span>
-            </div>
-
-            <div class="detalhes-card">
-              <p><strong>Serviço:</strong> {{ item.servico }}</p>
-              <p><strong>Valor:</strong> {{ item.valor }}</p>
-              <p><strong>Data:</strong> {{ item.data }}</p>
-              <p><strong>Horário:</strong> {{ item.horario }}</p>
-            </div>
-
-            @if (item.status === 'Confirmado') {
-              <button type="button" class="btn-cancelar" (click)="cancelar(item.id)">
-                Cancelar Agendamento
-              </button>
-            }
-          </div>
-        }
+      <div class="nav-group">
+        <div class="nav-label">SUPORTE</div>
+        <span class="nav-item nav-item-disabled" aria-disabled="true" title="Suporte em breve">
+          <img class="nav-icon" src="/img/SAC.png" alt="">
+          <span class="label">SAC</span>
+        </span>
+        <span class="nav-item nav-item-disabled" aria-disabled="true" title="Configurações em breve">
+          <img class="nav-icon" src="/img/configuracoes.png" alt="">
+          <span class="label">Configurações</span>
+        </span>
       </div>
-    }
+    </nav>
 
-  </div>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-profile">
+      <div class="profile-row">
+        <div class="avatar">{{ userInitial }}</div>
+        <div class="profile-info">
+          <strong>{{ userName }}</strong>
+          <small>Cliente</small>
+        </div>
+        <button type="button" class="profile-menu-btn" title="Configurações do perfil" (click)="toggleProfileMenu()">
+          <img src="/img/menu-pontos-vertical.png" alt="">
+        </button>
+      </div>
+      <button type="button" class="logout-btn-full" title="Sair" (click)="logout()">
+        <img src="/img/saida.png" alt="" class="logout-icon">
+        <span class="label">Sair</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main" [class.collapsed]="collapsed">
+    <header class="topbar">
+      <div class="search-shell">
+        <img src="/img/procurar.png" alt="" class="search-icon">
+        <span class="page-search-label">Área do cliente</span>
+      </div>
+      <div class="topbar-spacer"></div>
+      <button type="button" class="icon-btn" title="Notificações">
+        <img src="/img/sino.png" alt="">
+        <span class="badge">2</span>
+      </button>
+    </header>
+
+    <div class="content">
+      <section class="hero page-hero">
+        <div>
+          <div class="hero-eyebrow">ÁREA DO CLIENTE</div>
+          <h1>Meus agendamentos</h1>
+          <p>Acompanhe seus horários e organize seus próximos atendimentos.</p>
+        </div>
+        <button type="button" class="hero-btn" (click)="novoAgendamento()">Novo agendamento</button>
+      </section>
+
+      <section class="section-head">
+        <div>
+          <span>SEUS HORÁRIOS</span>
+          <h2>Agendamentos</h2>
+        </div>
+      </section>
+
+      @if (agendamentos.length === 0) {
+        <div class="empty-state">
+          <strong>Nenhum agendamento encontrado.</strong>
+          <span>Escolha um prestador para marcar seu próximo horário.</span>
+        </div>
+      } @else {
+        <div class="grid-agendamentos">
+          @for (item of agendamentos; track item.id) {
+            <article class="card-agendamento" [class.cancelado]="item.status === 'Cancelado'">
+              <div class="topo-card">
+                <h3>{{ item.empresa }}</h3>
+                <span class="badge-status" [class.badge-cancelado]="item.status === 'Cancelado'">{{ item.status }}</span>
+              </div>
+              <div class="detalhes-card">
+                <p><strong>Serviço:</strong> {{ item.servico }}</p>
+                <p><strong>Valor:</strong> {{ item.valor }}</p>
+                <p><strong>Data:</strong> {{ item.data }}</p>
+                <p><strong>Horário:</strong> {{ item.horario }}</p>
+              </div>
+              @if (item.status === 'Confirmado') {
+                <button type="button" class="btn-cancelar" (click)="cancelar(item.id)">Cancelar agendamento</button>
+              }
+            </article>
+          }
+        </div>
+      }
+    </div>
+  </main>
 </div>

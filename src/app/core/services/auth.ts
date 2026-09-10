@@ -16,18 +16,22 @@ export class AuthService {
 
   register(user: User): boolean {
     const users = this.readUsers();
-    if (users.some((item) => item.email === user.email)) {
+    const normalizedUser = this.normalizeUser(user);
+    if (users.some((item) => this.normalizeEmail(item.email) === normalizedUser.email)) {
       return false;
     }
-    users.push(user);
+    users.push(normalizedUser);
     this.writeUsers(users);
-    this.currentUser.set(user);
-    this.writeSession(user);
+    this.currentUser.set(normalizedUser);
+    this.writeSession(normalizedUser);
     return true;
   }
 
   login(email: string, senha: string): boolean {
-    const user = this.readUsers().find((item) => item.email === email && item.senha === senha);
+    const normalizedEmail = this.normalizeEmail(email);
+    const user = this.readUsers().find(
+      (item) => this.normalizeEmail(item.email) === normalizedEmail && item.senha === senha,
+    );
     if (!user) {
       return false;
     }
@@ -61,6 +65,18 @@ export class AuthService {
 
   private writeSession(user: User): void {
     this.write(this.sessionKey, user);
+  }
+
+  private normalizeUser(user: User): User {
+    return {
+      ...user,
+      nome: user.nome.trim(),
+      email: this.normalizeEmail(user.email),
+    };
+  }
+
+  private normalizeEmail(email: string): string {
+    return email.trim().toLowerCase();
   }
 
   private read<T>(key: string, fallback: T): T {

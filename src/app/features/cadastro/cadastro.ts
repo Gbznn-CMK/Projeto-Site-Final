@@ -21,8 +21,6 @@ export class CadastroComponent {
   showConfirmPassword = false;
   registerMessage = '';
 
-  
-
   readonly registerForm = new FormBuilder().nonNullable.group(
     {
       tipoUsuario: ['', [Validators.required]],
@@ -52,10 +50,12 @@ export class CadastroComponent {
     }
 
     const user = this.registerForm.getRawValue();
-    if (!this.isUserType(user.tipoUsuario) || !this.auth.register({
-      ...user,
-      tipoUsuario: user.tipoUsuario,
-    })) {
+    if (!this.isUserType(user.tipoUsuario)) {
+      this.registerMessage = '';
+      return;
+    }
+
+    if (!this.auth.register({ ...user, tipoUsuario: user.tipoUsuario })) {
       this.registerMessage = 'Este email já está cadastrado.';
       return;
     }
@@ -74,6 +74,10 @@ export class CadastroComponent {
   private passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
     const senha = control.get('senha')?.value;
     const confirmarSenha = control.get('confirmarSenha')?.value;
+
+    if (!senha || !confirmarSenha) {
+      return null;
+    }
 
     return senha === confirmarSenha ? null : { passwordsMismatch: true };
   }

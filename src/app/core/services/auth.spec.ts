@@ -38,4 +38,26 @@ describe('AuthService', () => {
     service.logout();
     expect(service.login(user.email, 'wrongpass')).toBe(false);
   });
+
+  it('normalizes email addresses when registering and logging in', () => {
+    expect(
+      service.register({
+        nome: ' Ana ',
+        email: ' Ana@Example.com ',
+        senha: '12345678',
+        tipoUsuario: 'cliente',
+      }),
+    ).toBe(true);
+
+    expect(service.register({
+      nome: 'Outra Ana',
+      email: 'ana@example.com',
+      senha: '12345678',
+      tipoUsuario: 'cliente',
+    })).toBe(false);
+    service.logout();
+    expect(service.login('ANA@EXAMPLE.COM', '12345678')).toBe(true);
+    expect(service.currentUser()?.email).toBe('ana@example.com');
+    expect(service.currentUser()?.nome).toBe('Ana');
+  });
 });

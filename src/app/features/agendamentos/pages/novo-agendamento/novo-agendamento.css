@@ -36,6 +36,9 @@
   font-weight: 700;
   margin: 20px 0 30px;
 }
+.contexto-agendamento{
+  text-align:center; color:#6b7280; font-size:15px; margin:0 0 8px;
+}
 
 .titulo-secao.sucesso {
   color: #16a34a;
@@ -88,7 +91,24 @@
   border: 1px solid #e5e7eb;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font: inherit;
   transition: 0.2s ease;
+}
+
+.card-servico:focus-visible,
+.btn-avancar:focus-visible,
+.btn-confirmar:focus-visible,
+.btn-voltar:focus-visible {
+  outline: 3px solid rgba(36, 67, 155, 0.35);
+  outline-offset: 2px;
+}
+
+.erro-formulario {
+  color: #b91c1c;
+  font-size: 14px;
+  margin: -10px 0 18px;
 }
 
 .card-servico:hover {
@@ -329,6 +349,12 @@
 
 .sucesso-box .btn-confirmar {
   margin-top: 30px;
+}
+.acoes-sucesso{ display:grid; gap:10px; margin-top:30px; }
+.acoes-sucesso .btn-confirmar{ margin-top:0; }
+.btn-secundario{
+  width:100%; border:1px solid #d1d5db; border-radius:9px; padding:13px 20px;
+  background:#fff; color:#24439b; font-size:15px; font-weight:700; cursor:pointer;
 }
 
 

@@ -1,3 +1,23 @@
 :host {
   display: block;
 }
+.notification-menu{
+  position:absolute; top:64px; right:32px; width:280px; padding:16px;
+  background:#fff; border:1px solid #dfe5ef; border-radius:14px;
+  box-shadow:0 12px 30px rgba(16,26,51,.16); z-index:60;
+}
+.notification-menu p{ color:#667085; font-size:13px; margin:8px 0 0; }
+.profile-popover{
+  position:absolute; bottom:86px; left:18px; right:18px; padding:14px;
+  background:#fff; color:#101a33; border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.18); z-index:40;
+}
+.profile-popover strong,.profile-popover span{ display:block; }
+.profile-popover span{ color:#667085; font-size:12px; margin:4px 0 12px; }
+.profile-popover button{ width:100%; border:0; border-radius:8px; padding:8px; background:#f2f4f7; cursor:pointer; }
+.agenda-list{ display:grid; gap:10px; }
+.agenda-item{ display:flex; align-items:center; gap:16px; padding:16px; background:#fff; border:1px solid #e5e7eb; border-radius:12px; }
+.agenda-item time{ color:#24439b; font-weight:700; min-width:48px; }
+.agenda-item div{ flex:1; }
+.agenda-item strong,.agenda-item span{ display:block; }
+.agenda-item div span{ color:#667085; font-size:13px; margin-top:4px; }
+.agenda-status{ color:#15803d; font-size:12px; font-weight:700; }

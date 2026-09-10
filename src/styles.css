@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap');
 @import './app/features/home-cliente/home-cliente.css';
 @import './app/features/home-prestador/home-prestador.css';
-@import './app/features/cadastro/cadastro.css';
 
 :root {
   --navy-900: #112a62;

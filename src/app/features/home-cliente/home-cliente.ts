@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth';
+import { FavoritosService } from '../../services/favoritos';
 
 @Component({
   selector: 'app-home-cliente',
@@ -11,10 +12,11 @@ import { AuthService } from '../../core/services/auth';
   templateUrl: './home-cliente.html',
   styleUrl: './home-cliente.css',
 })
-export class HomeCliente {
+export class HomeCliente implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly auth: AuthService,
+    private readonly favoritosService: FavoritosService,
   ) {}
 
   collapsed = false;
@@ -26,10 +28,23 @@ export class HomeCliente {
   selectedSort = 'relevance';
   onlyFavorites = false;
   favorites = new Set<string>();
+  selectedProvider: (typeof this.providers)[number] | null = null;
+  notificationsOpen = false;
+
+  ngOnInit(): void {
+    this.favoritosService.listarIds().subscribe((ids) => {
+      this.favorites = new Set(
+        this.providers
+          .filter((provider) => ids.includes(provider.id))
+          .map((provider) => provider.name),
+      );
+    });
+  }
 
   readonly providers = [
     {
       name: 'Barbearia Central',
+      id: 1,
       image: '/img/barbearia.webp',
       category: 'Barbearia',
       address: 'Rua Belterra 291, Bangu, RJ',
@@ -39,6 +54,7 @@ export class HomeCliente {
     },
     {
       name: 'Salão da Maria',
+      id: 2,
       image: '/img/salao-maria.png',
       category: 'Salão de Beleza',
       address: 'Av. Paulista 1000, São Paulo, SP',
@@ -48,6 +64,7 @@ export class HomeCliente {
     },
     {
       name: 'Nails & More',
+      id: 3,
       image: '/img/manicure.png',
       category: 'Manicure',
       address: 'Rua das Flores 123, Rio de Janeiro, RJ',
@@ -57,6 +74,7 @@ export class HomeCliente {
     },
     {
       name: 'Studio Fit',
+      id: 4,
       image: '/img/studio-fit.png',
       category: 'Personal Trainer',
       address: 'Rua Ipiranga 55, Niterói, RJ',
@@ -65,6 +83,14 @@ export class HomeCliente {
       stars: '★★★★☆',
     },
   ];
+
+  get userName(): string {
+    return this.auth.currentUser()?.nome || 'Cliente';
+  }
+
+  get userInitial(): string {
+    return this.userName.charAt(0).toUpperCase();
+  }
 
   get filteredProviders() {
     const term = this.searchTerm.trim().toLowerCase();
@@ -114,11 +140,25 @@ export class HomeCliente {
   }
 
   toggleFavorite(providerName: string): void {
-    if (this.favorites.has(providerName)) {
-      this.favorites.delete(providerName);
-    } else {
-      this.favorites.add(providerName);
+    const provider = this.providers.find((item) => item.name === providerName);
+    if (!provider) {
+      return;
     }
+
+    const isFavorite = this.favorites.has(providerName);
+    const request = isFavorite
+      ? this.favoritosService.desfavoritar(provider.id)
+      : this.favoritosService.favoritar(provider.id);
+
+    request.subscribe(() => {
+      const nextFavorites = new Set(this.favorites);
+      if (isFavorite) {
+        nextFavorites.delete(providerName);
+      } else {
+        nextFavorites.add(providerName);
+      }
+      this.favorites = nextFavorites;
+    });
   }
 
   isFavorite(providerName: string): boolean {
@@ -127,6 +167,18 @@ export class HomeCliente {
 
   toggleProfileMenu(): void {
     this.profileMenuOpen = !this.profileMenuOpen;
+  }
+
+  openProviderProfile(provider: (typeof this.providers)[number]): void {
+    this.selectedProvider = provider;
+  }
+
+  closeProviderProfile(): void {
+    this.selectedProvider = null;
+  }
+
+  toggleNotifications(): void {
+    this.notificationsOpen = !this.notificationsOpen;
   }
 
   logout(): void {

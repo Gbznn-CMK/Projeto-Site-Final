@@ -50,9 +50,9 @@
 
     <div class="sidebar-profile">
       <div class="profile-row">
-        <div class="avatar">N</div>
+        <div class="avatar">{{ userInitial }}</div>
         <div class="profile-info">
-          <strong>Nome</strong>
+          <strong>{{ userName }}</strong>
           <small>Cliente</small>
         </div>
         <button
@@ -62,6 +62,13 @@
           <img src="/img/menu-pontos-vertical.png" alt="">
         </button>
       </div>
+      @if (profileMenuOpen) {
+        <div class="profile-popover">
+          <strong>{{ userName }}</strong>
+          <span>Perfil do cliente</span>
+          <button type="button" (click)="logout()">Sair da conta</button>
+        </div>
+      }
 
       <button class="logout-btn-full" title="Sair" (click)="logout()">
         <img src="/img/saida.png" alt="" class="logout-icon">
@@ -120,10 +127,17 @@
         </div>
       </div>
       <div class="topbar-spacer"></div>
-      <button class="icon-btn" title="Notificações">
+      <button class="icon-btn" title="Notificações" type="button" (click)="toggleNotifications()" [attr.aria-expanded]="notificationsOpen">
         <img src="/img/sino.png" alt="">
         <span class="badge">2</span>
       </button>
+      @if (notificationsOpen) {
+        <div class="notification-menu" role="status">
+          <strong>Notificações</strong>
+          <p>Seu agendamento está confirmado.</p>
+          <p>Há novos prestadores em destaque.</p>
+        </div>
+      }
     </header>
 
     <main class="content">
@@ -132,7 +146,7 @@
       <section class="hero">
         <div>
           <div class="hero-eyebrow">NAHORA SERV</div>
-          <h1>Olá, Nome</h1>
+          <h1>Olá, {{ userName }}</h1>
           <p>Seu próximo atendimento pode começar com uma escolha simples.</p>
         </div>
         <a class="hero-btn" routerLink="/home-cliente" fragment="busca-prestadores">Encontrar um serviço</a>
@@ -193,8 +207,8 @@
               {{ provider.hours }}</div>
             <div class="provider-rating">{{ provider.stars }} <span>{{ provider.rating }}</span></div>
             <div class="provider-actions">
-              <button type="button" class="profile-btn" disabled>Ver Perfil</button>
-              <a class="schedule-btn" routerLink="/agendamentos/novo">Agendar</a>
+              <button type="button" class="profile-btn" (click)="openProviderProfile(provider)">Ver Perfil</button>
+              <a class="schedule-btn" [routerLink]="['/agendamentos/novo']" [queryParams]="{ prestador: provider.id }">Agendar</a>
             </div>
           </div>
         </article>
@@ -206,3 +220,25 @@
     </main>
   </div>
 </div>
+
+@if (selectedProvider) {
+  <div class="profile-modal-backdrop" role="presentation" (click)="closeProviderProfile()">
+    <section class="profile-modal" role="dialog" aria-modal="true" [attr.aria-label]="'Perfil de ' + selectedProvider.name" (click)="$event.stopPropagation()">
+      <button type="button" class="profile-modal-close" aria-label="Fechar perfil" (click)="closeProviderProfile()">×</button>
+      <img class="profile-modal-image" [src]="selectedProvider.image" [alt]="selectedProvider.name">
+      <div class="profile-modal-content">
+        <span class="provider-cat">{{ selectedProvider.category }}</span>
+        <h2>{{ selectedProvider.name }}</h2>
+        <p>{{ selectedProvider.address }}</p>
+        <p>{{ selectedProvider.hours }} · <strong>{{ selectedProvider.rating }}</strong></p>
+        <h3>Serviços disponíveis</h3>
+        <ul>
+          <li>Atendimento personalizado</li>
+          <li>Agendamento online</li>
+          <li>Avaliação {{ selectedProvider.stars }}</li>
+        </ul>
+        <a class="schedule-btn profile-schedule-btn" [routerLink]="['/agendamentos/novo']" [queryParams]="{ prestador: selectedProvider.id }" (click)="closeProviderProfile()">Agendar neste prestador</a>
+      </div>
+    </section>
+  </div>
+}
