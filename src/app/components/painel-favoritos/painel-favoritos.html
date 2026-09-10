@@ -1,0 +1,45 @@
+<div class="favorites-page">
+  <aside class="favorites-sidebar">
+    <div class="favorites-brand"><span> N </span><strong>NaHora Serv</strong></div>
+    <nav aria-label="Menu do cliente">
+      <a routerLink="/home-cliente">Início</a>
+      <a routerLink="/agendamentos">Agendamentos</a>
+      <a class="active" routerLink="/favoritos" aria-current="page">Favoritos</a>
+    </nav>
+    <div class="favorites-profile"><span>{{ userInitial }}</span><strong>{{ userName }}</strong></div>
+  </aside>
+
+  <main class="favorites-content">
+    <span class="eyebrow">ÁREA DO CLIENTE</span>
+    <h1>Favoritos</h1>
+    <p class="intro">Seus prestadores salvos para encontrar de novo quando precisar.</p>
+
+    @if (lojas().length === 0) {
+      <section class="favorites-empty">
+        <strong>Você ainda não tem prestadores favoritos.</strong>
+        <p>Explore os prestadores disponíveis e salve os seus preferidos.</p>
+        <a class="action" routerLink="/home-cliente" fragment="prestadores-destaque">Explorar prestadores</a>
+      </section>
+    } @else {
+      <section class="favorites-grid">
+        @for (loja of lojas(); track loja.id) {
+          <article class="card-loja">
+            <img [src]="loja.imagemUrl" [alt]="loja.nome" loading="lazy">
+            <div class="card-loja-body">
+              <div>
+                <h2>{{ loja.nome }}</h2>
+                <p>{{ loja.endereco }}</p>
+                <small>{{ loja.horario }}</small>
+              </div>
+              <app-botao-favorito
+                [lojaId]="loja.id"
+                [ativoInicial]="true"
+                (favoritoAlterado)="carregarFavoritos()"
+              ></app-botao-favorito>
+            </div>
+          </article>
+        }
+      </section>
+    }
+  </main>
+</div>

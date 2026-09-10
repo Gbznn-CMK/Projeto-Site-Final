@@ -1,0 +1,221 @@
+<div class="provider-app" [class.collapsed-layout]="collapsed">
+  <div class="content-watermark" aria-hidden="true"></div>
+
+  <aside class="sidebar" [class.collapsed]="collapsed">
+    <div class="sidebar-head">
+      <div class="logo-mark">
+        <img src="/img/Logo-branca.png" alt="NaHora Serv" class="logo-img">
+      </div>
+      <span class="brand-name">NaHora Serv</span>
+
+      <button
+        type="button"
+        class="collapse-btn"
+        title="Recolher/expandir menu"
+        (click)="toggleSidebar()">
+        <img src="/img/seta-pequena-direita.png" alt="" aria-hidden="true">
+      </button>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Menu do prestador">
+      <div class="nav-group">
+        <div class="nav-label">PRESTADOR</div>
+
+        <a class="nav-item active" routerLink="/home-prestador" aria-current="page">
+          <img class="nav-icon" src="/img/painel.png" alt="">
+          <span class="label">Painel</span>
+        </a>
+
+        <a class="nav-item" routerLink="/agendamentos">
+          <img class="nav-icon" src="/img/dias-do-calendario.png" alt="">
+          <span class="label">Agenda</span>
+        </a>
+
+        <span class="nav-item nav-item-disabled" aria-disabled="true" title="Serviços em breve">
+          <img class="nav-icon" src="/img/servicos.png" alt="">
+          <span class="label">Serviços</span>
+        </span>
+
+        <span class="nav-item nav-item-disabled" aria-disabled="true" title="Disponibilidade em breve">
+          <img class="nav-icon" src="/img/despertador.png" alt="">
+          <span class="label">Disponibilidade</span>
+        </span>
+      </div>
+
+      <div class="nav-group support-group">
+        <div class="nav-label">SUPORTE</div>
+
+        <span class="nav-item nav-item-disabled" aria-disabled="true" title="Suporte em breve">
+          <img class="nav-icon" src="/img/SAC.png" alt="">
+          <span class="label">SAC</span>
+        </span>
+
+        <span class="nav-item nav-item-disabled" aria-disabled="true" title="Configurações em breve">
+          <img class="nav-icon" src="/img/configuracoes.png" alt="">
+          <span class="label">Configurações</span>
+        </span>
+      </div>
+    </nav>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="sidebar-profile">
+      <div class="profile-row">
+        <div class="avatar">{{ userInitial }}</div>
+        <div class="profile-info">
+          <strong>{{ userName }}</strong>
+          <small>Prestador</small>
+        </div>
+        <button
+          type="button"
+          class="profile-menu-btn"
+          title="Configurações do perfil"
+          (click)="toggleProfileMenu()">
+          <img src="/img/menu-pontos-vertical.png" alt="">
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="logout-btn-full"
+        title="Sair"
+        (click)="logout()">
+        <img src="/img/saida.png" alt="" class="logout-icon">
+        <span class="label">Sair</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main" [class.collapsed]="collapsed">
+    <header class="topbar">
+      <div class="search-shell">
+        <img src="/img/procurar.png" alt="" class="search-icon">
+        <input
+          type="search"
+          placeholder="Pesquisar prestadores, serviços..."
+          aria-label="Pesquisar prestadores e serviços"
+          [value]="searchTerm"
+          (input)="searchTerm = $any($event.target).value">
+      </div>
+
+      <div class="filter-wrapper">
+        <button
+          type="button"
+          class="icon-btn"
+          title="Filtros"
+          aria-label="Abrir filtros"
+          [class.active-filter]="filterMenuOpen"
+          (click)="toggleFilterMenu()">
+          <img src="/img/filtro-de-barras.png" alt="">
+        </button>
+
+        <div class="filter-menu" *ngIf="filterMenuOpen">
+          <div class="filter-menu-title">Filtrar resultados</div>
+
+          <label class="filter-option">
+            <span>Categoria</span>
+            <select [(ngModel)]="selectedCategory">
+              <option value="">Todas</option>
+              <option value="Barbearia">Barbearia</option>
+              <option value="Salão de Beleza">Salão de Beleza</option>
+              <option value="Manicure">Manicure</option>
+              <option value="Personal Trainer">Personal Trainer</option>
+            </select>
+          </label>
+
+          <label class="filter-option">
+            <span>Ordenar por</span>
+            <select [(ngModel)]="selectedSort">
+              <option value="relevance">Mais relevantes</option>
+              <option value="rating">Melhor avaliação</option>
+              <option value="name">Nome A–Z</option>
+            </select>
+          </label>
+
+          <button type="button" class="clear-filter-btn" (click)="clearFilters()">
+            Limpar filtros
+          </button>
+        </div>
+      </div>
+
+      <div class="topbar-spacer"></div>
+
+      <button class="icon-btn" title="Notificações" aria-label="Notificações">
+        <img src="/img/sino.png" alt="">
+        <span class="badge">0</span>
+      </button>
+    </header>
+
+    <div class="content">
+      <section class="page-heading">
+        <div>
+          <span class="eyebrow">ÁREA DO PRESTADOR</span>
+          <h1>Meu painel</h1>
+          <p>Acompanhe o movimento do seu negócio.</p>
+        </div>
+
+        <a class="primary-btn" routerLink="/agendamentos">Ver agenda</a>
+      </section>
+
+      <section class="metrics-grid" aria-label="Resumo do negócio">
+        <article class="metric-card">
+          <div class="metric-copy">
+            <span>Agendamentos ativos</span>
+            <strong>{{ activeAppointments }}</strong>
+          </div>
+          <div class="metric-icon metric-icon-calendar">
+            <img src="/img/agendamenteo-ativ.png" alt="">
+          </div>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-copy">
+            <span>Aguardando confirmação</span>
+            <strong>{{ pendingAppointments }}</strong>
+          </div>
+          <div class="metric-icon metric-icon-confirmation">
+            <img src="/img/aguard-confir.png" alt="">
+          </div>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-copy">
+            <span>Serviços cadastrados</span>
+            <strong>—</strong>
+          </div>
+          <div class="metric-icon metric-icon-services">
+            <img src="/img/servicos-cadas.png" alt="">
+          </div>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-copy">
+            <span>Receita prevista</span>
+            <strong>{{ projectedRevenue }}</strong>
+          </div>
+          <div class="metric-icon metric-icon-revenue">
+            <img src="/img/receita.png" alt="">
+          </div>
+        </article>
+      </section>
+
+      <section class="agenda-section">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">PRÓXIMOS HORÁRIOS</span>
+            <h2>Agenda de hoje e amanhã</h2>
+          </div>
+          <a routerLink="/agendamentos">Abrir agenda <span aria-hidden="true">›</span></a>
+        </div>
+
+        <div class="agenda-empty">
+          <div class="agenda-empty-icon">
+            <img src="/img/agendamento.png" alt="">
+          </div>
+          <strong>Nenhum atendimento próximo</strong>
+          <p>Novos agendamentos aparecerão aqui.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>

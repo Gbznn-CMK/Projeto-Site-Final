@@ -1,0 +1,209 @@
+<div class="app">
+
+  <aside class="sidebar" [class.collapsed]="collapsed" [class.expanded-mobile]="mobileExpanded">
+    <div class="sidebar-head">
+      <div class="logo-mark">
+      <img src="/img/Logo-branca.png" alt="NaHora Serv" class="logo-img">
+      </div>
+      <span class="brand-name">NaHora Serv</span>
+      <button
+        class="collapse-btn"
+        title="Recolher/expandir menu"
+        (click)="toggleSidebar()">
+        <img src="/img/seta-pequena-direita.png" alt="" aria-hidden="true">
+      </button>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">CLIENTE</div>
+      <a class="nav-item active" routerLink="/home-cliente" aria-current="page">
+        <img class="nav-icon" src="/img/botao-home.png" alt="">
+        <span class="label">Início</span>
+      </a>
+      <a class="nav-item" routerLink="/home-cliente" fragment="busca-prestadores">
+        <img class="nav-icon" src="/img/buscar.png" alt="">
+        <span class="label">Buscar</span>
+      </a>
+      <a class="nav-item" routerLink="/agendamentos">
+        <img class="nav-icon" src="/img/dias-do-calendario.png" alt="">
+        <span class="label">Agendamentos</span>
+      </a>
+      <a class="nav-item" routerLink="/favoritos">
+        <img class="nav-icon" src="/img/estrela-favotios.png" alt="">
+        <span class="label">Favoritos</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">SUPORTE</div>
+      <span class="nav-item nav-item-disabled" aria-disabled="true" title="Suporte em breve">
+        <img class="nav-icon" src="/img/SAC.png" alt="">
+        <span class="label">SAC</span>
+      </span>
+      <span class="nav-item nav-item-disabled" aria-disabled="true" title="Configurações em breve">
+        <img class="nav-icon" src="/img/configuracoes.png" alt="">
+        <span class="label">Configurações</span>
+      </span>
+    </div>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="sidebar-profile">
+      <div class="profile-row">
+        <div class="avatar">{{ userInitial }}</div>
+        <div class="profile-info">
+          <strong>{{ userName }}</strong>
+          <small>Cliente</small>
+        </div>
+        <button
+          class="profile-menu-btn"
+          title="Configurações do perfil"
+          (click)="toggleProfileMenu()">
+          <img src="/img/menu-pontos-vertical.png" alt="">
+        </button>
+      </div>
+
+      <button class="logout-btn-full" title="Sair" (click)="logout()">
+        <img src="/img/saida.png" alt="" class="logout-icon">
+        <span class="label">Sair</span>
+      </button>
+    </div>
+  </aside>
+
+  <div class="main" [class.collapsed]="collapsed">
+    <header class="topbar">
+      <div class="search-shell" id="busca-prestadores">
+        <img src="/img/procurar.png" alt="" class="search-icon">
+        <input type="search" placeholder="Pesquisar prestadores, serviços..." aria-label="Pesquisar prestadores e serviços" [value]="searchTerm" (input)="searchTerm = $any($event.target).value">
+      </div>
+      <div class="filter-wrapper">
+        <button
+          type="button"
+          class="icon-btn"
+          title="Filtros"
+          aria-label="Abrir filtros"
+          [class.active-filter]="filterMenuOpen"
+          (click)="toggleFilterMenu()">
+          <img src="/img/filtro-de-barras.png" alt="">
+        </button>
+
+        <div class="filter-menu" *ngIf="filterMenuOpen">
+          <div class="filter-menu-title">Filtrar resultados</div>
+
+          <label class="filter-option">
+            <span>Categoria</span>
+            <select [(ngModel)]="selectedCategory">
+              <option value="">Todas</option>
+              <option value="Barbearia">Barbearia</option>
+              <option value="Salão de Beleza">Salão de Beleza</option>
+              <option value="Manicure">Manicure</option>
+              <option value="Personal Trainer">Personal Trainer</option>
+            </select>
+          </label>
+
+          <label class="filter-option">
+            <span>Ordenar por</span>
+            <select [(ngModel)]="selectedSort">
+              <option value="relevance">Mais relevantes</option>
+              <option value="rating">Melhor avaliação</option>
+              <option value="name">Nome  A–Z</option>
+            </select>
+          </label>
+
+          <label class="filter-check">
+            <input type="checkbox" [(ngModel)]="onlyFavorites">
+            <span>Somente favoritos</span>
+          </label>
+
+          <button type="button" class="clear-filter-btn" (click)="clearFilters()">
+            Limpar filtros
+          </button>
+        </div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <button class="icon-btn" title="Notificações" aria-label="Notificações">
+        <img src="/img/sino.png" alt="">
+        <span class="badge">0</span>
+      </button>
+    </header>
+
+    <main class="content">
+      <div class="content-watermark" aria-hidden="true"></div>
+
+      <section class="hero">
+        <div>
+          <div class="hero-eyebrow">NAHORA SERV</div>
+          <h1>Olá, {{ userName }}</h1>
+          <p>Seu próximo atendimento pode começar com uma escolha simples.</p>
+        </div>
+        <a class="hero-btn" routerLink="/home-cliente" fragment="busca-prestadores">Encontrar um serviço</a>
+      </section>
+
+      <div class="quick-row">
+        <a class="quick-card" routerLink="/home-cliente" fragment="busca-prestadores">
+          <div class="quick-icon">
+            <img src="/img/procurar.png" alt="">
+          </div>
+          <div>
+            <h3>Buscar prestadores</h3>
+            <p>Encontre profissionais perto de você</p>
+          </div>
+        </a>
+        <a class="quick-card" routerLink="/agendamentos">
+          <div class="quick-icon">
+            <img src="/img/agendamento.png" alt="">
+          </div>
+          <div>
+            <h3>Meus agendamentos</h3>
+            <p>Veja seus próximos horários</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="section-head">
+        <div>
+          <span>PARA VOCÊ</span>
+          <h2 id="prestadores-destaque">Prestadores em destaque</h2>
+        </div>
+        <a routerLink="/home-cliente" fragment="prestadores-destaque">Ver todos</a>
+      </div>
+
+      <div class="provider-grid">
+        <article class="provider-card" *ngFor="let provider of filteredProviders">
+          <div class="provider-photo">
+            <img class="provider-photo-img" [src]="provider.image" [alt]="provider.name" loading="lazy">
+            <button
+              type="button"
+              class="favorite-btn"
+              [class.is-favorite]="isFavorite(provider.name)"
+              [attr.aria-label]="isFavorite(provider.name) ? 'Remover dos favoritos' : 'Adicionar aos favoritos'"
+              [attr.aria-pressed]="isFavorite(provider.name)"
+              (click)="$event.stopPropagation(); toggleFavorite(provider.name)">
+              <img [src]="isFavorite(provider.name) ? '/img/selecionado-fav-preto.png' : '/img/botao-fav-preto.png'" alt="">
+            </button>
+          </div>
+          <div class="provider-body">
+            <h3>{{ provider.name }}</h3>
+            <div class="provider-cat">{{ provider.category }}</div>
+            <div class="provider-meta">
+              <img class="meta-icon" src="/img/pino-de-localizacao.png" alt="">
+              {{ provider.address }}
+            </div>
+            <div class="provider-meta">
+              <img class="meta-icon" src="/img/relogio.png" alt="Horário">
+              {{ provider.hours }}</div>
+            <div class="provider-rating">{{ provider.stars }} <span>{{ provider.rating }}</span></div>
+            <div class="provider-actions">
+              <button type="button" class="profile-btn" disabled>Ver Perfil</button>
+              <a class="schedule-btn" routerLink="/agendamentos/novo">Agendar</a>
+            </div>
+          </div>
+        </article>
+        <div class="empty-state" *ngIf="filteredProviders.length === 0">
+          <strong>Nenhum prestador encontrado.</strong>
+          <span>Tente buscar por outro nome, serviço ou localização.</span>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

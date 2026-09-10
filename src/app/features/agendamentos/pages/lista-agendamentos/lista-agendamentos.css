@@ -1,0 +1,114 @@
+.appointments-app {
+  min-height: 100vh;
+  display: flex;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.appointments-app .sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 14px;
+  background: var(--navy-800);
+  color: #fff;
+}
+
+.appointments-app .sidebar-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px 28px;
+}
+
+.appointments-app .logo-mark {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--accent);
+}
+
+.appointments-app .logo-img { width: 25px; height: auto; }
+.appointments-app .brand-name { font-size: 16px; font-weight: 700; }
+.appointments-app .sidebar-nav { flex: 1; }
+.appointments-app .nav-group { margin-bottom: 28px; }
+.appointments-app .nav-label {
+  padding: 0 12px 10px;
+  color: #93a5cc;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+
+.appointments-app .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 9px;
+  color: #c8d2ea;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.appointments-app .nav-item:hover,
+.appointments-app .nav-item.active { background: #263b70; color: #fff; }
+.appointments-app .nav-icon { width: 18px; height: 18px; object-fit: contain; }
+.appointments-app .sidebar-spacer { flex: 1; }
+.appointments-app .profile-row { display: flex; align-items: center; gap: 9px; padding: 12px 8px; }
+.appointments-app .avatar { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 700; }
+.appointments-app .profile-info { display: grid; gap: 2px; min-width: 0; }
+.appointments-app .profile-info strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+.appointments-app .profile-info small { color: #9baad0; font-size: 11px; }
+
+.appointments-app .main { flex: 1; min-width: 0; }
+.appointments-app .topbar {
+  height: 72px;
+  display: flex;
+  align-items: center;
+  padding: 0 42px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,.86);
+}
+.appointments-app .topbar-spacer { flex: 1; }
+.appointments-app .icon-btn { display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 10px; background: transparent; cursor: pointer; }
+.appointments-app .icon-btn:hover { background: var(--bg); }
+.appointments-app .icon-btn img { width: 20px; height: 20px; }
+.appointments-app .content { max-width: 1120px; margin: 0 auto; padding: 42px 42px 64px; }
+.appointments-app .cabecalho-lista { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 30px; }
+.appointments-app .eyebrow, .card-eyebrow { color: var(--accent-dark); font-size: 10px; font-weight: 800; letter-spacing: .13em; }
+.appointments-app h1 { margin: 7px 0 8px; color: var(--navy-900); font-size: clamp(24px, 3vw, 34px); }
+.appointments-app .descricao-pagina { color: var(--text-muted); font-size: 14px; }
+.appointments-app .btn-novo { border: 0; border-radius: 9px; padding: 12px 17px; background: var(--navy); color: #fff; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.appointments-app .btn-novo:hover { background: var(--navy-900); }
+.appointments-app .grid-agendamentos { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 18px; }
+.appointments-app .card-agendamento { padding: 22px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--card); box-shadow: 0 8px 22px rgba(16,26,51,.06); }
+.appointments-app .card-agendamento.cancelado { opacity: .68; }
+.appointments-app .topo-card { display: flex; justify-content: space-between; align-items: start; gap: 14px; margin-bottom: 22px; }
+.appointments-app .topo-card h2 { margin-top: 6px; color: var(--navy-900); font-size: 18px; }
+.appointments-app .badge-status { padding: 6px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-dark); font-size: 11px; font-weight: 800; white-space: nowrap; }
+.appointments-app .badge-status.status-cancelado { background: #fff0ef; color: var(--danger-text); }
+.appointments-app .detalhes-card { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 18px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.appointments-app .detalhes-card div { display: grid; gap: 5px; }
+.appointments-app .detalhes-card span { color: var(--text-muted); font-size: 11px; }
+.appointments-app .detalhes-card strong { color: var(--text); font-size: 13px; }
+.appointments-app .btn-cancelar { margin-top: 18px; padding: 8px 0; border: 0; background: transparent; color: var(--danger-text); font-size: 12px; font-weight: 700; cursor: pointer; }
+.appointments-app .btn-cancelar:hover { text-decoration: underline; }
+.appointments-app .box-vazio { display: grid; justify-items: center; gap: 10px; padding: 70px 24px; border: 1px dashed #cbd5e1; border-radius: var(--radius-lg); background: rgba(255,255,255,.7); text-align: center; color: var(--text-muted); }
+.appointments-app .box-vazio strong { color: var(--navy-900); font-size: 17px; }
+.appointments-app .box-vazio p { margin-bottom: 8px; font-size: 13px; }
+.appointments-app .empty-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-dark); font-size: 25px; }
+
+@media (max-width: 760px) {
+  .appointments-app .sidebar { width: 72px; padding: 20px 8px; }
+  .appointments-app .brand-name, .appointments-app .nav-label, .appointments-app .nav-item .label, .appointments-app .profile-info { display: none; }
+  .appointments-app .sidebar-head, .appointments-app .nav-item, .appointments-app .profile-row { justify-content: center; padding-left: 0; padding-right: 0; }
+  .appointments-app .content { padding: 28px 18px 48px; }
+  .appointments-app .topbar { padding: 0 18px; }
+  .appointments-app .cabecalho-lista { align-items: start; flex-direction: column; }
+}
