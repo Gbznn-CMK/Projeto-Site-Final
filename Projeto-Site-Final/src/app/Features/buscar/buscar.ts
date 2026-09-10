@@ -17,7 +17,6 @@ interface Provider {
 
 @Component({
   selector: 'app-buscar',
-  standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, SidebarComponent],
   templateUrl: './buscar.html',
   styleUrl: './buscar.css',

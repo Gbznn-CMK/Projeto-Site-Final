@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Component, HostListener } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { SidebarComponent } from '../../shared/sidebar/sidebar';
 
 @Component({
   selector: 'app-perfil-user',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink,SidebarComponent],
+  imports: [CommonModule, FormsModule, SidebarComponent],
   templateUrl: './perfil-user.html',
   styleUrl: './perfil-user.css',
 })
@@ -67,26 +67,19 @@ export class perfilUser {
     const term = this.searchTerm.trim().toLowerCase();
 
     let results = this.providers.filter((provider) => {
-      const matchesSearch = !term ||
-        `${provider.name} ${provider.category} ${provider.address}`
-          .toLowerCase()
-          .includes(term);
-      const matchesCategory = !this.selectedCategory ||
-        provider.category === this.selectedCategory;
-      const matchesFavorites = !this.onlyFavorites ||
-        this.favorites.has(provider.name);
+      const matchesSearch =
+        !term ||
+        `${provider.name} ${provider.category} ${provider.address}`.toLowerCase().includes(term);
+      const matchesCategory = !this.selectedCategory || provider.category === this.selectedCategory;
+      const matchesFavorites = !this.onlyFavorites || this.favorites.has(provider.name);
 
       return matchesSearch && matchesCategory && matchesFavorites;
     });
 
     if (this.selectedSort === 'rating') {
-      results = [...results].sort((a, b) =>
-        parseFloat(b.rating) - parseFloat(a.rating),
-      );
+      results = [...results].sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
     } else if (this.selectedSort === 'name') {
-      results = [...results].sort((a, b) =>
-        a.name.localeCompare(b.name, 'pt-BR'),
-      );
+      results = [...results].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
     }
 
     return results;
