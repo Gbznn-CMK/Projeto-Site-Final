@@ -9,19 +9,107 @@
 .layout-app {
   min-height: 100vh;
   width: 100%;
-  background: #f5f7fb;
-  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(circle at 50% -15%, rgba(31, 181, 116, 0.12), transparent 34rem),
+    var(--bg);
+  font-family: var(--font-body);
 }
 
 .conteudo-principal {
   min-height: 100vh;
-  padding: 40px 20px;
+  padding: 34px 20px 72px;
 }
 
 .secao-centralizada {
   width: 100%;
   max-width: 750px;
   margin: 0 auto;
+}
+
+.cabecalho-agendamento {
+  max-width: 750px;
+  margin: 32px auto 24px;
+  text-align: center;
+}
+
+.etiqueta-agendamento {
+  color: var(--accent-dark);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+
+.cabecalho-agendamento h1 {
+  margin: 8px 0 8px;
+  color: var(--navy-900);
+  font-size: clamp(28px, 5vw, 38px);
+  line-height: 1.15;
+}
+
+.cabecalho-agendamento p {
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.progresso-agendamento {
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.progresso-etapa {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #98a2b3;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.progresso-etapa span {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #d8dee9;
+  border-radius: 50%;
+  background: #fff;
+  font-weight: 700;
+}
+
+.progresso-etapa.ativa {
+  color: var(--navy);
+}
+
+.progresso-etapa.ativa span,
+.progresso-etapa.concluida span {
+  color: #fff;
+  border-color: var(--navy);
+  background: var(--navy);
+}
+
+.progresso-etapa.concluida {
+  color: var(--accent-dark);
+}
+
+.progresso-etapa.concluida span {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.progresso-linha {
+  height: 1px;
+  min-width: 28px;
+  flex: 1;
+  background: #d8dee9;
+}
+
+.progresso-linha.preenchida {
+  background: var(--accent);
 }
 
 
@@ -31,13 +119,20 @@
 
 .titulo-secao {
   text-align: center;
-  color: #24439b;
-  font-size: 30px;
+  color: var(--navy-900);
+  font-size: 28px;
   font-weight: 700;
-  margin: 20px 0 30px;
+  margin: 18px 0 26px;
 }
 .contexto-agendamento{
-  text-align:center; color:#6b7280; font-size:15px; margin:0 0 8px;
+  display: inline-flex;
+  margin: 0 auto 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .titulo-secao.sucesso {
@@ -60,15 +155,18 @@
 .btn-voltar {
   background: transparent;
   border: none;
-  color: #24439b;
+  color: var(--navy);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  padding: 8px 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background .15s ease, color .15s ease;
 }
 
 .btn-voltar:hover {
-  text-decoration: underline;
+  background: #e9eef8;
+  color: var(--navy-900);
 }
 
 
@@ -86,15 +184,15 @@
   justify-content: space-between;
   align-items: center;
   background: #ffffff;
-  padding: 22px;
-  border-radius: 14px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  padding: 22px 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 20px rgba(16, 26, 51, 0.06);
   cursor: pointer;
   width: 100%;
   text-align: left;
   font: inherit;
-  transition: 0.2s ease;
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 
 .card-servico:focus-visible,
@@ -112,9 +210,9 @@
 }
 
 .card-servico:hover {
-  transform: translateY(-2px);
-  border-color: #24439b;
-  box-shadow: 0 8px 20px rgba(36, 67, 155, 0.12);
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 12px 24px rgba(16, 26, 51, 0.1);
 }
 
 .info-servico h3 {
@@ -153,10 +251,10 @@
 
 .box-formulario {
   background: #ffffff;
-  padding: 30px;
-  border-radius: 16px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+  padding: clamp(22px, 5vw, 34px);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
 }
 
 .box-formulario label {
@@ -169,17 +267,17 @@
 
 .box-formulario input {
   width: 100%;
-  padding: 13px;
+  padding: 14px 15px;
   margin-bottom: 22px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  border: 1px solid #cfd6e2;
+  border-radius: 10px;
   font-size: 15px;
   outline: none;
 }
 
 .box-formulario input:focus {
-  border-color: #24439b;
-  box-shadow: 0 0 0 3px rgba(36, 67, 155, 0.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
 }
 
 
@@ -191,20 +289,22 @@
 .btn-confirmar {
   width: 100%;
   border: none;
-  border-radius: 9px;
-  padding: 14px 20px;
-  background: #24439b;
+  border-radius: 10px;
+  padding: 15px 20px;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-tint) 100%);
   color: #ffffff;
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: 0.2s ease;
+  box-shadow: 0 8px 16px rgba(36, 66, 143, .2);
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
 }
 
 .btn-avancar:hover,
 .btn-confirmar:hover {
-  background: #1d367f;
-  transform: translateY(-1px);
+  filter: brightness(.95);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px rgba(36, 66, 143, .25);
 }
 
 .btn-confirmar {

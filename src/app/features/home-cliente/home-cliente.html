@@ -208,7 +208,10 @@
             <div class="provider-rating">{{ provider.stars }} <span>{{ provider.rating }}</span></div>
             <div class="provider-actions">
               <button type="button" class="profile-btn" (click)="openProviderProfile(provider)">Ver Perfil</button>
-              <a class="schedule-btn" [routerLink]="['/agendamentos/novo']" [queryParams]="{ prestador: provider.id }">Agendar</a>
+              <a class="schedule-btn" [routerLink]="['/agendamentos/novo']" [queryParams]="{ prestador: provider.id }">
+                <span>Agendar agora</span>
+                <span class="schedule-btn-arrow" aria-hidden="true">→</span>
+              </a>
             </div>
           </div>
         </article>
@@ -237,7 +240,10 @@
           <li>Agendamento online</li>
           <li>Avaliação {{ selectedProvider.stars }}</li>
         </ul>
-        <a class="schedule-btn profile-schedule-btn" [routerLink]="['/agendamentos/novo']" [queryParams]="{ prestador: selectedProvider.id }" (click)="closeProviderProfile()">Agendar neste prestador</a>
+        <a class="schedule-btn profile-schedule-btn" [routerLink]="['/agendamentos/novo']" [queryParams]="{ prestador: selectedProvider.id }" (click)="closeProviderProfile()">
+          <span>Agendar neste prestador</span>
+          <span class="schedule-btn-arrow" aria-hidden="true">→</span>
+        </a>
       </div>
     </section>
   </div>

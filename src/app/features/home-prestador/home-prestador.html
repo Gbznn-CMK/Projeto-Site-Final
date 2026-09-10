@@ -4,7 +4,7 @@
   <aside class="sidebar" [class.collapsed]="collapsed">
     <div class="sidebar-head">
       <div class="logo-mark">
-        <img src="/img/Logo-branca.png" alt="NaHora Serv" class="logo-img">
+        <img src="/img/Logo-branca.png" alt="NaHora Serv" class="logo-img" />
       </div>
       <span class="brand-name">NaHora Serv</span>
 
@@ -12,48 +12,44 @@
         type="button"
         class="collapse-btn"
         title="Recolher/expandir menu"
-        (click)="toggleSidebar()">
-        <img src="/img/seta-pequena-direita.png" alt="" aria-hidden="true">
+        (click)="toggleSidebar()"
+      >
+        <img src="/img/seta-pequena-direita.png" alt="" aria-hidden="true" />
       </button>
     </div>
 
     <nav class="sidebar-nav" aria-label="Menu do prestador">
       <div class="nav-group">
         <div class="nav-label">PRESTADOR</div>
-
-        <a class="nav-item active" routerLink="/home-prestador" aria-current="page">
-          <img class="nav-icon" src="/img/painel.png" alt="">
-          <span class="label">Painel</span>
-        </a>
-
-        <a class="nav-item" routerLink="/agendamentos">
-          <img class="nav-icon" src="/img/dias-do-calendario.png" alt="">
-          <span class="label">Agenda</span>
-        </a>
-
-        <span class="nav-item nav-item-disabled" aria-disabled="true" title="Serviços em breve">
-          <img class="nav-icon" src="/img/servicos.png" alt="">
-          <span class="label">Serviços</span>
-        </span>
-
-        <span class="nav-item nav-item-disabled" aria-disabled="true" title="Disponibilidade em breve">
-          <img class="nav-icon" src="/img/despertador.png" alt="">
-          <span class="label">Disponibilidade</span>
-        </span>
+        <a class="nav-item active" routerLink="/home-prestador" aria-current="page"
+          ><img class="nav-icon" src="/img/painel.png" alt="" /><span class="label">Painel</span></a
+        >
+        <a class="nav-item" routerLink="/agenda-prestador"
+          ><img class="nav-icon" src="/img/dias-do-calendario.png" alt="" /><span class="label"
+            >Agenda</span
+          ></a
+        >
+        <a class="nav-item" routerLink="/servicos-prestador"
+          ><img class="nav-icon" src="/img/servicos.png" alt="" /><span class="label"
+            >Serviços</span
+          ></a
+        >
+        <a class="nav-item" routerLink="/disponibilidade-prestador"
+          ><img class="nav-icon" src="/img/despertador.png" alt="" /><span class="label"
+            >Disponibilidade</span
+          ></a
+        >
       </div>
-
-      <div class="nav-group support-group">
+      <div class="nav-group">
         <div class="nav-label">SUPORTE</div>
-
-        <span class="nav-item nav-item-disabled" aria-disabled="true" title="Suporte em breve">
-          <img class="nav-icon" src="/img/SAC.png" alt="">
-          <span class="label">SAC</span>
-        </span>
-
-        <span class="nav-item nav-item-disabled" aria-disabled="true" title="Configurações em breve">
-          <img class="nav-icon" src="/img/configuracoes.png" alt="">
-          <span class="label">Configurações</span>
-        </span>
+        <span class="nav-item nav-item-disabled" aria-disabled="true"
+          ><img class="nav-icon" src="/img/SAC.png" alt="" /><span class="label">SAC</span></span
+        >
+        <span class="nav-item nav-item-disabled" aria-disabled="true"
+          ><img class="nav-icon" src="/img/configuracoes.png" alt="" /><span class="label"
+            >Configurações</span
+          ></span
+        >
       </div>
     </nav>
 
@@ -70,8 +66,9 @@
           type="button"
           class="profile-menu-btn"
           title="Configurações do perfil"
-          (click)="toggleProfileMenu()">
-          <img src="/img/menu-pontos-vertical.png" alt="">
+          (click)="toggleProfileMenu()"
+        >
+          <img src="/img/menu-pontos-vertical.png" alt="" />
         </button>
       </div>
       @if (profileMenuOpen) {
@@ -82,12 +79,8 @@
         </div>
       }
 
-      <button
-        type="button"
-        class="logout-btn-full"
-        title="Sair"
-        (click)="logout()">
-        <img src="/img/saida.png" alt="" class="logout-icon">
+      <button type="button" class="logout-btn-full" title="Sair" (click)="logout()">
+        <img src="/img/saida.png" alt="" class="logout-icon" />
         <span class="label">Sair</span>
       </button>
     </div>
@@ -96,13 +89,14 @@
   <main class="main" [class.collapsed]="collapsed">
     <header class="topbar">
       <div class="search-shell">
-        <img src="/img/procurar.png" alt="" class="search-icon">
+        <img src="/img/procurar.png" alt="" class="search-icon" />
         <input
           type="search"
           placeholder="Pesquisar prestadores, serviços..."
           aria-label="Pesquisar prestadores e serviços"
           [value]="searchTerm"
-          (input)="searchTerm = $any($event.target).value">
+          (input)="searchTerm = $any($event.target).value"
+        />
       </div>
 
       <div class="filter-wrapper">
@@ -111,8 +105,9 @@
           class="icon-btn"
           title="Filtros"
           [class.active-filter]="filterMenuOpen"
-          (click)="toggleFilterMenu()">
-          <img src="/img/filtro-de-barras.png" alt="">
+          (click)="toggleFilterMenu()"
+        >
+          <img src="/img/filtro-de-barras.png" alt="" />
         </button>
 
         <div class="filter-menu" *ngIf="filterMenuOpen">
@@ -146,8 +141,14 @@
 
       <div class="topbar-spacer"></div>
 
-      <button class="icon-btn" title="Notificações" type="button" (click)="toggleNotifications()" [attr.aria-expanded]="notificationsOpen">
-        <img src="/img/sino.png" alt="">
+      <button
+        class="icon-btn"
+        title="Notificações"
+        type="button"
+        (click)="toggleNotifications()"
+        [attr.aria-expanded]="notificationsOpen"
+      >
+        <img src="/img/sino.png" alt="" />
         <span class="badge">2</span>
       </button>
       @if (notificationsOpen) {
@@ -166,7 +167,7 @@
           <p>Acompanhe o movimento do seu negócio.</p>
         </div>
 
-        <a class="primary-btn" routerLink="/agendamentos">Ver agenda</a>
+        <a class="primary-btn" routerLink="/agenda-prestador">Ver agenda</a>
       </section>
 
       <section class="metrics-grid" aria-label="Resumo do negócio">
@@ -176,7 +177,7 @@
             <strong>{{ agendamentosAtivos }}</strong>
           </div>
           <div class="metric-icon metric-icon-calendar">
-            <img src="/img/agendamenteo-ativ.png" alt="">
+            <img src="/img/agendamenteo-ativ.png" alt="" />
           </div>
         </article>
 
@@ -186,7 +187,7 @@
             <strong>0</strong>
           </div>
           <div class="metric-icon metric-icon-confirmation">
-            <img src="/img/aguard-confir.png" alt="">
+            <img src="/img/aguard-confir.png" alt="" />
           </div>
         </article>
 
@@ -196,7 +197,7 @@
             <strong>0</strong>
           </div>
           <div class="metric-icon metric-icon-services">
-            <img src="/img/servicos-cadas.png" alt="">
+            <img src="/img/servicos-cadas.png" alt="" />
           </div>
         </article>
 
@@ -206,7 +207,7 @@
             <strong>{{ receitaPrevista }}</strong>
           </div>
           <div class="metric-icon metric-icon-revenue">
-            <img src="/img/receita.png" alt="">
+            <img src="/img/receita.png" alt="" />
           </div>
         </article>
       </section>
@@ -217,14 +218,17 @@
             <span class="eyebrow">PRÓXIMOS HORÁRIOS</span>
             <h2>Agenda de hoje e amanhã</h2>
           </div>
-          <a routerLink="/agendamentos">Abrir agenda <span aria-hidden="true">›</span></a>
+          <a routerLink="/agenda-prestador">Abrir agenda <span aria-hidden="true">›</span></a>
         </div>
 
         <div class="agenda-list">
           @for (item of agendaDemo; track item.horario) {
             <article class="agenda-item">
               <time>{{ item.horario }}</time>
-              <div><strong>{{ item.cliente }}</strong><span>{{ item.servico }}</span></div>
+              <div>
+                <strong>{{ item.cliente }}</strong
+                ><span>{{ item.servico }}</span>
+              </div>
               <span class="agenda-status">Confirmado</span>
             </article>
           }

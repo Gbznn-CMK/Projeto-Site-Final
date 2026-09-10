@@ -1,0 +1,67 @@
+<div class="provider-agenda-app">
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <div class="logo-mark"><img src="/img/Logo-branca.png" alt="NaHora Serv" class="logo-img"></div>
+      <span class="brand-name">NaHora Serv</span>
+    </div>
+    <nav class="sidebar-nav" aria-label="Menu do prestador">
+      <div class="nav-group">
+        <div class="nav-label">PRESTADOR</div>
+        <a class="nav-item" routerLink="/home-prestador"><img class="nav-icon" src="/img/painel.png" alt=""><span class="label">Painel</span></a>
+        <a class="nav-item" routerLink="/agenda-prestador"><img class="nav-icon" src="/img/dias-do-calendario.png" alt=""><span class="label">Agenda</span></a>
+        <a class="nav-item active" routerLink="/servicos-prestador" aria-current="page"><img class="nav-icon" src="/img/servicos.png" alt=""><span class="label">Serviços</span></a>
+        <a class="nav-item" routerLink="/disponibilidade-prestador"><img class="nav-icon" src="/img/despertador.png" alt=""><span class="label">Disponibilidade</span></a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">SUPORTE</div>
+        <span class="nav-item nav-item-disabled" aria-disabled="true"><img class="nav-icon" src="/img/SAC.png" alt=""><span class="label">SAC</span></span>
+        <span class="nav-item nav-item-disabled" aria-disabled="true"><img class="nav-icon" src="/img/configuracoes.png" alt=""><span class="label">Configurações</span></span>
+      </div>
+    </nav>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-profile">
+      <div class="profile-row"><div class="avatar">{{ userInitial }}</div><div class="profile-info"><strong>{{ userName }}</strong><small>Prestador</small></div></div>
+      <button type="button" class="logout-btn-full" title="Sair" (click)="logout()"><img src="/img/saida.png" alt="" class="logout-icon"><span class="label">Sair</span></button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar"><div class="search-shell"><img src="/img/procurar.png" alt="" class="search-icon"><span class="page-search-label">Serviços oferecidos</span></div><div class="topbar-spacer"></div></header>
+    <div class="content">
+      <section class="page-heading">
+        <div><span class="eyebrow">SERVIÇOS DO PRESTADOR</span><h1>Meus serviços</h1><p>Cadastre os serviços que seus clientes podem agendar.</p></div>
+        <a class="primary-btn" routerLink="/home-prestador">Voltar ao painel</a>
+      </section>
+
+      @if (savedMessage()) { <div class="success-message" role="status">{{ savedMessage() }}</div> }
+
+      <section class="service-layout">
+        <form class="form-card" [formGroup]="serviceForm" (ngSubmit)="saveService()">
+          <div class="card-heading"><div><h2>{{ editingId() === null ? 'Criar serviço' : 'Editar serviço' }}</h2><p>Preencha as informações abaixo.</p></div></div>
+          <label>Nome do serviço<input type="text" formControlName="nome" placeholder="Ex.: Corte masculino"></label>
+          @if (serviceForm.controls.nome.touched && serviceForm.controls.nome.invalid) { <small class="field-error">Informe um nome com pelo menos 3 caracteres.</small> }
+          <div class="form-grid">
+            <label>Categoria<select formControlName="categoria"><option>Barbearia</option><option>Beleza</option><option>Bem-estar</option><option>Casa e manutenção</option></select></label>
+            <label>Duração (minutos)<input type="number" min="5" step="5" formControlName="duracao"></label>
+          </div>
+          <label>Preço<input type="number" min="0" step="0.01" formControlName="valor"></label>
+          <label>Descrição<textarea rows="4" maxlength="180" formControlName="descricao" placeholder="Explique o que está incluso no serviço"></textarea></label>
+          <div class="form-actions"><button type="submit" class="primary-btn">{{ editingId() === null ? 'Criar serviço' : 'Salvar alterações' }}</button>@if (editingId() !== null) {<button type="button" class="secondary-btn" (click)="cancelEdit()">Cancelar</button>}</div>
+        </form>
+
+        <section class="list-card" aria-labelledby="services-title">
+          <div class="card-heading"><div><h2 id="services-title">Serviços cadastrados</h2><p>{{ servicos().length }} serviço(s) disponíveis</p></div></div>
+          <div class="service-list">
+            @for (service of servicos(); track service.id) {
+              <article class="service-row">
+                <div class="service-icon"><img src="/img/servicos.png" alt=""></div>
+                <div class="service-info"><strong>{{ service.nome }}</strong><span>{{ service.categoria }} · {{ service.duracao }} min</span><small>{{ service.descricao }}</small></div>
+                <div class="service-side"><strong>{{ service.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</strong><span class="service-status" [class.inactive]="!service.ativo">{{ service.ativo ? 'Ativo' : 'Inativo' }}</span><div><button type="button" class="text-btn" (click)="editService(service)">Editar</button><button type="button" class="text-btn danger" (click)="removeService(service.id)">Excluir</button></div></div>
+              </article>
+            } @empty { <div class="empty-state"><strong>Nenhum serviço cadastrado</strong><span>Crie seu primeiro serviço ao lado.</span></div> }
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+</div>

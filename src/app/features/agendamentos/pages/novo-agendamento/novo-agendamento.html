@@ -2,12 +2,35 @@
   <div class="conteudo-principal">
     <button class="btn-voltar" type="button" (click)="voltarParaHome()">← Voltar para a home</button>
 
+    <header class="cabecalho-agendamento">
+      <span class="etiqueta-agendamento">RESERVE SEU HORÁRIO</span>
+      <h1>Agende seu atendimento</h1>
+      <p>Escolha o serviço, o melhor horário e confirme em poucos passos.</p>
+    </header>
+
+    <nav class="progresso-agendamento" aria-label="Progresso do agendamento">
+      <div class="progresso-etapa" [class.ativa]="passoAtual === 2" [class.concluida]="passoAtual > 2">
+        <span>1</span>
+        <strong>Serviço</strong>
+      </div>
+      <div class="progresso-linha" [class.preenchida]="passoAtual > 2"></div>
+      <div class="progresso-etapa" [class.ativa]="passoAtual === 3" [class.concluida]="passoAtual > 3">
+        <span>2</span>
+        <strong>Data e hora</strong>
+      </div>
+      <div class="progresso-linha" [class.preenchida]="passoAtual > 3"></div>
+      <div class="progresso-etapa" [class.ativa]="passoAtual === 4" [class.concluida]="passoAtual > 4">
+        <span>3</span>
+        <strong>Confirmação</strong>
+      </div>
+    </nav>
+
     <!-- ETAPA 2: SERVIÇOS -->
     @if (passoAtual === 2) {
       <div class="secao-centralizada">
 
         <p class="contexto-agendamento">{{ estabelecimento }} · {{ categoriaEstabelecimento }}</p>
-        <h2 class="titulo-secao">Selecione o Serviço</h2>
+        <h2 class="titulo-secao">Selecione o serviço</h2>
 
         <div class="grid-servicos">
           @for (s of servicosDisponiveis; track s.id) {
@@ -42,11 +65,11 @@
           ← Voltar
         </button>
 
-        <h2 class="titulo-secao">Data e Horário</h2>
+        <h2 class="titulo-secao">Escolha data e horário</h2>
 
         <div class="box-formulario">
 
-          <label for="data">Selecione a Data:</label>
+          <label for="data">Data do atendimento</label>
 
           <input
             type="date"
@@ -57,7 +80,7 @@
             aria-describedby="erro-data-hora"
           />
 
-          <label for="horario">Selecione o Horário:</label>
+          <label for="horario">Horário disponível</label>
 
           <input
             type="time"
@@ -94,9 +117,7 @@
           ← Voltar
         </button>
 
-        <h2 class="titulo-secao">
-          Confirmação do Agendamento
-        </h2>
+        <h2 class="titulo-secao">Revise seu agendamento</h2>
 
         <div class="box-resumo">
 
@@ -129,7 +150,7 @@
             type="button"
             class="btn-confirmar"
             (click)="finalizarAgendamento()">
-            Confirmar Agendamento
+            Confirmar agendamento
           </button>
 
         </div>

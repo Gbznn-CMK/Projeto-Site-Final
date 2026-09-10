@@ -7,16 +7,22 @@ import { ListaAgendamentosComponent } from './features/agendamentos/pages/lista-
 import { NovoAgendamentoComponent } from './features/agendamentos/pages/novo-agendamento/novo-agendamento';
 import { PainelFavoritosComponent } from './components/painel-favoritos/painel-favoritos';
 import { authGuard } from './core/guards/auth.guard';
+import { AgendaPrestadorComponent } from './features/agenda-prestador/agenda-prestador';
+import { ServicosPrestadorComponent } from './features/servicos-prestador/servicos-prestador';
+import { DisponibilidadePrestadorComponent } from './features/disponibilidade-prestador/disponibilidade-prestador';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home-cliente', pathMatch: 'full' },
-  { path: 'home-cliente', component: HomeCliente, canActivate: [authGuard] },
-  { path: 'home-prestador', component: HomePrestador, canActivate: [authGuard] },
+  { path: 'home-cliente', component: HomeCliente, canActivate: [authGuard], data: { roles: ['cliente'] } },
+  { path: 'home-prestador', component: HomePrestador, canActivate: [authGuard], data: { roles: ['prestador'] } },
   { path: 'login', component: LoginComponent },
   { path: 'cadastro', component: CadastroComponent },
-  { path: 'agendamentos', component: ListaAgendamentosComponent, canActivate: [authGuard] },
-  { path: 'agendamentos/novo', component: NovoAgendamentoComponent, canActivate: [authGuard] },
-  { path: 'favoritos', component: PainelFavoritosComponent, canActivate: [authGuard] },
+  { path: 'agendamentos', component: ListaAgendamentosComponent, canActivate: [authGuard], data: { roles: ['cliente'] } },
+  { path: 'agendamentos/novo', component: NovoAgendamentoComponent, canActivate: [authGuard], data: { roles: ['cliente'] } },
+  { path: 'favoritos', component: PainelFavoritosComponent, canActivate: [authGuard], data: { roles: ['cliente'] } },
+  { path: 'agenda-prestador', component: AgendaPrestadorComponent, canActivate: [authGuard], data: { roles: ['prestador'] } },
+  { path: 'servicos-prestador', component: ServicosPrestadorComponent, canActivate: [authGuard], data: { roles: ['prestador'] } },
+  { path: 'disponibilidade-prestador', component: DisponibilidadePrestadorComponent, canActivate: [authGuard], data: { roles: ['prestador'] } },
   // Mantém compatibilidade com links antigos enquanto o fluxo é migrado.
   { path: 'lista-agendamentos', redirectTo: 'agendamentos', pathMatch: 'full' },
   { path: 'novo-agendamento', redirectTo: 'agendamentos/novo', pathMatch: 'full' },

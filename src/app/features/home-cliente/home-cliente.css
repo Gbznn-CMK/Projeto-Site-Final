@@ -449,8 +449,21 @@
   color:#101a33;
 }
 .schedule-btn{
-  background:#2749a0;
+  min-height:35px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:0 12px;
+  background:linear-gradient(135deg, var(--navy) 0%, var(--navy-tint) 100%);
   color:#fff;
+  text-decoration:none;
+  box-shadow:0 5px 12px rgba(36,66,143,.18);
+}
+.schedule-btn-arrow{
+  font-size:17px;
+  line-height:1;
+  transition:transform .15s ease;
 }
 .provider-actions button:hover{
   transform:translateY(-1px);
@@ -458,6 +471,17 @@
 }
 .profile-btn:hover{ background:#d8dfeb; }
 .schedule-btn:hover{ background:#1f3f91; }
+.schedule-btn:hover{
+  background:linear-gradient(135deg, var(--navy-900) 0%, var(--navy) 100%);
+  box-shadow:0 7px 16px rgba(36,66,143,.28);
+}
+.schedule-btn:hover .schedule-btn-arrow{ transform:translateX(3px); }
+.schedule-btn:focus-visible,
+.profile-btn:focus-visible,
+.btn-voltar:focus-visible{
+  outline:3px solid rgba(31,181,116,.35);
+  outline-offset:2px;
+}
 .profile-modal-backdrop{
   position:fixed; inset:0; z-index:100; display:grid; place-items:center;
   padding:20px; background:rgba(8,18,36,.55);
@@ -476,7 +500,7 @@
 .profile-modal-content p{ color:var(--text-muted); font-size:14px; margin:7px 0; }
 .profile-modal-content h3{ margin:20px 0 8px; font-size:15px; }
 .profile-modal-content ul{ margin:0 0 20px; padding-left:20px; color:var(--text-muted); font-size:14px; }
-.profile-schedule-btn{ display:inline-flex; padding:11px 16px; text-decoration:none; }
+.profile-schedule-btn{ display:inline-flex; min-height:42px; padding:11px 16px; }
 
 @media (max-width: 860px){
   .sidebar{ width: var(--sidebar-w-collapsed); }
