@@ -62,7 +62,7 @@ export class CadastroComponent {
 
     this.registerMessage = 'Cadastro realizado com sucesso!';
     void this.router.navigate([
-      user.tipoUsuario === 'prestador' ? '/home-prestador' : '/home-cliente',
+      user.tipoUsuario === 'prestador' ? '/cadastro-loja' : '/home-cliente',
     ]);
   }
 

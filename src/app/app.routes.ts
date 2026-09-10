@@ -10,6 +10,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { AgendaPrestadorComponent } from './features/agenda-prestador/agenda-prestador';
 import { ServicosPrestadorComponent } from './features/servicos-prestador/servicos-prestador';
 import { DisponibilidadePrestadorComponent } from './features/disponibilidade-prestador/disponibilidade-prestador';
+import { CadastroLojaComponent } from './features/cadastro-loja/cadastro-loja';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home-cliente', pathMatch: 'full' },
@@ -17,6 +18,7 @@ export const routes: Routes = [
   { path: 'home-prestador', component: HomePrestador, canActivate: [authGuard], data: { roles: ['prestador'] } },
   { path: 'login', component: LoginComponent },
   { path: 'cadastro', component: CadastroComponent },
+  { path: 'cadastro-loja', component: CadastroLojaComponent, canActivate: [authGuard], data: { roles: ['prestador'] } },
   { path: 'agendamentos', component: ListaAgendamentosComponent, canActivate: [authGuard], data: { roles: ['cliente'] } },
   { path: 'agendamentos/novo', component: NovoAgendamentoComponent, canActivate: [authGuard], data: { roles: ['cliente'] } },
   { path: 'favoritos', component: PainelFavoritosComponent, canActivate: [authGuard], data: { roles: ['cliente'] } },

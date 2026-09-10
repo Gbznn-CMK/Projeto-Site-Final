@@ -126,6 +126,8 @@
 }
 .contexto-agendamento{
   display: inline-flex;
+  width: max-content;
+  max-width: 100%;
   margin: 0 auto 8px;
   padding: 7px 12px;
   border-radius: 999px;
@@ -470,6 +472,35 @@
 
   .titulo-secao {
     font-size: 25px;
+  }
+
+  .cabecalho-agendamento {
+    margin-top: 24px;
+  }
+
+  .cabecalho-agendamento h1 {
+    font-size: 28px;
+  }
+
+  .progresso-agendamento {
+    gap: 6px;
+    margin-bottom: 30px;
+  }
+
+  .progresso-etapa {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .progresso-etapa span {
+    width: 28px;
+    height: 28px;
+  }
+
+  .progresso-linha {
+    min-width: 12px;
   }
 
   .card-servico {

@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth';
 import { FavoritosService } from '../../services/favoritos';
+import { LojaService } from '../../core/services/loja';
 
 @Component({
   selector: 'app-home-cliente',
@@ -19,6 +20,8 @@ export class HomeCliente implements OnInit {
     private readonly favoritosService: FavoritosService,
   ) {}
 
+  private readonly lojaService = inject(LojaService);
+
   collapsed = false;
   mobileExpanded = false;
   profileMenuOpen = false;
@@ -32,6 +35,18 @@ export class HomeCliente implements OnInit {
   notificationsOpen = false;
 
   ngOnInit(): void {
+    for (const loja of this.lojaService.listar()) {
+      this.providers.push({
+        name: loja.nome,
+        id: loja.id,
+        image: loja.imagemUrl,
+        category: loja.categoria,
+        address: loja.endereco,
+        hours: loja.horario,
+        rating: 'Novo',
+        stars: '☆☆☆☆☆',
+      });
+    }
     this.favoritosService.listarIds().subscribe((ids) => {
       this.favorites = new Set(
         this.providers
@@ -110,7 +125,7 @@ export class HomeCliente implements OnInit {
 
     if (this.selectedSort === 'rating') {
       results = [...results].sort((a, b) =>
-        parseFloat(b.rating) - parseFloat(a.rating),
+        (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0),
       );
     } else if (this.selectedSort === 'name') {
       results = [...results].sort((a, b) =>

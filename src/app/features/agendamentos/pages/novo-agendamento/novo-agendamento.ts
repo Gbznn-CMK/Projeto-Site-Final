@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Optional } from '@angular/core';
+import { Component, inject, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AgendamentoService } from '../../../../core/services/agendamento';
 import { Servico } from '../../../../core/models/agendamento';
+import { LojaService } from '../../../../core/services/loja';
 
 @Component({
   selector: 'app-novo-agendamento',
@@ -50,12 +51,32 @@ export class NovoAgendamentoComponent implements OnInit {
     @Optional() private route: ActivatedRoute | null,
   ) {}
 
+  private readonly lojaService = inject(LojaService);
+
   ngOnInit(): void {
     const prestadorId = Number(this.route?.snapshot.queryParamMap.get('prestador') ?? 1);
     const prestador = this.obterPrestador(prestadorId);
     this.estabelecimento = prestador.nome;
     this.categoriaEstabelecimento = prestador.categoria;
     this.servicosDisponiveis = this.servicosPorCategoria[prestador.categoria] ?? this.servicosPorCategoria['Barbearia'];
+
+    const loja = this.lojaService.obterPorId(prestadorId);
+    if (loja) {
+      const servicos = this.lojaService.listarServicos(loja.id);
+      this.servicosDisponiveis = servicos.length
+        ? servicos.map((servico) => ({
+          id: servico.id,
+          nome: servico.nome,
+          duracao: `${servico.duracao} min`,
+          preco: servico.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
+        }))
+        : [{
+          id: loja.id,
+          nome: 'Atendimento personalizado',
+          duracao: '60 min',
+          preco: 'A combinar',
+        }];
+    }
   }
 
   get dataMinima(): string {
@@ -127,6 +148,9 @@ export class NovoAgendamentoComponent implements OnInit {
       3: { nome: 'Nails & More', categoria: 'Manicure' },
       4: { nome: 'Studio Fit', categoria: 'Personal Trainer' },
     };
-    return prestadores[id] ?? prestadores[1];
+    const loja = this.lojaService.obterPorId(id);
+    return loja
+      ? { nome: loja.nome, categoria: loja.categoria }
+      : prestadores[id] ?? prestadores[1];
   }
 }
