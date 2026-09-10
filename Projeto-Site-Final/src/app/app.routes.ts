@@ -7,12 +7,12 @@ export const routes: Routes = [
             import ('./Features/buscar/buscar') .then((m)=>m.Buscar)
     },
      {
-        path:'buscar',
+        path:'Buscar',
         loadComponent:() =>
-            import ('./Features/buscar/buscar').then((m)=>m.Buscar)
+            import ('./Features/buscar/buscar') .then((m)=>m.Buscar)
     },
     {
-        path:'perfil',
+        path:'Perfil',
         loadComponent :() =>
         import ('./Features/perfil-user/perfil-user').then((m)=>m.perfilUser)
     }

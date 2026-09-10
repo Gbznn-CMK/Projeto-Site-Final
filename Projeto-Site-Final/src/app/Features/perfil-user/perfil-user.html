@@ -1,46 +1,108 @@
-<div class="app">
-
-  <app-sidebar></app-sidebar>
-  <!-- Formulario -->
-<div class="main-content">
-  <aside class="sidebar" [class.collapsed]="collapsed" [class.expanded-mobile]="mobileExpanded">
-
-  </aside>
-    <div class="text-topo">
-      <img class="img-avatar" src="/imagens/avatar.jpg" alt="Foto do usuário" />
-      <h1 class="txt-princi">Olá, Bem-vinda</h1>
+<div class="text-topo">
+  <img class="img-avatar" src="/imagens/avatar.jpg" />
+  <h1 class="txt-princi">Olá</h1>
+</div>
+ <aside class="sidebar" [class.collapsed]="collapsed" [class.expanded-mobile]="mobileExpanded">
+    <div class="sidebar-head">
+      <div class="logo-mark">
+      <img src="/img/Logo-branca.png" alt="NaHora Serv" class="logo-img">
+      </div>
+      <span class="brand-name">NaHora Serv</span>
+      <button
+        class="collapse-btn"
+        title="Recolher/expandir menu"
+        (click)="toggleSidebar()">
+        <img src="/img/seta-pequena-direita.png" alt="" aria-hidden="true">
+      </button>
+    </div>
+<div class="nav-group">
+      <div class="nav-label">CLIENTE</div>
+      <a class="nav-item active" routerLink="/home-cliente" aria-current="page">
+        <img class="nav-icon" src="/img/botao-home.png" alt="">
+        <span class="label">Início</span>
+      </a>
+      <a class="nav-item" routerLink="/home-cliente" fragment="busca-prestadores">
+        <img class="nav-icon" src="/img/buscar.png" alt="">
+        <span class="label">Buscar</span>
+      </a>
+      <a class="nav-item" routerLink="/agendamentos">
+        <img class="nav-icon" src="/img/dias-do-calendario.png" alt="">
+        <span class="label">Agendamentos</span>
+      </a>
+      <button type="button" class="nav-item" (click)="onlyFavorites = true">
+        <img class="nav-icon" src="/img/estrela-favotios.png" alt="">
+        <span class="label">Favoritos</span>
+      </button>
     </div>
 
-    <section class="card-info">
-      <div class="quadrado">
-        <img class="img-fundo" src="/imagens/Fundo.png" alt="" />
+    <div class="nav-group">
+      <div class="nav-label">SUPORTE</div>
+      <span class="nav-item nav-item-disabled" aria-disabled="true" title="Suporte em breve">
+        <img class="nav-icon" src="/img/SAC.png" alt="">
+        <span class="label">SAC</span>
+      </span>
+      <span class="nav-item nav-item-disabled" aria-disabled="true" title="Configurações em breve">
+        <img class="nav-icon" src="/img/configuracoes.png" alt="">
+        <span class="label">Configurações</span>
+      </span>
+    </div>
 
-        <form class="form-info">
-          <fieldset class="field-icone">
-            <span class="icone">👤</span>
-            <input type="text" name="nome" placeholder="Name" />
-          </fieldset>
+    <div class="sidebar-spacer"></div>
 
-          <fieldset class="field-icone">
-            <input type="text" name="sobrenome" placeholder="Sobrenome" />
-          </fieldset>
-
-          <fieldset class="field-icone">
-            <span class="icone">✉️</span>
-            <input type="email" name="email" placeholder="Email" />
-          </fieldset>
-
-          <fieldset class="field-icone">
-            <span class="icone">📱</span>
-            <input type="tel" name="telefone" placeholder="Telefone" />
-          </fieldset>
-
-          <fieldset class="field-icone full-width">
-            <span class="icone">🪪</span>
-            <input type="text" name="cpf" placeholder="CPF" />
-          </fieldset>
-        </form>
+    <div class="sidebar-profile">
+      <div class="profile-row">
+        <div class="avatar">N</div>
+        <div class="profile-info">
+          <strong>Nome</strong>
+          <small>Cliente</small>
+        </div>
+        <button
+          class="profile-menu-btn"
+          title="Configurações do perfil"
+          (click)="toggleProfileMenu()">
+          <img src="/img/menu-pontos-vertical.png" alt="">
+        </button>
       </div>
-    </section>
-</div>
-</div>
+
+      <button class="logout-btn-full" title="Sair" (click)="logout()">
+        <img src="/img/saida.png" alt="" class="logout-icon">
+        <span class="label">Sair</span>
+      </button>
+    </div>
+  </aside>
+
+<section class="card-info">
+  <form>
+    <div class="quadrado">
+      <img class="img-fundo" src="imagens/Fundo.png" />
+      <div class="form-info">
+        <fieldset class="field-icone">
+          <span class="icone"></span>
+          <input type="text" name="nome" placeholder="Name" />
+        </fieldset>
+        <fieldset>
+          <input type="text" placeholder="Sobrenome" />
+        </fieldset>
+      </div>
+      <div class="form-info">
+        <fieldset class="field-icone">
+          <span class="icone"></span>
+          <input type="email" name="Email" placeholder="Email" />
+        </fieldset>
+        <fieldset class="field-icone">
+          <span class="icone"></span>
+          <input type="tel" placeholder="Telefone" />
+        </fieldset>
+        
+      </div>
+      <div class="form-info">
+        <fieldset class="field-icone">
+          <span class="icone"></span>
+          <input type="text" name="CPF" placeholder="CPF" />
+        </fieldset>
+        <fieldset></fieldset>
+        <fieldset></fieldset>
+      </div>
+    </div>
+  </form>
+</section>
