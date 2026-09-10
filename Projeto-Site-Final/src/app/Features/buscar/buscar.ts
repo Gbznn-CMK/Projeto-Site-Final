@@ -1,21 +1,28 @@
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { Component, HostListener } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { SidebarComponent } from '../../shared/sidebar/sidebar';
+
+interface Provider {
+  name: string;
+  image: string;
+  category: string;
+  address: string;
+  hours: string;
+  rating: string;
+  stars: string;
+  isAvailable: boolean;
+}
 
 @Component({
-  selector: 'app-Buscar',
+  selector: 'app-buscar',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, SidebarComponent],
   templateUrl: './buscar.html',
   styleUrl: './buscar.css',
 })
-export class perfilUser {
-  constructor(private readonly router: Router) {}
-
-  collapsed = false;
-  mobileExpanded = false;
-  profileMenuOpen = false;
+export class Buscar {
   searchTerm = '';
   filterMenuOpen = false;
   selectedCategory = '';
@@ -23,68 +30,78 @@ export class perfilUser {
   onlyFavorites = false;
   favorites = new Set<string>();
 
-  readonly providers = [
+  readonly categories = [
+    'Barbearia',
+    'Salão de Beleza',
+    'Manicure',
+    'Personal Trainer',
+    'Pet Shop',
+  ];
+
+  readonly providers: Provider[] = [
     {
-      name: 'Barbearia Central',
+      name: 'Barbearia Gemeos',
       image: '/img/barbearia.webp',
       category: 'Barbearia',
       address: 'Rua Belterra 291, Bangu, RJ',
-      hours: '09:00–18:00',
+      hours: '09:00 às 18:00',
       rating: '4.5/5',
       stars: '★★★★☆',
+      isAvailable: true,
     },
     {
-      name: 'Salão da Maria',
-      image: '/img/salao-maria.png',
-      category: 'Salão de Beleza',
-      address: 'Av. Paulista 1000, São Paulo, SP',
-      hours: '09:00–19:00',
-      rating: '4.5/5',
-      stars: '★★★★☆',
-    },
-    {
-      name: 'Nails & More',
+      name: 'Manicure',
       image: '/img/manicure.png',
       category: 'Manicure',
-      address: 'Rua das Flores 123, Rio de Janeiro, RJ',
-      hours: '10:00–18:00',
-      rating: '4.7/5',
-      stars: '★★★★★',
+      address: 'Top Shopping Nova Iguaçu',
+      hours: '07:00 às 15:00',
+      rating: '4.2/5',
+      stars: '★★★★☆',
+      isAvailable: false,
     },
     {
-      name: 'Studio Fit',
-      image: '/img/studio-fit.png',
-      category: 'Personal Trainer',
-      address: 'Rua Ipiranga 55, Niterói, RJ',
-      hours: '06:00–21:00',
+      name: 'Pet Shop Americano',
+      image: '/img/pet-shop.png',
+      category: 'Pet Shop',
+      address: 'Rua Camara, Vila Kennedy, RJ',
+      hours: '10:00 às 19:00',
       rating: '4.6/5',
-      stars: '★★★★☆',
+      stars: '★★★★★',
+      isAvailable: true,
     },
+    // ... resto dos prestadores
   ];
 
-  get filteredProviders() {
+  get filteredProviders(): Provider[] {
     const term = this.searchTerm.trim().toLowerCase();
 
     let results = this.providers.filter((provider) => {
-      const matchesSearch = !term ||
+      const matchesSearch =
+        !term ||
         `${provider.name} ${provider.category} ${provider.address}`
           .toLowerCase()
           .includes(term);
-      const matchesCategory = !this.selectedCategory ||
-        provider.category === this.selectedCategory;
-      const matchesFavorites = !this.onlyFavorites ||
-        this.favorites.has(provider.name);
+
+      const matchesCategory =
+        !this.selectedCategory || provider.category === this.selectedCategory;
+
+      const matchesFavorites =
+        !this.onlyFavorites || this.favorites.has(provider.name);
 
       return matchesSearch && matchesCategory && matchesFavorites;
     });
 
     if (this.selectedSort === 'rating') {
-      results = [...results].sort((a, b) =>
-        parseFloat(b.rating) - parseFloat(a.rating),
+      results = [...results].sort(
+        (a, b) => parseFloat(b.rating) - parseFloat(a.rating)
       );
     } else if (this.selectedSort === 'name') {
       results = [...results].sort((a, b) =>
-        a.name.localeCompare(b.name, 'pt-BR'),
+        a.name.localeCompare(b.name, 'pt-BR')
+      );
+    } else if (this.selectedSort === 'available') {
+      results = [...results].sort(
+        (a, b) => Number(b.isAvailable) - Number(a.isAvailable)
       );
     }
 
@@ -95,18 +112,15 @@ export class perfilUser {
     this.filterMenuOpen = !this.filterMenuOpen;
   }
 
+  selectCategory(category: string): void {
+    this.selectedCategory = this.selectedCategory === category ? '' : category;
+  }
+
   clearFilters(): void {
     this.selectedCategory = '';
     this.selectedSort = 'relevance';
     this.onlyFavorites = false;
-  }
-
-  toggleSidebar(): void {
-    if (this.isMobile()) {
-      this.mobileExpanded = !this.mobileExpanded;
-    } else {
-      this.collapsed = !this.collapsed;
-    }
+    this.searchTerm = '';
   }
 
   toggleFavorite(providerName: string): void {
@@ -121,29 +135,11 @@ export class perfilUser {
     return this.favorites.has(providerName);
   }
 
-  toggleProfileMenu(): void {
-    this.profileMenuOpen = !this.profileMenuOpen;
-  }
-
-  logout(): void {
-    this.profileMenuOpen = false;
-    void this.router.navigate(['/login']);
-  }
-
-  closeMobileMenu(): void {
-    if (this.isMobile()) {
-      this.mobileExpanded = false;
-    }
-  }
-
-  private isMobile(): boolean {
-    return typeof window !== 'undefined' && window.innerWidth <= 860;
-  }
-
-  @HostListener('window:resize')
-  onResize(): void {
-    if (!this.isMobile()) {
-      this.mobileExpanded = false;
+  @HostListener('document:click', ['$event'])
+  closeFilterOnOutsideClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (this.filterMenuOpen && !target.closest('.filter-wrapper')) {
+      this.filterMenuOpen = false;
     }
   }
 }

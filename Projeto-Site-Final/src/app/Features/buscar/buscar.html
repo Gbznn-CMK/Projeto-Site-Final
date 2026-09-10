@@ -1,0 +1,99 @@
+<div class="app">
+  <app-sidebar></app-sidebar>
+
+  <div class="main-content">
+    <!-- Barra de topo -->
+    <div class="top-bar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar..." [(ngModel)]="searchTerm" />
+      </div>
+
+      <div class="filter-wrapper">
+        <button class="filter-btn" (click)="toggleFilterMenu()">
+          <img src="/img/filtro.png" alt="Filtrar" />
+        </button>
+
+        <div class="filter-menu" *ngIf="filterMenuOpen">
+          <p class="filter-label">Categoria</p>
+          <button
+            *ngFor="let cat of categories"
+            class="filter-option"
+            [class.active]="selectedCategory === cat"
+            (click)="selectCategory(cat)"
+          >
+            {{ cat }}
+          </button>
+
+          <p class="filter-label">Ordenar por</p>
+          <select [(ngModel)]="selectedSort">
+            <option value="relevance">Relevância</option>
+            <option value="rating">Melhor avaliação</option>
+            <option value="name">Nome (A-Z)</option>
+            <option value="available">Disponibilidade</option>
+          </select>
+
+          <label class="filter-checkbox">
+            <input type="checkbox" [(ngModel)]="onlyFavorites" />
+            Somente favoritos
+          </label>
+
+          <button class="clear-filters-btn" (click)="clearFilters()">
+            Limpar filtros
+          </button>
+        </div>
+      </div>
+
+      <button class="notification-btn">
+        <img src="/img/sino.png" alt="Notificações" />
+      </button>
+
+      <button class="profile-btn" routerLink="/perfil">
+        <img src="/img/avatar-icon.png" alt="Perfil" />
+      </button>
+    </div>
+
+    <!-- Grid de cards -->
+    <div class="cards-grid">
+      <div class="card" *ngFor="let provider of filteredProviders">
+        <img class="card-img" [src]="provider.image" [alt]="provider.name" />
+
+        <div class="card-body">
+          <h3 class="card-title">{{ provider.name }}</h3>
+
+          <p class="card-info-line">
+            <span class="icon">📍</span> {{ provider.address }}
+          </p>
+
+          <p class="card-info-line">
+            <span class="icon">🕐</span> Funcionamento {{ provider.hours }}
+          </p>
+
+          <p class="card-info-line">
+            <span class="icon">📅</span>
+            Agendamento {{ provider.isAvailable ? 'Disponível' : 'Indisponível' }}
+          </p>
+
+          <div class="card-footer">
+            <button
+              class="btn-status"
+              [class.available]="provider.isAvailable"
+              [class.unavailable]="!provider.isAvailable"
+            >
+              {{ provider.isAvailable ? 'Adicionar' : 'Indisponível' }}
+              <span class="btn-icon">{{ provider.isAvailable ? '+' : '−' }}</span>
+            </button>
+
+            <button
+              class="favorite-btn"
+              (click)="toggleFavorite(provider.name)"
+              [class.active]="isFavorite(provider.name)"
+            >
+              ⭐
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

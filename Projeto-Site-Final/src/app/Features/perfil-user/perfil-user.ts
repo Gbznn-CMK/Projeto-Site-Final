@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Component, HostListener } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { SidebarComponent } from '../../shared/sidebar/sidebar';
 
 @Component({
   selector: 'app-perfil-user',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink,SidebarComponent],
   templateUrl: './perfil-user.html',
   styleUrl: './perfil-user.css',
 })
