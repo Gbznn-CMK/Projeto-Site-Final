@@ -295,9 +295,9 @@ small {
   justify-content: center;
   gap: 8px;
   padding: 22px;
-  border: 2px solid #d9dfeb;
+  border: 2px solid var(--color-neutral-300);
   border-radius: 12px;
-  color: #263550;
+  color: var(--color-neutral-800);
   background: rgba(255, 255, 255, 0.8);
   text-align: left;
   cursor: pointer;
@@ -309,14 +309,19 @@ small {
 }
 
 .user-type-option:hover {
-  border-color: #8aa9e8;
+  border-color: var(--color-primary-light);
   transform: translateY(-2px);
 }
 
+.user-type-option:focus-visible {
+  outline: 3px solid rgba(63, 115, 217, 0.28);
+  outline-offset: 2px;
+}
+
 .user-type-option.selected {
-  border-color: #24428f;
-  background: #edf3ff;
-  box-shadow: 0 0 0 3px #dbeafe;
+  border-color: var(--color-primary);
+  background: #eef4ff;
+  box-shadow: 0 0 0 3px #d7e5ff;
 }
 
 .user-type-icon {
@@ -324,12 +329,12 @@ small {
 }
 
 .user-type-option strong {
-  color: #172554;
+  color: var(--color-primary-dark);
   font-size: 1.1rem;
 }
 
 .user-type-option > span:last-child {
-  color: #68738a;
+  color: var(--color-neutral-600);
   font-size: 0.95rem;
   line-height: 1.4;
 }
