@@ -1,31 +1,89 @@
 import { Routes } from '@angular/router';
-import { HomeCliente } from './features/home-cliente/home-cliente';
-import { HomePrestador } from './features/home-prestador/home-prestador';
-import { LoginComponent } from './features/login/login';
-import { CadastroComponent } from './features/cadastro/cadastro';
-import { ListaAgendamentosComponent } from './features/agendamentos/pages/lista-agendamentos/lista-agendamentos';
-import { NovoAgendamentoComponent } from './features/agendamentos/pages/novo-agendamento/novo-agendamento';
-import { PainelFavoritosComponent } from './components/painel-favoritos/painel-favoritos';
 import { authGuard } from './core/guards/auth.guard';
-import { AgendaPrestadorComponent } from './features/agenda-prestador/agenda-prestador';
-import { ServicosPrestadorComponent } from './features/servicos-prestador/servicos-prestador';
-import { DisponibilidadePrestadorComponent } from './features/disponibilidade-prestador/disponibilidade-prestador';
-import { CadastroLojaComponent } from './features/cadastro-loja/cadastro-loja';
+import { roleGuard } from './core/guards/role.guard';
+import { MainLayoutComponent } from './layout/main-layout.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'home-cliente', pathMatch: 'full' },
-  { path: 'home-cliente', component: HomeCliente, canActivate: [authGuard], data: { roles: ['cliente'] } },
-  { path: 'home-prestador', component: HomePrestador, canActivate: [authGuard], data: { roles: ['prestador'] } },
-  { path: 'login', component: LoginComponent },
-  { path: 'cadastro', component: CadastroComponent },
-  { path: 'cadastro-loja', component: CadastroLojaComponent, canActivate: [authGuard], data: { roles: ['prestador'] } },
-  { path: 'agendamentos', component: ListaAgendamentosComponent, canActivate: [authGuard], data: { roles: ['cliente'] } },
-  { path: 'agendamentos/novo', component: NovoAgendamentoComponent, canActivate: [authGuard], data: { roles: ['cliente'] } },
-  { path: 'favoritos', component: PainelFavoritosComponent, canActivate: [authGuard], data: { roles: ['cliente'] } },
-  { path: 'agenda-prestador', component: AgendaPrestadorComponent, canActivate: [authGuard], data: { roles: ['prestador'] } },
-  { path: 'servicos-prestador', component: ServicosPrestadorComponent, canActivate: [authGuard], data: { roles: ['prestador'] } },
-  { path: 'disponibilidade-prestador', component: DisponibilidadePrestadorComponent, canActivate: [authGuard], data: { roles: ['prestador'] } },
-  // Mantém compatibilidade com links antigos enquanto o fluxo é migrado.
-  { path: 'lista-agendamentos', redirectTo: 'agendamentos', pathMatch: 'full' },
-  { path: 'novo-agendamento', redirectTo: 'agendamentos/novo', pathMatch: 'full' },
+  {
+    path: '',
+    redirectTo: '/inicio',
+    pathMatch: 'full'
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent)
+  },
+  {
+    path: 'cadastro',
+    loadComponent: () => import('./features/auth/cadastro/cadastro.component').then(m => m.CadastroComponent)
+  },
+  {
+    path: '',
+    component: MainLayoutComponent,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: 'inicio',
+        loadComponent: () => import('./features/client/inicio/inicio.component').then(m => m.InicioComponent)
+      },
+      {
+        path: 'prestadores',
+        loadComponent: () => import('./features/client/buscar-prestadores/buscar-prestadores.component').then(m => m.BuscarPrestadoresComponent)
+      },
+      {
+        path: 'prestador/:id',
+        loadComponent: () => import('./features/client/perfil-prestador/perfil-prestador.component').then(m => m.PerfilPrestadorComponent)
+      },
+      {
+        path: 'agendar/:prestadorId',
+        loadComponent: () => import('./features/client/agendar/agendar.component').then(m => m.AgendarComponent)
+      },
+      {
+        path: 'meus-agendamentos',
+        loadComponent: () => import('./features/client/meus-agendamentos/meus-agendamentos.component').then(m => m.MeusAgendamentosComponent)
+      },
+      {
+        path: 'favoritos',
+        loadComponent: () => import('./features/client/favoritos/favoritos.component').then(m => m.FavoritosComponent)
+      },
+      {
+        path: 'painel',
+        canActivate: [roleGuard(['prestador'])],
+        loadComponent: () => import('./features/provider/dashboard/dashboard.component').then(m => m.DashboardComponent)
+      },
+      {
+        path: 'minha-agenda',
+        canActivate: [roleGuard(['prestador'])],
+        loadComponent: () => import('./features/provider/agenda/agenda.component').then(m => m.AgendaComponent)
+      },
+      {
+        path: 'meus-servicos',
+        canActivate: [roleGuard(['prestador'])],
+        loadComponent: () => import('./features/provider/meus-servicos/meus-servicos.component').then(m => m.MeusServicosComponent)
+      },
+      {
+        path: 'cadastro-loja',
+        canActivate: [roleGuard(['prestador'])],
+        loadComponent: () => import('./features/provider/cadastro-loja/cadastro-loja.component').then(m => m.CadastroLojaComponent)
+      },
+      {
+        path: 'disponibilidade',
+        canActivate: [roleGuard(['prestador'])],
+        loadComponent: () => import('./features/provider/disponibilidade/disponibilidade.component').then(m => m.DisponibilidadeComponent)
+      },
+      {
+        path: 'sac',
+        loadComponent: () => import('./features/support/sac/sac.component').then(m => m.SacComponent)
+      },
+      {
+        path: 'configuracoes',
+        loadComponent: () => import('./features/configuracoes/configuracoes.component').then(m => m.ConfiguracoesComponent)
+      }
+    ]
+  },
+  {
+    path: '**',
+    redirectTo: '/inicio'
+  }
+
 ];
