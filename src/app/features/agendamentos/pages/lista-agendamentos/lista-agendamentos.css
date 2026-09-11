@@ -1,118 +1,246 @@
-.container-lista {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 0 20px;
-  font-family: Arial, sans-serif;
+* {
+  box-sizing: border-box;
+}
+
+.pagina {
+  min-height: 100vh;
+  background: #f5f8fc;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #172033;
+}
+
+.container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 50px 20px;
 }
 
 .cabecalho-lista {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
+  text-align: center;
+  margin-bottom: 40px;
 }
 
-.subtitulo {
-  font-size: 0.75rem;
+.etiqueta {
+  display: inline-block;
+
+  background: #e7efff;
+  color: #1f5fbf;
+
+  padding: 7px 14px;
+
+  border-radius: 20px;
+
+  font-size: 13px;
   font-weight: bold;
-  letter-spacing: 1px;
-  color: #64748b;
+
+  margin-bottom: 12px;
 }
 
-.titulo-secao {
-  color: #1E3A8A;
-  margin: 4px 0 0 0;
-  font-size: 1.8rem;
+.cabecalho-lista h1 {
+  margin: 0;
+
+  color: #172033;
+
+  font-size: 34px;
 }
 
-.btn-novo {
-  background-color: #1E3A8A;
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
+.cabecalho-lista p {
+  color: #6b7280;
 
-.btn-novo:hover {
-  background-color: #152b68;
-}
-
-.grid-agendamentos {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  margin-top: 10px;
 }
 
 .card-agendamento {
   background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
-}
 
-.card-agendamento.cancelado {
-  opacity: 0.6;
-  background: #f8fafc;
+  padding: 25px;
+
+  border-radius: 14px;
+
+  margin-bottom: 18px;
+
+  box-shadow: 0 5px 18px rgba(30, 70, 120, 0.07);
+
+  border: 1px solid #e5e7eb;
 }
 
 .topo-card {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+  align-items: flex-start;
+
+  gap: 20px;
 }
 
-.topo-card h3 {
+.topo-card h2 {
   margin: 0;
-  color: #1E3A8A;
+
+  font-size: 20px;
 }
 
-.badge-status {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-  font-size: 0.8rem;
+.topo-card p {
+  margin: 6px 0 0;
+
+  color: #6b7280;
+}
+
+.status {
+  background: #e8f0ff;
+  color: #1f5fbf;
+
+  padding: 6px 12px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
   font-weight: bold;
-  padding: 4px 10px;
-  border-radius: 12px;
 }
 
-.badge-status.status-cancelado {
-  background-color: #ffebee;
-  color: #c62828;
+.status-cancelado {
+  background: #f1f3f5;
+  color: #6b7280;
 }
 
-.detalhes p {
-  margin: 6px 0;
-  color: #475569;
-  font-size: 0.95rem;
+.detalhes {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  align-items: center;
+  gap: 20px;
+
+  margin-top: 25px;
+  padding-top: 20px;
+
+  border-top: 1px solid #e5e7eb;
+}
+
+.detalhes div {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+}
+
+.detalhes span {
+  color: #6b7280;
+
+  font-size: 13px;
+}
+
+.detalhes strong {
+  color: #172033;
+
+  font-size: 15px;
 }
 
 .btn-cancelar {
-  margin-top: 14px;
-  background: none;
-  border: 1px solid #ef4444;
-  color: #ef4444;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 0.85rem;
+  margin-top: 25px;
+
+  background: white;
+  color: #b42318;
+
+  border: 1px solid #b42318;
+
+  padding: 11px 18px;
+
+  border-radius: 8px;
+
+  font-size: 14px;
   font-weight: bold;
+
   cursor: pointer;
-  transition: all 0.2s;
+
+  transition: 0.2s;
 }
 
 .btn-cancelar:hover {
-  background-color: #ef4444;
-  color: white;
+  background: #fff5f5;
 }
 
-.box-vazio {
-  text-align: center;
-  padding: 40px;
+.cancelado {
+  opacity: 0.75;
+}
+
+.sem-agendamentos {
   background: white;
-  border-radius: 12px;
-  color: #64748b;
+
+  padding: 50px 20px;
+
+  text-align: center;
+
+  border-radius: 14px;
+
+  box-shadow: 0 5px 18px rgba(30, 70, 120, 0.07);
+}
+
+.sem-agendamentos h2 {
+  margin: 0;
+
+  font-size: 20px;
+}
+
+.sem-agendamentos p {
+  color: #6b7280;
+}
+
+@media (max-width: 650px) {
+
+  .detalhes {
+    grid-template-columns: 1fr;
+  }
+
+  .topo-card {
+    flex-direction: column;
+  }
+
+}
+.btn-voltar-inicio {
+  display: block;
+
+  width: fit-content;
+  max-width: 860px;
+
+  margin: 30px auto 0;
+
+  background: transparent;
+  color: #172033;
+
+  border: none;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.btn-voltar-inicio:hover {
+  text-decoration: underline;
+}
+.area-excluir {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.btn-excluir {
+  background: transparent;
+  color: #dc2626;
+
+  border: 1px solid #dc2626;
+  border-radius: 7px;
+
+  padding: 9px 16px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.btn-excluir:hover {
+  background: #dc2626;
+  color: white;
 }

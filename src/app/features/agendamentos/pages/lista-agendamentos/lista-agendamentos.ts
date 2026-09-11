@@ -1,9 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-// Imports com o nome exato da interface (Agendamento)
-import { AgendamentoService } from '../../../../core/services/agendamento';
-import { Agendamento } from '../../../../core/models/agendamento';
+interface Agendamento {
+  id: number;
+  loja: string;
+  servico: string;
+  data: string;
+  horario: string;
+  valor: string;
+  status: string;
+}
 
 @Component({
   selector: 'app-lista-agendamentos',
@@ -11,27 +17,62 @@ import { Agendamento } from '../../../../core/models/agendamento';
   styleUrls: ['./lista-agendamentos.css']
 })
 export class ListaAgendamentosComponent implements OnInit {
-  agendamentos: Agendamento[] = [];
+  
+  formatarData(data: string): string {
+  if (!data) {
+    return '';
+  }
 
-  constructor(
-    private agendamentoService: AgendamentoService,
-    private router: Router
-  ) {}
+  const [ano, mes, dia] = data.split('-');
+
+  return `${dia}/${mes}/${ano}`;
+}
+
+
+excluirAgendamento(id: number) {
+  this.agendamentos = this.agendamentos.filter(
+    agendamento => agendamento.id !== id
+  );
+
+  localStorage.setItem(
+    'agendamentos',
+    JSON.stringify(this.agendamentos)
+  );
+}
+
+constructor(private router: Router) {}
+
+  agendamentos: Agendamento[] = [];
 
   ngOnInit() {
     this.carregarAgendamentos();
   }
 
   carregarAgendamentos() {
-    this.agendamentos = this.agendamentoService.obterAgendamentos();
+    const dados = localStorage.getItem('agendamentos');
+
+    this.agendamentos = dados
+      ? JSON.parse(dados)
+      : [];
   }
 
-  novoAgendamento() {
-    this.router.navigate(['/agendamentos/novo']);
-  }
+  cancelarAgendamento(id: number) {
 
-  cancelar(id: number) {
-    this.agendamentoService.cancelarAgendamento(id);
-    this.carregarAgendamentos();
+    const agendamento = this.agendamentos.find(
+      item => item.id === id
+    );
+
+    if (agendamento) {
+      agendamento.status = 'Cancelado';
+
+      localStorage.setItem(
+        'agendamentos',
+        JSON.stringify(this.agendamentos)
+      );
+    }
   }
+  voltarInicio() {
+  this.router.navigate(['/']);
+}
+
 }

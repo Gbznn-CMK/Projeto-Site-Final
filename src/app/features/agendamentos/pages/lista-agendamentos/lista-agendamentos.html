@@ -1,44 +1,115 @@
-<div class="layout-app">
-  <div class="conteudo-principal">
-    
+<div class="pagina">
+ <button
+  type="button"
+  class="btn-voltar-inicio"
+  (click)="voltarInicio()">
+  ← Voltar para o início
+</button>
+
+  <div class="container">
+
     <div class="cabecalho-lista">
-      <h2>Meus Agendamentos</h2>
-      <button type="button" class="btn-novo" (click)="novoAgendamento()">
-        + Novo Agendamento
+
+      <span class="etiqueta">
+        Agendamentos
+      </span>
+
+      <h1>Meus agendamentos</h1>
+
+      <p>
+        Consulte seus horários agendados.
+      </p>
+
+    </div>
+
+
+    @if (agendamentos.length === 0) {
+
+      <div class="sem-agendamentos">
+
+        <h2>Nenhum agendamento encontrado</h2>
+
+        <p>
+          Você ainda não possui nenhum agendamento.
+        </p>
+
+      </div>
+
+    }
+
+
+    @for (agendamento of agendamentos; track agendamento.id) {
+
+      <div
+        class="card-agendamento"
+        [class.cancelado]="agendamento.status === 'Cancelado'">
+
+        <div class="topo-card">
+
+          <div>
+            <h2>{{ agendamento.loja }}</h2>
+            <p>{{ agendamento.servico }}</p>
+          </div>
+
+          <span
+            class="status"
+            [class.status-cancelado]="agendamento.status === 'Cancelado'">
+
+            {{ agendamento.status }}
+
+          </span>
+
+        </div>
+
+
+        <div class="detalhes">
+
+          <div>
+            <span>Data</span>
+            <strong>{{ formatarData(agendamento.data) }}</strong>
+          </div>
+
+          <div>
+            <span>Horário</span>
+            <strong>{{ agendamento.horario }}</strong>
+          </div>
+
+          <div>
+            <span>Valor</span>
+            <strong>{{ agendamento.valor }}</strong>
+          </div>
+          
+ @if (agendamento.status === 'Cancelado') {
+
+    <div class="area-excluir">
+      <button
+        type="button"
+        class="btn-excluir"
+        (click)="excluirAgendamento(agendamento.id)">
+        Excluir
       </button>
     </div>
 
-    @if (agendamentos.length === 0) {
-      <div class="sem-agendamentos">
-        <p>Nenhum agendamento encontrado.</p>
-      </div>
-    } @else {
-      <div class="grid-agendamentos">
-        @for (item of agendamentos; track item.id) {
-          <div class="card-agendamento" [class.cancelado]="item.status === 'Cancelado'">
-            <div class="topo-card">
-              <h3>{{ item.empresa }}</h3>
-              <span class="badge" [class.badge-cancelado]="item.status === 'Cancelado'">
-                {{ item.status }}
-              </span>
-            </div>
+  }
 
-            <div class="detalhes-card">
-              <p><strong>Serviço:</strong> {{ item.servico }}</p>
-              <p><strong>Valor:</strong> {{ item.valor }}</p>
-              <p><strong>Data:</strong> {{ item.data }}</p>
-              <p><strong>Horário:</strong> {{ item.horario }}</p>
-            </div>
+        </div>
 
-            @if (item.status === 'Confirmado') {
-              <button type="button" class="btn-cancelar" (click)="cancelar(item.id)">
-                Cancelar Agendamento
-              </button>
-            }
-          </div>
+
+        @if (agendamento.status === 'Confirmado') {
+
+          <button
+            class="btn-cancelar"
+            type="button"
+            (click)="cancelarAgendamento(agendamento.id)">
+            Cancelar agendamento
+          </button>
+
         }
+
       </div>
+
     }
 
   </div>
+
 </div>
