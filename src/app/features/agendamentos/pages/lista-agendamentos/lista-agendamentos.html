@@ -1,0 +1,81 @@
+<div class="provider-app appointments-app">
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <div class="logo-mark"><img src="/img/Logo-branca.png" alt="NaHora Serv" class="logo-img"></div>
+      <span class="brand-name">NaHora Serv</span>
+    </div>
+    <nav class="sidebar-nav" [attr.aria-label]="'Menu do ' + roleLabel.toLowerCase()">
+      <div class="nav-group">
+        <div class="nav-label">{{ isProvider ? 'PRESTADOR' : 'CLIENTE' }}</div>
+        <a class="nav-item" [routerLink]="isProvider ? '/home-prestador' : '/home-cliente'">
+          <img class="nav-icon" [src]="isProvider ? '/img/painel.png' : '/img/botao-home.png'" alt="">
+          <span class="label">{{ isProvider ? 'Painel' : 'Início' }}</span>
+        </a>
+        <a class="nav-item active" routerLink="/agendamentos" aria-current="page"><img class="nav-icon" src="/img/dias-do-calendario.png" alt=""><span class="label">Agendamentos</span></a>
+        @if (!isProvider) {
+          <a class="nav-item" routerLink="/favoritos"><img class="nav-icon" src="/img/estrela-favotios.png" alt=""><span class="label">Favoritos</span></a>
+        }
+      </div>
+    </nav>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-profile">
+      <div class="profile-row">
+        <div class="avatar">{{ userInitial }}</div>
+        <div class="profile-info"><strong>{{ userName }}</strong><small>{{ roleLabel }}</small></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-spacer"></div>
+      <button type="button" class="icon-btn" title="Notificações" aria-label="Notificações">
+        <img src="/img/sino.png" alt="">
+      </button>
+    </header>
+    <div class="content">
+      <div class="cabecalho-lista">
+        <div>
+          <span class="eyebrow">{{ pageEyebrow }}</span>
+          <h1>{{ pageTitle }}</h1>
+          <p class="descricao-pagina">{{ isProvider ? 'Acompanhe os horários registrados na agenda.' : 'Acompanhe seus próximos horários em um só lugar.' }}</p>
+        </div>
+        @if (!isProvider) {
+          <button type="button" class="btn-novo" (click)="novoAgendamento()">+ Novo agendamento</button>
+        }
+      </div>
+
+      @if (agendamentos.length === 0) {
+        <div class="box-vazio">
+          <div class="empty-icon">◷</div>
+          <strong>Nenhum agendamento encontrado</strong>
+          <p>Escolha um serviço e reserve seu próximo horário.</p>
+          <button type="button" class="btn-novo" (click)="novoAgendamento()">Encontrar um serviço</button>
+        </div>
+      } @else {
+        <div class="grid-agendamentos">
+          @for (item of agendamentos; track item.id) {
+            <article class="card-agendamento" [class.cancelado]="item.status === 'Cancelado'">
+              <div class="topo-card">
+                <div><span class="card-eyebrow">ESTABELECIMENTO</span><h2>{{ item.empresa }}</h2></div>
+                <span class="badge-status" [class.status-cancelado]="item.status === 'Cancelado'">{{ item.status }}</span>
+              </div>
+
+              <div class="detalhes-card">
+                <div><span>Serviço</span><strong>{{ item.servico }}</strong></div>
+                <div><span>Data</span><strong>{{ item.data }}</strong></div>
+                <div><span>Horário</span><strong>{{ item.horario }}</strong></div>
+                <div><span>Valor</span><strong>{{ item.valor }}</strong></div>
+              </div>
+
+              @if (item.status === 'Confirmado') {
+                <button type="button" class="btn-cancelar" (click)="cancelar(item.id)">Cancelar agendamento</button>
+              }
+            </article>
+          }
+        </div>
+      }
+
+    </div>
+  </main>
+</div>
