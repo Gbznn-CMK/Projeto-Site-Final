@@ -26,7 +26,7 @@
     <div class="sidebar-spacer"></div>
     <div class="sidebar-profile">
       <div class="profile-row">
-        <div class="avatar">{{ userInitial }}</div>
+       <a class="avatar" routerLink="/perfil" title="Ver perfil">{{ userInitial }}</a>
         <div class="profile-info"><strong>{{ userName }}</strong><small>Prestador</small></div>
         <button type="button" class="profile-menu-btn" title="Configurações do perfil" (click)="toggleProfileMenu()"><img src="/img/menu-pontos-vertical.png" alt=""></button>
       </div>

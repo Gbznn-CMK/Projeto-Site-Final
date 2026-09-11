@@ -20,7 +20,7 @@
         <img class="nav-icon" src="/img/botao-home.png" alt="">
         <span class="label">Início</span>
       </a>
-      <a class="nav-item" routerLink="/home-cliente" fragment="busca-prestadores">
+      <a class="nav-item" routerLink="/buscar" fragment="busca-prestadores">
         <img class="nav-icon" src="/img/buscar.png" alt="">
         <span class="label">Buscar</span>
       </a>
@@ -50,11 +50,11 @@
 
     <div class="sidebar-profile">
       <div class="profile-row">
-        <div class="avatar">{{ userInitial }}</div>
-        <div class="profile-info">
-          <strong>{{ userName }}</strong>
-          <small>Cliente</small>
-        </div>
+       <a class="avatar" routerLink="/perfil" title="Ver perfil">{{ userInitial }}</a>
+    <div class="profile-info">
+      <strong>{{ userName }}</strong>
+      <small>Cliente</small>
+    </div>
         <button
           class="profile-menu-btn"
           title="Configurações do perfil"
@@ -65,7 +65,7 @@
       @if (profileMenuOpen) {
         <div class="profile-popover">
           <strong>{{ userName }}</strong>
-          <span>Perfil do cliente</span>
+          <span >Perfil do cliente</span>
           <button type="button" (click)="logout()">Sair da conta</button>
         </div>
       }
@@ -153,7 +153,7 @@
       </section>
 
       <div class="quick-row">
-        <a class="quick-card" routerLink="/home-cliente" fragment="busca-prestadores">
+        <a class="quick-card" routerLink="/buscar" fragment="busca-prestadores">
           <div class="quick-icon">
             <img src="/img/procurar.png" alt="">
           </div>

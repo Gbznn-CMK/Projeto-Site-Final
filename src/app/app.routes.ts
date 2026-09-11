@@ -11,11 +11,15 @@ import { AgendaPrestadorComponent } from './features/agenda-prestador/agenda-pre
 import { ServicosPrestadorComponent } from './features/servicos-prestador/servicos-prestador';
 import { DisponibilidadePrestadorComponent } from './features/disponibilidade-prestador/disponibilidade-prestador';
 import { CadastroLojaComponent } from './features/cadastro-loja/cadastro-loja';
+import { PerfilComponent } from './features/perfil-cliente/perfil-cliente';
+import { BuscarComponent } from './features/buscar/buscar';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home-cliente', pathMatch: 'full' },
   { path: 'home-cliente', component: HomeCliente, canActivate: [authGuard], data: { roles: ['cliente'] } },
   { path: 'home-prestador', component: HomePrestador, canActivate: [authGuard], data: { roles: ['prestador'] } },
+   { path: 'perfil', component: PerfilComponent,data: { roles: ['cliente','prestador'] } },
+    { path: 'buscar', component: BuscarComponent , canActivate: [authGuard] ,data: { roles: ['cliente'] } },
   { path: 'login', component: LoginComponent },
   { path: 'cadastro', component: CadastroComponent },
   { path: 'cadastro-loja', component: CadastroLojaComponent, canActivate: [authGuard], data: { roles: ['prestador'] } },
