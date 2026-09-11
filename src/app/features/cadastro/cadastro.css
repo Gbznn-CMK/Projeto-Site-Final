@@ -295,9 +295,9 @@ small {
   justify-content: center;
   gap: 8px;
   padding: 22px;
-  border: 2px solid var(--color-neutral-300);
+  border: 2px solid #d9dfeb;
   border-radius: 12px;
-  color: var(--color-neutral-800);
+  color: #263550;
   background: rgba(255, 255, 255, 0.8);
   text-align: left;
   cursor: pointer;
@@ -309,19 +309,14 @@ small {
 }
 
 .user-type-option:hover {
-  border-color: var(--color-primary-light);
+  border-color: #8aa9e8;
   transform: translateY(-2px);
 }
 
-.user-type-option:focus-visible {
-  outline: 3px solid rgba(63, 115, 217, 0.28);
-  outline-offset: 2px;
-}
-
 .user-type-option.selected {
-  border-color: var(--color-primary);
-  background: #eef4ff;
-  box-shadow: 0 0 0 3px #d7e5ff;
+  border-color: #24428f;
+  background: #edf3ff;
+  box-shadow: 0 0 0 3px #dbeafe;
 }
 
 .user-type-icon {
@@ -329,12 +324,12 @@ small {
 }
 
 .user-type-option strong {
-  color: var(--color-primary-dark);
+  color: #172554;
   font-size: 1.1rem;
 }
 
 .user-type-option > span:last-child {
-  color: var(--color-neutral-600);
+  color: #68738a;
   font-size: 0.95rem;
   line-height: 1.4;
 }
