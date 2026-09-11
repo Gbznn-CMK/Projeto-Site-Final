@@ -4,6 +4,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Prestador, Servico } from '../../../core/models/types';
 import { PrestadorService } from '../../../core/services/prestador.service';
 import { ServicoService } from '../../../core/services/servico.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { UsuarioService } from '../../../core/services/usuario.service';
 import { CurrencyPipe, DurationPipe } from '../../../shared/pipes/formatting.pipes';
 
 @Component({
@@ -32,6 +34,9 @@ import { CurrencyPipe, DurationPipe } from '../../../shared/pipes/formatting.pip
               <span>📍 {{ prestador.endereco }}</span>
               <span>⏰ {{ prestador.horarioFuncionamento }}</span>
             </div>
+            <button class="favorite-button" type="button" (click)="toggleFavorite()">
+              {{ isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos' }}
+            </button>
           </div>
         </header>
 
@@ -121,6 +126,17 @@ import { CurrencyPipe, DurationPipe } from '../../../shared/pipes/formatting.pip
       gap: var(--space-lg);
       color: var(--color-neutral-700);
       font-size: var(--font-size-sm);
+    }
+
+    .favorite-button {
+      margin-top: var(--space-lg);
+      padding: var(--space-sm) var(--space-md);
+      color: var(--color-success-dark);
+      background: white;
+      border: 1px solid var(--color-success-dark);
+      border-radius: var(--radius-md);
+      font-weight: var(--font-weight-semibold);
+      cursor: pointer;
     }
 
     .section-heading {
@@ -229,14 +245,18 @@ import { CurrencyPipe, DurationPipe } from '../../../shared/pipes/formatting.pip
 export class PerfilPrestadorComponent implements OnInit {
   prestador?: Prestador;
   servicos: Servico[] = [];
+  isFavorite = false;
   loading = true;
   errorMessage = '';
+  private userId = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private prestadorService: PrestadorService,
-    private servicoService: ServicoService
+    private servicoService: ServicoService,
+    private authService: AuthService,
+    private usuarioService: UsuarioService
   ) {}
 
   ngOnInit() {
@@ -246,6 +266,14 @@ export class PerfilPrestadorComponent implements OnInit {
       this.loading = false;
       return;
     }
+
+    this.authService.getCurrentUser().subscribe(user => {
+      if (!user) return;
+      this.userId = user.id;
+      this.usuarioService.getFavorites(user.id).subscribe(ids => {
+        this.isFavorite = ids.includes(id);
+      });
+    });
 
     this.prestadorService.getById(id).subscribe({
       next: prestador => {
@@ -277,6 +305,18 @@ export class PerfilPrestadorComponent implements OnInit {
   schedule(servico: Servico) {
     this.router.navigate(['/agendar', this.prestador?.id], {
       queryParams: { servico: servico.id }
+    });
+  }
+
+  toggleFavorite() {
+    if (!this.userId || !this.prestador) return;
+
+    this.isFavorite = !this.isFavorite;
+    this.usuarioService.toggleFavorite(this.userId, this.prestador.id).subscribe({
+      error: () => {
+        this.isFavorite = !this.isFavorite;
+        this.errorMessage = 'Não foi possível atualizar o favorito.';
+      }
     });
   }
 }

@@ -52,6 +52,19 @@ import { ProviderCardComponent } from '../../../shared/components/provider-card/
           >
         </label>
 
+        <label class="filter-field">
+          <span>Ordenar por</span>
+          <select name="ordenacao" [(ngModel)]="ordenacao">
+            <option value="relevancia">Relevancia</option>
+            <option value="nome">Nome</option>
+          </select>
+        </label>
+
+        <label class="favorite-filter">
+          <input type="checkbox" name="apenasFavoritos" [(ngModel)]="apenasFavoritos" (change)="search()">
+          <span>Somente favoritos</span>
+        </label>
+
         <button class="btn btn-primary filter-button" type="submit">Buscar</button>
       </form>
 
@@ -114,7 +127,7 @@ import { ProviderCardComponent } from '../../../shared/components/provider-card/
 
     .filters {
       display: grid;
-      grid-template-columns: 1.4fr 1fr 1.2fr auto;
+      grid-template-columns: 1.4fr 1fr 1.2fr 1fr auto;
       align-items: end;
       gap: var(--space-md);
       padding: var(--space-lg);
@@ -139,6 +152,16 @@ import { ProviderCardComponent } from '../../../shared/components/provider-card/
 
     .filter-button {
       min-height: 44px;
+    }
+
+    .favorite-filter {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      color: var(--color-neutral-700);
+      font-size: var(--font-size-sm);
+      white-space: nowrap;
     }
 
     .provider-grid {
@@ -189,6 +212,8 @@ export class BuscarPrestadoresComponent implements OnInit {
   query = '';
   categoria = '';
   localizacao = '';
+  ordenacao: 'relevancia' | 'nome' = 'relevancia';
+  apenasFavoritos = false;
   loading = false;
   errorMessage = '';
   private userId = '';
@@ -228,7 +253,7 @@ export class BuscarPrestadoresComponent implements OnInit {
       this.localizacao.trim()
     ).subscribe({
       next: prestadores => {
-        this.prestadores = prestadores;
+        this.prestadores = this.aplicarFiltros(prestadores);
         this.loading = false;
       },
       error: () => {
@@ -242,7 +267,23 @@ export class BuscarPrestadoresComponent implements OnInit {
     this.query = '';
     this.categoria = '';
     this.localizacao = '';
+    this.ordenacao = 'relevancia';
+    this.apenasFavoritos = false;
     this.search();
+  }
+
+  private aplicarFiltros(prestadores: Prestador[]) {
+    const filtrados = this.apenasFavoritos
+      ? prestadores.filter(prestador => this.favoriteIds.has(prestador.id))
+      : prestadores;
+
+    if (this.ordenacao === 'nome') {
+      return [...filtrados].sort((a, b) =>
+        a.nomeEstabelecimento.localeCompare(b.nomeEstabelecimento, 'pt-BR')
+      );
+    }
+
+    return filtrados;
   }
 
   isFavorite(prestadorId: string) {
@@ -254,10 +295,12 @@ export class BuscarPrestadoresComponent implements OnInit {
     const wasFavorite = this.favoriteIds.has(prestadorId);
     wasFavorite ? this.favoriteIds.delete(prestadorId) : this.favoriteIds.add(prestadorId);
     this.favoriteIds = new Set(this.favoriteIds);
+    this.prestadores = this.aplicarFiltros(this.prestadores);
     this.usuarioService.toggleFavorite(this.userId, prestadorId).subscribe({
       error: () => {
         wasFavorite ? this.favoriteIds.add(prestadorId) : this.favoriteIds.delete(prestadorId);
         this.favoriteIds = new Set(this.favoriteIds);
+        this.prestadores = this.aplicarFiltros(this.prestadores);
         this.errorMessage = 'Não foi possível atualizar o favorito.';
       }
     });
