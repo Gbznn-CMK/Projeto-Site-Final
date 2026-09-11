@@ -105,7 +105,7 @@
   align-content: center;
   justify-items: center;
   min-height: 100%;
-  padding: 64px clamp(32px, 6vw, 112px);
+  padding: 64px clamp(48px, 6vw, 112px);
   border-left: 1px solid #e2e7f0;
   background:
     radial-gradient(circle at 80% 18%, rgba(219, 234, 254, 0.7), transparent 32%),
@@ -119,12 +119,12 @@
 
 .heading h2 {
   margin: 0;
-  font-size: clamp(2.5rem, 3.4vw, 3.6rem);
+  font-size: clamp(2.75rem, 3.4vw, 3.6rem);
   letter-spacing: -0.04em;
 }
 
 .heading > p:not(.eyebrow) {
-  margin: 12px 0 28px;
+  margin: 12px 0 30px;
   color: #68738a;
 }
 
@@ -133,67 +133,13 @@
   flex-direction: column;
 }
 
-.user-type-field {
-  margin: 0 0 26px;
-  padding: 0;
-  border: 0;
-}
-
-.user-type-field legend {
-  margin-bottom: 12px;
-  color: #263550;
-  font-size: 1.05rem;
-  font-weight: 700;
-}
-
-.user-type-options {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.user-type-option {
-  min-height: 108px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  padding: 16px;
-  border: 1px solid #d9dfeb;
-  border-radius: 12px;
-  color: #68738a;
-  background: rgba(255, 255, 255, 0.82);
-  text-align: left;
-  cursor: pointer;
-  transition:
-    border-color 0.2s,
-    background 0.2s,
-    box-shadow 0.2s;
-}
-
-.user-type-option:hover,
-.user-type-option.selected {
-  border-color: #3863bd;
-  background: #eff5ff;
-  box-shadow: 0 0 0 3px rgba(56, 99, 189, 0.12);
-}
-
-.user-type-option strong {
-  color: #172554;
-  font-size: 1rem;
-}
-
-.user-type-icon {
-  font-size: 1.35rem;
-}
-
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 label {
   display: block;
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   color: #263550;
   font-size: 1.05rem;
   font-weight: 700;
@@ -202,8 +148,8 @@ label {
 input {
   box-sizing: border-box;
   width: 100%;
-  min-height: 58px;
-  padding: 15px 18px;
+  min-height: 64px;
+  padding: 16px 22px;
   border: 1px solid #d9dfeb;
   border-radius: 9px;
   outline: none;
@@ -226,7 +172,8 @@ input.invalid {
 
 small {
   display: block;
-  margin-top: 6px;
+  min-height: 20px;
+  margin: 6px 0 0;
   color: #c02626;
   font-size: 0.9rem;
 }
@@ -253,8 +200,8 @@ small {
 }
 
 .primary-button {
-  min-height: 58px;
-  margin-top: 6px;
+  min-height: 64px;
+  margin-top: 8px;
   border: 0;
   border-radius: 9px;
   color: #fff;
@@ -273,16 +220,8 @@ small {
   transform: translateY(-1px);
 }
 
-.success-message {
-  margin: 18px 0 0;
-  color: #168448;
-  font-size: 1rem;
-  font-weight: 700;
-  text-align: center;
-}
-
 .login-link {
-  margin: 24px 0 0;
+  margin: 26px 0 0;
   color: #68738a;
   text-align: center;
   font-size: 1.05rem;
@@ -318,13 +257,89 @@ small {
 
   .register-panel {
     min-height: auto;
-    padding: 48px 24px;
+    padding: 48px 32px;
     border-left: 0;
   }
 }
+.success-message {
+  margin: 22px 0 0;
+  color: #168448;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+}
+.user-type-field {
+  margin: 0 0 26px;
+  padding: 0;
+  border: 0;
+}
 
-@media (max-width: 480px) {
+.user-type-field legend {
+  margin-bottom: 12px;
+  color: #263550;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.user-type-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.user-type-option {
+  min-height: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px;
+  padding: 22px;
+  border: 2px solid #d9dfeb;
+  border-radius: 12px;
+  color: #263550;
+  background: rgba(255, 255, 255, 0.8);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+
+.user-type-option:hover {
+  border-color: #8aa9e8;
+  transform: translateY(-2px);
+}
+
+.user-type-option.selected {
+  border-color: #24428f;
+  background: #edf3ff;
+  box-shadow: 0 0 0 3px #dbeafe;
+}
+
+.user-type-icon {
+  font-size: 2rem;
+}
+
+.user-type-option strong {
+  color: #172554;
+  font-size: 1.1rem;
+}
+
+.user-type-option > span:last-child {
+  color: #68738a;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 560px) {
   .user-type-options {
     grid-template-columns: 1fr;
+  }
+
+  .user-type-option {
+    min-height: 130px;
   }
 }

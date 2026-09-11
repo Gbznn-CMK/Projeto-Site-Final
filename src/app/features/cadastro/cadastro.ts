@@ -6,9 +6,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { Component } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../core/services/auth';
-import { UserType } from '../../core/models/user';
+import { RouterLink } from '@angular/router';
+
+
+type UserType = 'cliente' | 'prestador';
+
 
 @Component({
   selector: 'app-cadastro',
@@ -16,6 +18,7 @@ import { UserType } from '../../core/models/user';
   templateUrl: './cadastro.html',
   styleUrl: './cadastro.css',
 })
+
 export class CadastroComponent {
   showPassword = false;
   showConfirmPassword = false;
@@ -23,7 +26,7 @@ export class CadastroComponent {
 
   readonly registerForm = new FormBuilder().nonNullable.group(
     {
-      tipoUsuario: ['', [Validators.required]],
+        tipoUsuario: ['', [Validators.required]],
       nome: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       senha: ['', [Validators.required, Validators.minLength(8)]],
@@ -32,12 +35,8 @@ export class CadastroComponent {
     { validators: this.passwordsMatchValidator },
   );
 
-  constructor(
-    private readonly auth: AuthService,
-    private readonly router: Router,
-  ) {}
-
   selectUserType(type: 'cliente' | 'prestador'): void {
+    
     this.registerForm.controls.tipoUsuario.setValue(type);
     this.registerForm.controls.tipoUsuario.markAsTouched();
   }
@@ -49,21 +48,8 @@ export class CadastroComponent {
       return;
     }
 
-    const user = this.registerForm.getRawValue();
-    if (!this.isUserType(user.tipoUsuario)) {
-      this.registerMessage = '';
-      return;
-    }
-
-    if (!this.auth.register({ ...user, tipoUsuario: user.tipoUsuario })) {
-      this.registerMessage = 'Este email já está cadastrado.';
-      return;
-    }
-
     this.registerMessage = 'Cadastro realizado com sucesso!';
-    void this.router.navigate([
-      user.tipoUsuario === 'prestador' ? '/cadastro-loja' : '/home-cliente',
-    ]);
+    this.registerForm.reset();
   }
 
   isInvalid(field: 'nome' | 'email' | 'senha' | 'confirmarSenha'): boolean {
@@ -75,14 +61,6 @@ export class CadastroComponent {
     const senha = control.get('senha')?.value;
     const confirmarSenha = control.get('confirmarSenha')?.value;
 
-    if (!senha || !confirmarSenha) {
-      return null;
-    }
-
     return senha === confirmarSenha ? null : { passwordsMismatch: true };
-  }
-
-  private isUserType(value: string): value is UserType {
-    return value === 'cliente' || value === 'prestador';
   }
 }

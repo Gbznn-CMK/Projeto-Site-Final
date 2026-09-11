@@ -18,7 +18,7 @@
       </p>
     </div>
     <div class="calendar-art" aria-hidden="true">
-      <img src="/img/calendar-art.svg" alt="" />
+      <img src="assets/images/calendar-art.svg" alt="" />
     </div>
   </section>
   <section class="register-panel" aria-labelledby="register-title">
@@ -171,13 +171,11 @@
           @if (isInvalid('confirmarSenha')) {
             @if (registerForm.controls.confirmarSenha.hasError('required')) {
               <small class="error-message">A confirmação de senha é obrigatória.</small>
-            } @else if (registerForm.controls.confirmarSenha.hasError('minlength')) {
-              <small class="error-message">
-                A confirmação deve ter ao menos 8 caracteres.
-              </small>
             }
+          } @else if (registerForm.controls.confirmarSenha.hasError('minlength')) {
+            <small class="error-message"> A confirmação deve ter ao menos 8 caracteres. </small>
           } @else if (registerForm.hasError('passwordsMismatch')) {
-            <small class="error-message">As senhas não coincidem.</small>
+            <small class="error-message"> As senhas não coincidem. </small>
           }
         </div>
 
