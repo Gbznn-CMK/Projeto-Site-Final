@@ -1,23 +1,20 @@
-import { Injectable } from '@angular/core';
-import { Router, CanActivateFn } from '@angular/router';
-import { AuthService } from '../services/auth.service';
 import { inject } from '@angular/core';
-import { getLocalStorage } from '../utils/storage';
+import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from '../services/auth';
+import { UserType } from '../models/user';
 
-export const authGuard: CanActivateFn = (route, state) => {
-  const authService = inject(AuthService);
+export const authGuard: CanActivateFn = (route) => {
+  const auth = inject(AuthService);
   const router = inject(Router);
-
-  const isAuth = authService.isAuthenticated();
-  
-  // Use a simple check - if there's a token in localStorage
-  const token = getLocalStorage()?.getItem('nahora_token');
-  
-  if (token) {
-    return true;
+  if (!auth.isAuthenticated()) {
+    return router.createUrlTree(['/login']);
   }
 
-  // Redirect to login if not authenticated
-  router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
-  return false;
+  const allowedRoles = route.data['roles'] as UserType[] | undefined;
+  const userType = auth.currentUser()?.tipoUsuario;
+  if (allowedRoles && userType && !allowedRoles.includes(userType)) {
+    return router.createUrlTree([userType === 'prestador' ? '/home-prestador' : '/home-cliente']);
+  }
+
+  return true;
 };

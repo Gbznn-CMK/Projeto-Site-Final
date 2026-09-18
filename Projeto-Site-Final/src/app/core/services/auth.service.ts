@@ -3,19 +3,22 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Usuario, TipoUsuario, LoginRequest, CadastroRequest, AuthResponse } from '../models/types';
 import { MOCK_USUARIOS } from '../data/mock-data';
 import { getLocalStorage } from '../utils/storage';
+import { map } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private readonly PREFIX = 'nahora_';
   private currentUser$ = new BehaviorSubject<Usuario | null>(null);
-  private isAuthenticated$ = new BehaviorSubject<boolean>(false);
 
   constructor() {
     this.loadCurrentUser();
   }
 
+  isAuthenticated(): Observable<boolean> {
+    return this.currentUser$.pipe(map((user) => user !== null));
+  }
   private loadCurrentUser() {
     const token = this.getToken();
     if (!token) return;
@@ -23,11 +26,10 @@ export class AuthService {
     try {
       const payload = token.split('.')[1];
       const userId = JSON.parse(atob(payload)).sub;
-      const user = this.getUsuarios().find(usuario => usuario.id === userId);
+      const user = this.getUsuarios().find((usuario) => usuario.id === userId);
 
       if (user) {
         this.currentUser$.next(user);
-        this.isAuthenticated$.next(true);
       }
     } catch {
       getLocalStorage()?.removeItem(`${this.PREFIX}token`);
@@ -47,10 +49,17 @@ export class AuthService {
     return getLocalStorage()?.getItem(`${this.PREFIX}token`) ?? null;
   }
 
-  private setToken(token: string) {
-    getLocalStorage()?.setItem(`${this.PREFIX}token`, token);
-  }
+  private setToken(token: string): void {
+    console.log('TOKEN GERADO:', token);
 
+    const storage = getLocalStorage();
+
+    console.log('STORAGE:', storage);
+
+    storage?.setItem(`${this.PREFIX}token`, token);
+
+    console.log('TOKEN SALVO:', storage?.getItem(`${this.PREFIX}token`));
+  }
   private generateToken(userId: string): string {
     // Mock JWT token: header.payload.signature
     const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
@@ -60,19 +69,33 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<AuthResponse> {
-    return new Observable(observer => {
+    console.log('LOGIN CHAMADO:', email);
+
+    return new Observable((observer) => {
       setTimeout(() => {
+        console.log('LOGIN DENTRO DO TIMEOUT');
+
         const usuarios = this.getUsuarios();
-        const user = usuarios.find(u => u.email === email);
+
+        console.log('USUÁRIOS:', usuarios);
+
+        const user = usuarios.find((u) => u.email === email);
+
+        console.log('USUÁRIO ENCONTRADO:', user);
 
         if (user) {
           const token = this.generateToken(user.id);
+
+          console.log('TOKEN ANTES DO SET:', token);
+
           this.setToken(token);
+
           this.currentUser$.next(user);
-          this.isAuthenticated$.next(true);
+
           observer.next({ usuario: user, token });
           observer.complete();
         } else {
+          console.log('USUÁRIO NÃO ENCONTRADO');
           observer.error(new Error('Email ou senha inválidos'));
         }
       }, 500);
@@ -80,12 +103,12 @@ export class AuthService {
   }
 
   signup(request: CadastroRequest): Observable<AuthResponse> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const usuarios = this.getUsuarios();
 
         // Check if email already exists
-        if (usuarios.some(u => u.email === request.email)) {
+        if (usuarios.some((u) => u.email === request.email)) {
           observer.error(new Error('Email já cadastrado'));
           return;
         }
@@ -97,7 +120,7 @@ export class AuthService {
           email: request.email,
           telefone: request.telefone,
           tipo: request.tipo,
-          dataCadastro: new Date().toISOString()
+          dataCadastro: new Date().toISOString(),
         };
 
         usuarios.push(newUser);
@@ -107,8 +130,6 @@ export class AuthService {
         const token = this.generateToken(newUser.id);
         this.setToken(token);
         this.currentUser$.next(newUser);
-        this.isAuthenticated$.next(true);
-
         observer.next({ usuario: newUser, token });
         observer.complete();
       }, 500);
@@ -118,15 +139,10 @@ export class AuthService {
   logout(): void {
     getLocalStorage()?.removeItem(`${this.PREFIX}token`);
     this.currentUser$.next(null);
-    this.isAuthenticated$.next(false);
   }
 
   getCurrentUser(): Observable<Usuario | null> {
     return this.currentUser$.asObservable();
-  }
-
-  isAuthenticated(): Observable<boolean> {
-    return this.isAuthenticated$.asObservable();
   }
 
   getUserRole(): TipoUsuario | null {
