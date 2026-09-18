@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth';
 import { FavoritosService } from '../../services/favoritos';
+import { LojaService } from '../../core/services/loja';
 
 @Component({
   selector: 'app-home-cliente',
@@ -12,20 +13,14 @@ import { FavoritosService } from '../../services/favoritos';
   templateUrl: './home-cliente.html',
   styleUrl: './home-cliente.css',
 })
-export class HomeCliente {
+export class HomeCliente implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly auth: AuthService,
     private readonly favoritosService: FavoritosService,
-  ) {
-    this.favoritosService.listarIds().subscribe((ids) => {
-      this.favorites = new Set(
-        this.providers
-          .filter((provider) => ids.includes(provider.id))
-          .map((provider) => provider.name),
-      );
-    });
-  }
+  ) {}
+
+  private readonly lojaService = inject(LojaService);
 
   collapsed = false;
   mobileExpanded = false;
@@ -36,13 +31,29 @@ export class HomeCliente {
   selectedSort = 'relevance';
   onlyFavorites = false;
   favorites = new Set<string>();
+  selectedProvider: (typeof this.providers)[number] | null = null;
+  notificationsOpen = false;
 
-  get userName(): string {
-    return this.auth.currentUser()?.nome || 'Cliente';
-  }
-
-  get userInitial(): string {
-    return this.userName.charAt(0).toUpperCase();
+  ngOnInit(): void {
+    for (const loja of this.lojaService.listar()) {
+      this.providers.push({
+        name: loja.nome,
+        id: loja.id,
+        image: loja.imagemUrl,
+        category: loja.categoria,
+        address: loja.endereco,
+        hours: loja.horario,
+        rating: 'Novo',
+        stars: '☆☆☆☆☆',
+      });
+    }
+    this.favoritosService.listarIds().subscribe((ids) => {
+      this.favorites = new Set(
+        this.providers
+          .filter((provider) => ids.includes(provider.id))
+          .map((provider) => provider.name),
+      );
+    });
   }
 
   readonly providers = [
@@ -88,6 +99,14 @@ export class HomeCliente {
     },
   ];
 
+  get userName(): string {
+    return this.auth.currentUser()?.nome || 'Cliente';
+  }
+
+  get userInitial(): string {
+    return this.userName.charAt(0).toUpperCase();
+  }
+
   get filteredProviders() {
     const term = this.searchTerm.trim().toLowerCase();
 
@@ -106,7 +125,7 @@ export class HomeCliente {
 
     if (this.selectedSort === 'rating') {
       results = [...results].sort((a, b) =>
-        parseFloat(b.rating) - parseFloat(a.rating),
+        (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0),
       );
     } else if (this.selectedSort === 'name') {
       results = [...results].sort((a, b) =>
@@ -141,13 +160,20 @@ export class HomeCliente {
       return;
     }
 
-    if (this.favorites.has(providerName)) {
-      this.favorites.delete(providerName);
-      this.favoritosService.desfavoritar(provider.id).subscribe();
-    } else {
-      this.favorites.add(providerName);
-      this.favoritosService.favoritar(provider.id).subscribe();
-    }
+    const isFavorite = this.favorites.has(providerName);
+    const request = isFavorite
+      ? this.favoritosService.desfavoritar(provider.id)
+      : this.favoritosService.favoritar(provider.id);
+
+    request.subscribe(() => {
+      const nextFavorites = new Set(this.favorites);
+      if (isFavorite) {
+        nextFavorites.delete(providerName);
+      } else {
+        nextFavorites.add(providerName);
+      }
+      this.favorites = nextFavorites;
+    });
   }
 
   isFavorite(providerName: string): boolean {
@@ -156,6 +182,18 @@ export class HomeCliente {
 
   toggleProfileMenu(): void {
     this.profileMenuOpen = !this.profileMenuOpen;
+  }
+
+  openProviderProfile(provider: (typeof this.providers)[number]): void {
+    this.selectedProvider = provider;
+  }
+
+  closeProviderProfile(): void {
+    this.selectedProvider = null;
+  }
+
+  toggleNotifications(): void {
+    this.notificationsOpen = !this.notificationsOpen;
   }
 
   logout(): void {

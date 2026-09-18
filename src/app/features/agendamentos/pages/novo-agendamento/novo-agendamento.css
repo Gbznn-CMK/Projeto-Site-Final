@@ -9,20 +9,107 @@
 .layout-app {
   min-height: 100vh;
   width: 100%;
-  background: var(--bg);
-  color: var(--text);
+  background:
+    radial-gradient(circle at 50% -15%, rgba(31, 181, 116, 0.12), transparent 34rem),
+    var(--bg);
   font-family: var(--font-body);
 }
 
 .conteudo-principal {
   min-height: 100vh;
-  padding: 48px 24px 72px;
+  padding: 34px 20px 72px;
 }
 
 .secao-centralizada {
   width: 100%;
-  max-width: 760px;
+  max-width: 750px;
   margin: 0 auto;
+}
+
+.cabecalho-agendamento {
+  max-width: 750px;
+  margin: 32px auto 24px;
+  text-align: center;
+}
+
+.etiqueta-agendamento {
+  color: var(--accent-dark);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+
+.cabecalho-agendamento h1 {
+  margin: 8px 0 8px;
+  color: var(--navy-900);
+  font-size: clamp(28px, 5vw, 38px);
+  line-height: 1.15;
+}
+
+.cabecalho-agendamento p {
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.progresso-agendamento {
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.progresso-etapa {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #98a2b3;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.progresso-etapa span {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #d8dee9;
+  border-radius: 50%;
+  background: #fff;
+  font-weight: 700;
+}
+
+.progresso-etapa.ativa {
+  color: var(--navy);
+}
+
+.progresso-etapa.ativa span,
+.progresso-etapa.concluida span {
+  color: #fff;
+  border-color: var(--navy);
+  background: var(--navy);
+}
+
+.progresso-etapa.concluida {
+  color: var(--accent-dark);
+}
+
+.progresso-etapa.concluida span {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.progresso-linha {
+  height: 1px;
+  min-width: 28px;
+  flex: 1;
+  background: #d8dee9;
+}
+
+.progresso-linha.preenchida {
+  background: var(--accent);
 }
 
 
@@ -33,21 +120,31 @@
 .titulo-secao {
   text-align: center;
   color: var(--navy-900);
-  font-family: var(--font-display);
-  font-size: clamp(26px, 4vw, 34px);
+  font-size: 28px;
   font-weight: 700;
-  margin: 18px 0 30px;
-  letter-spacing: -.03em;
+  margin: 18px 0 26px;
+}
+.contexto-agendamento{
+  display: inline-flex;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 auto 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .titulo-secao.sucesso {
-  color: var(--success);
+  color: #16a34a;
   margin-bottom: 8px;
 }
 
 .subtitulo-sucesso {
   text-align: center;
-  color: var(--text-muted);
+  color: #6b7280;
   font-size: 16px;
   margin: 0 0 30px;
 }
@@ -64,11 +161,14 @@
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  padding: 8px 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background .15s ease, color .15s ease;
 }
 
 .btn-voltar:hover {
-  text-decoration: underline;
+  background: #e9eef8;
+  color: var(--navy-900);
 }
 
 
@@ -85,32 +185,46 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--card);
-  padding: 22px;
-  border-radius: 14px;
+  background: #ffffff;
+  padding: 22px 24px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
-  box-shadow: 0 8px 22px rgba(16, 26, 51, .06);
+  box-shadow: 0 8px 20px rgba(16, 26, 51, 0.06);
   cursor: pointer;
-  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
   width: 100%;
-  font: inherit;
   text-align: left;
+  font: inherit;
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.card-servico:focus-visible,
+.btn-avancar:focus-visible,
+.btn-confirmar:focus-visible,
+.btn-voltar:focus-visible {
+  outline: 3px solid rgba(36, 67, 155, 0.35);
+  outline-offset: 2px;
+}
+
+.erro-formulario {
+  color: #b91c1c;
+  font-size: 14px;
+  margin: -10px 0 18px;
 }
 
 .card-servico:hover {
-  transform: translateY(-2px);
-  border-color: var(--navy-tint);
-  box-shadow: 0 10px 24px rgba(36, 66, 143, .12);
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 12px 24px rgba(16, 26, 51, 0.1);
 }
 
 .info-servico h3 {
   margin: 0 0 8px;
-  color: var(--navy-900);
+  color: #111827;
   font-size: 18px;
 }
 
 .duracao {
-  color: var(--text-muted);
+  color: #6b7280;
   font-size: 14px;
 }
 
@@ -122,12 +236,12 @@
 }
 
 .preco-servico strong {
-  color: var(--success);
+  color: #16a34a;
   font-size: 17px;
 }
 
 .btn-selecionar {
-  color: var(--navy);
+  color: #24439b;
   font-size: 14px;
   font-weight: 700;
 }
@@ -138,53 +252,34 @@
 /* ============================= */
 
 .box-formulario {
-  background: var(--card);
-  padding: 30px;
-  border-radius: 16px;
+  background: #ffffff;
+  padding: clamp(22px, 5vw, 34px);
+  border-radius: 20px;
   border: 1px solid var(--border);
-  box-shadow: 0 8px 22px rgba(16, 26, 51, .06);
+  box-shadow: var(--shadow-card);
 }
 
 .box-formulario label {
   display: block;
   margin-bottom: 8px;
-  color: var(--text);
+  color: #374151;
   font-weight: 600;
   font-size: 14px;
 }
 
 .box-formulario input {
   width: 100%;
-  padding: 13px;
+  padding: 14px 15px;
   margin-bottom: 22px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  border: 1px solid #cfd6e2;
+  border-radius: 10px;
   font-size: 15px;
   outline: none;
 }
 
 .box-formulario input:focus {
-  border-color: var(--navy-tint);
-  box-shadow: 0 0 0 3px rgba(56, 99, 189, .14);
-}
-
-.box-formulario input:invalid {
-  border-color: #fca5a5;
-}
-
-.mensagem-erro {
-  margin: -8px 0 18px;
-  color: #b42318;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.card-servico:focus-visible,
-.btn-avancar:focus-visible,
-.btn-confirmar:focus-visible,
-.btn-voltar:focus-visible {
-  outline: 3px solid rgba(31, 181, 116, .35);
-  outline-offset: 3px;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
 }
 
 
@@ -196,20 +291,22 @@
 .btn-confirmar {
   width: 100%;
   border: none;
-  border-radius: 9px;
-  padding: 14px 20px;
-  background: var(--navy);
+  border-radius: 10px;
+  padding: 15px 20px;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-tint) 100%);
   color: #ffffff;
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: 0.2s ease;
+  box-shadow: 0 8px 16px rgba(36, 66, 143, .2);
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
 }
 
 .btn-avancar:hover,
 .btn-confirmar:hover {
-  background: var(--navy-900);
-  transform: translateY(-1px);
+  filter: brightness(.95);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px rgba(36, 66, 143, .25);
 }
 
 .btn-confirmar {
@@ -222,11 +319,11 @@
 /* ============================= */
 
 .box-resumo {
-  background: var(--card);
+  background: #ffffff;
   padding: 30px;
   border-radius: 16px;
-  border: 1px solid var(--border);
-  box-shadow: 0 8px 22px rgba(16, 26, 51, .06);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
 }
 
 .resumo-item {
@@ -242,12 +339,12 @@
 }
 
 .resumo-item span {
-  color: var(--text-muted);
+  color: #6b7280;
   font-size: 14px;
 }
 
 .resumo-item strong {
-  color: var(--text);
+  color: #111827;
   font-size: 15px;
 }
 
@@ -355,6 +452,12 @@
 .sucesso-box .btn-confirmar {
   margin-top: 30px;
 }
+.acoes-sucesso{ display:grid; gap:10px; margin-top:30px; }
+.acoes-sucesso .btn-confirmar{ margin-top:0; }
+.btn-secundario{
+  width:100%; border:1px solid #d1d5db; border-radius:9px; padding:13px 20px;
+  background:#fff; color:#24439b; font-size:15px; font-weight:700; cursor:pointer;
+}
 
 
 /* ============================= */
@@ -369,6 +472,35 @@
 
   .titulo-secao {
     font-size: 25px;
+  }
+
+  .cabecalho-agendamento {
+    margin-top: 24px;
+  }
+
+  .cabecalho-agendamento h1 {
+    font-size: 28px;
+  }
+
+  .progresso-agendamento {
+    gap: 6px;
+    margin-bottom: 30px;
+  }
+
+  .progresso-etapa {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .progresso-etapa span {
+    width: 28px;
+    height: 28px;
+  }
+
+  .progresso-linha {
+    min-width: 12px;
   }
 
   .card-servico {

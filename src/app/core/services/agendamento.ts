@@ -14,11 +14,15 @@ export class AgendamentoService {
   }
 
   adicionarAgendamento(estabelecimento: string, servico: Servico, data: string, horario: string): Agendamento {
+    if (!estabelecimento.trim() || !servico || !data || !horario) {
+      throw new Error('Todos os dados do agendamento são obrigatórios.');
+    }
+
     const novo: Agendamento = {
       id: Date.now(),
       empresa: estabelecimento,
-      servico: servico?.nome || 'Corte Completo',
-      valor: servico?.preco || 'R$ 45,00',
+      servico: servico.nome,
+      valor: servico.preco,
       data,
       horario,
       status: 'Confirmado'

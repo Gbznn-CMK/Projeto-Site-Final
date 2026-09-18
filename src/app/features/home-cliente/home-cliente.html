@@ -20,7 +20,7 @@
         <img class="nav-icon" src="/img/botao-home.png" alt="">
         <span class="label">Início</span>
       </a>
-      <a class="nav-item" routerLink="/home-cliente" fragment="busca-prestadores">
+      <a class="nav-item" routerLink="/buscar" fragment="busca-prestadores">
         <img class="nav-icon" src="/img/buscar.png" alt="">
         <span class="label">Buscar</span>
       </a>
@@ -50,11 +50,11 @@
 
     <div class="sidebar-profile">
       <div class="profile-row">
-        <div class="avatar">{{ userInitial }}</div>
-        <div class="profile-info">
-          <strong>{{ userName }}</strong>
-          <small>Cliente</small>
-        </div>
+       <a class="avatar" routerLink="/perfil" title="Ver perfil">{{ userInitial }}</a>
+    <div class="profile-info">
+      <strong>{{ userName }}</strong>
+      <small>Cliente</small>
+    </div>
         <button
           class="profile-menu-btn"
           title="Configurações do perfil"
@@ -62,6 +62,13 @@
           <img src="/img/menu-pontos-vertical.png" alt="">
         </button>
       </div>
+      @if (profileMenuOpen) {
+        <div class="profile-popover">
+          <strong>{{ userName }}</strong>
+          <span >Perfil do cliente</span>
+          <button type="button" (click)="logout()">Sair da conta</button>
+        </div>
+      }
 
       <button class="logout-btn-full" title="Sair" (click)="logout()">
         <img src="/img/saida.png" alt="" class="logout-icon">
@@ -81,7 +88,6 @@
           type="button"
           class="icon-btn"
           title="Filtros"
-          aria-label="Abrir filtros"
           [class.active-filter]="filterMenuOpen"
           (click)="toggleFilterMenu()">
           <img src="/img/filtro-de-barras.png" alt="">
@@ -121,10 +127,17 @@
         </div>
       </div>
       <div class="topbar-spacer"></div>
-      <button class="icon-btn" title="Notificações" aria-label="Notificações">
+      <button class="icon-btn" title="Notificações" type="button" (click)="toggleNotifications()" [attr.aria-expanded]="notificationsOpen">
         <img src="/img/sino.png" alt="">
-        <span class="badge">0</span>
+        <span class="badge">2</span>
       </button>
+      @if (notificationsOpen) {
+        <div class="notification-menu" role="status">
+          <strong>Notificações</strong>
+          <p>Seu agendamento está confirmado.</p>
+          <p>Há novos prestadores em destaque.</p>
+        </div>
+      }
     </header>
 
     <main class="content">
@@ -140,7 +153,7 @@
       </section>
 
       <div class="quick-row">
-        <a class="quick-card" routerLink="/home-cliente" fragment="busca-prestadores">
+        <a class="quick-card" routerLink="/buscar" fragment="busca-prestadores">
           <div class="quick-icon">
             <img src="/img/procurar.png" alt="">
           </div>
@@ -171,7 +184,7 @@
       <div class="provider-grid">
         <article class="provider-card" *ngFor="let provider of filteredProviders">
           <div class="provider-photo">
-            <img class="provider-photo-img" [src]="provider.image" [alt]="provider.name" loading="lazy">
+            <img class="provider-photo-img" [src]="provider.image" [alt]="provider.name">
             <button
               type="button"
               class="favorite-btn"
@@ -194,8 +207,11 @@
               {{ provider.hours }}</div>
             <div class="provider-rating">{{ provider.stars }} <span>{{ provider.rating }}</span></div>
             <div class="provider-actions">
-              <button type="button" class="profile-btn" disabled>Ver Perfil</button>
-              <a class="schedule-btn" routerLink="/agendamentos/novo">Agendar</a>
+              <button type="button" class="profile-btn" (click)="openProviderProfile(provider)">Ver Perfil</button>
+              <a class="schedule-btn" [routerLink]="['/agendamentos/novo']" [queryParams]="{ prestador: provider.id }">
+                <span>Agendar agora</span>
+                <span class="schedule-btn-arrow" aria-hidden="true">→</span>
+              </a>
             </div>
           </div>
         </article>
@@ -207,3 +223,28 @@
     </main>
   </div>
 </div>
+
+@if (selectedProvider) {
+  <div class="profile-modal-backdrop" role="presentation" (click)="closeProviderProfile()">
+    <section class="profile-modal" role="dialog" aria-modal="true" [attr.aria-label]="'Perfil de ' + selectedProvider.name" (click)="$event.stopPropagation()">
+      <button type="button" class="profile-modal-close" aria-label="Fechar perfil" (click)="closeProviderProfile()">×</button>
+      <img class="profile-modal-image" [src]="selectedProvider.image" [alt]="selectedProvider.name">
+      <div class="profile-modal-content">
+        <span class="provider-cat">{{ selectedProvider.category }}</span>
+        <h2>{{ selectedProvider.name }}</h2>
+        <p>{{ selectedProvider.address }}</p>
+        <p>{{ selectedProvider.hours }} · <strong>{{ selectedProvider.rating }}</strong></p>
+        <h3>Serviços disponíveis</h3>
+        <ul>
+          <li>Atendimento personalizado</li>
+          <li>Agendamento online</li>
+          <li>Avaliação {{ selectedProvider.stars }}</li>
+        </ul>
+        <a class="schedule-btn profile-schedule-btn" [routerLink]="['/agendamentos/novo']" [queryParams]="{ prestador: selectedProvider.id }" (click)="closeProviderProfile()">
+          <span>Agendar neste prestador</span>
+          <span class="schedule-btn-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+  </div>
+}

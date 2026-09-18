@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { RouterLink } from '@angular/router';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 
 // Imports com o nome exato da interface (Agendamento)
 import { AgendamentoService } from '../../../../core/services/agendamento';
@@ -16,36 +15,15 @@ import { AuthService } from '../../../../core/services/auth';
 })
 export class ListaAgendamentosComponent implements OnInit {
   agendamentos: Agendamento[] = [];
+  collapsed = false;
+  mobileExpanded = false;
+  profileMenuOpen = false;
 
   constructor(
     private agendamentoService: AgendamentoService,
     private router: Router,
-    private auth: AuthService
+    private auth: AuthService,
   ) {}
-
-  get userName(): string {
-    return this.auth.currentUser()?.nome || 'Cliente';
-  }
-
-  get userInitial(): string {
-    return this.userName.charAt(0).toUpperCase();
-  }
-
-  get isProvider(): boolean {
-    return this.auth.currentUser()?.tipoUsuario === 'prestador';
-  }
-
-  get roleLabel(): string {
-    return this.isProvider ? 'Prestador' : 'Cliente';
-  }
-
-  get pageEyebrow(): string {
-    return this.isProvider ? 'ÁREA DO PRESTADOR' : 'ÁREA DO CLIENTE';
-  }
-
-  get pageTitle(): string {
-    return this.isProvider ? 'Agenda' : 'Meus agendamentos';
-  }
 
   ngOnInit() {
     this.carregarAgendamentos();
@@ -55,16 +33,52 @@ export class ListaAgendamentosComponent implements OnInit {
     this.agendamentos = this.agendamentoService.obterAgendamentos();
   }
 
-  novoAgendamento(): void {
+  novoAgendamento() {
     this.router.navigate(['/agendamentos/novo']);
   }
 
   cancelar(id: number) {
-    if (typeof window !== 'undefined' &&
-      !window.confirm('Deseja realmente cancelar este agendamento?')) {
+    if (!window.confirm('Deseja realmente cancelar este agendamento?')) {
       return;
     }
     this.agendamentoService.cancelarAgendamento(id);
     this.carregarAgendamentos();
+  }
+
+  get userName(): string {
+    return this.auth.currentUser()?.nome || 'Cliente';
+  }
+
+  get userInitial(): string {
+    return this.userName.charAt(0).toUpperCase();
+  }
+
+  logout(): void {
+    this.profileMenuOpen = false;
+    this.auth.logout();
+    void this.router.navigate(['/login']);
+  }
+
+  toggleSidebar(): void {
+    if (this.isMobile()) {
+      this.mobileExpanded = !this.mobileExpanded;
+    } else {
+      this.collapsed = !this.collapsed;
+    }
+  }
+
+  toggleProfileMenu(): void {
+    this.profileMenuOpen = !this.profileMenuOpen;
+  }
+
+  private isMobile(): boolean {
+    return typeof window !== 'undefined' && window.innerWidth <= 860;
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    if (!this.isMobile()) {
+      this.mobileExpanded = false;
+    }
   }
 }

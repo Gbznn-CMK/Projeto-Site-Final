@@ -1,0 +1,263 @@
+<div class="app">
+  <button class="mobile-menu-btn" (click)="toggleSidebar()" title="Abrir menu">
+  <span></span><span></span><span></span>
+</button>
+
+@if (mobileExpanded) {
+  <div class="mobile-backdrop" (click)="toggleSidebar()"></div>
+}
+  <!-- SIDEBAR -->
+  <aside class="sidebar" [class.collapsed]="collapsed" [class.expanded-mobile]="mobileExpanded">
+    <div class="sidebar-head">
+      <div class="logo-mark">
+        <img src="/img/Logo-branca.png" alt="NaHora Serv" class="logo-img">
+      </div>
+      <span class="brand-name">NaHora Serv</span>
+      <button class="collapse-btn" title="Recolher/expandir menu" (click)="toggleSidebar()">
+        <img src="/img/seta-pequena-direita.png" alt="" aria-hidden="true">
+      </button>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">CLIENTE</div>
+      <a class="nav-item" routerLink="/home-cliente">
+        <img class="nav-icon" src="/img/botao-home.png" alt="">
+        <span class="label">Início</span>
+      </a>
+      <a class="nav-item" routerLink="/buscar" fragment="busca-prestadores">
+        <img class="nav-icon" src="/img/buscar.png" alt="">
+        <span class="label">Buscar</span>
+      </a>
+      <a class="nav-item" routerLink="/agendamentos">
+        <img class="nav-icon" src="/img/dias-do-calendario.png" alt="">
+        <span class="label">Agendamentos</span>
+      </a>
+      <a class="nav-item" routerLink="/favoritos">
+        <img class="nav-icon" src="/img/estrela-favotios.png" alt="">
+        <span class="label">Favoritos</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">SUPORTE</div>
+      <span class="nav-item nav-item-disabled" aria-disabled="true" title="Suporte em breve">
+        <img class="nav-icon" src="/img/SAC.png" alt="">
+        <span class="label">SAC</span>
+      </span>
+      <span class="nav-item nav-item-disabled" aria-disabled="true" title="Configurações em breve">
+        <img class="nav-icon" src="/img/configuracoes.png" alt="">
+        <span class="label">Configurações</span>
+      </span>
+    </div>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="sidebar-profile">
+      <div class="profile-row">
+       <a class="avatar" routerLink="/perfil" title="Ver perfil">{{ userInitial }}</a>
+    <div class="profile-info">
+      <strong>{{ userName }}</strong>
+      <small>Cliente</small>
+    </div>
+        <button class="profile-menu-btn" title="Configurações do perfil" (click)="toggleProfileMenu()">
+          <img src="/img/menu-pontos-vertical.png" alt="">
+        </button>
+      </div>
+
+      @if (profileMenuOpen) {
+        <div class="profile-popover">
+          <strong>{{ userName }}</strong>
+          <span>Perfil do cliente</span>
+          <button type="button" (click)="logout()">Sair da conta</button>
+        </div>
+      }
+
+      <button class="logout-btn-full" title="Sair" (click)="logout()">
+        <img src="/img/saida.png" alt="" class="logout-icon">
+        <span class="label">Sair</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- CONTEÚDO PRINCIPAL DO PERFIL -->
+  <main class="main-content">
+    <div class="app">
+
+  <aside class="sidebar" [class.collapsed]="collapsed" [class.expanded-mobile]="mobileExpanded">
+    <div class="sidebar-head">
+      <div class="logo-mark">
+      <img src="/img/Logo-branca.png" alt="NaHora Serv" class="logo-img">
+      </div>
+      <span class="brand-name">NaHora Serv</span>
+      <button
+        class="collapse-btn"
+        title="Recolher/expandir menu"
+        (click)="toggleSidebar()">
+        <img src="/img/seta-pequena-direita.png" alt="" aria-hidden="true">
+      </button>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">CLIENTE</div>
+      <a class="nav-item active" routerLink="/home-cliente" aria-current="page">
+        <img class="nav-icon" src="/img/botao-home.png" alt="">
+        <span class="label">Início</span>
+      </a>
+      <a class="nav-item" routerLink="/home-cliente" fragment="busca-prestadores">
+        <img class="nav-icon" src="/img/buscar.png" alt="">
+        <span class="label">Buscar</span>
+      </a>
+      <a class="nav-item" routerLink="/agendamentos">
+        <img class="nav-icon" src="/img/dias-do-calendario.png" alt="">
+        <span class="label">Agendamentos</span>
+      </a>
+      <a class="nav-item" routerLink="/favoritos">
+        <img class="nav-icon" src="/img/estrela-favotios.png" alt="">
+        <span class="label">Favoritos</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">SUPORTE</div>
+      <span class="nav-item nav-item-disabled" aria-disabled="true" title="Suporte em breve">
+        <img class="nav-icon" src="/img/SAC.png" alt="">
+        <span class="label">SAC</span>
+      </span>
+      <span class="nav-item nav-item-disabled" aria-disabled="true" title="Configurações em breve">
+        <img class="nav-icon" src="/img/configuracoes.png" alt="">
+        <span class="label">Configurações</span>
+      </span>
+    </div>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="sidebar-profile">
+      <div class="profile-row">
+        <div class="avatar">{{ userInitial }}</div>
+        <div class="profile-info">
+          <strong>{{ userName }}</strong>
+          <small>Cliente</small>
+        </div>
+        <button
+          class="profile-menu-btn"
+          title="Configurações do perfil"
+          (click)="toggleProfileMenu()">
+          <img src="/img/menu-pontos-vertical.png" alt="">
+        </button>
+      </div>
+      @if (profileMenuOpen) {
+        <div class="profile-popover">
+          <strong >{{ userName }}</strong>
+          <a routerLink="/Perfil" (click)="toggleProfileMenu()">
+          <span >Perfil do cliente</span>
+          </a>
+          <button type="button" (click)="logout()">Sair da conta</button>
+        </div>
+      }
+
+      <button class="logout-btn-full" title="Sair" (click)="logout()">
+        <img src="/img/saida.png" alt="" class="logout-icon">
+        <span class="label">Sair</span>
+      </button>
+    </div>
+  </aside>
+
+
+
+
+<div class="profile-container">
+  <!-- Cabeçalho do Perfil -->
+  <div class="profile-header">
+    <div class="header-avatar">
+      <svg class="avatar-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+      </svg>
+    </div>
+    <div class="header-welcome">
+      <h2>Olá, Bem-vindo(a) {{ usuario.nome }}</h2>
+      <h3>{{ usuario.sobrenome || ' Complete seu perfil' }}</h3>
+    </div>
+
+    <button class="btn-edit-profile" (click)="abrirModal()" title="Editar dados do perfil">
+      ✏️ Editar Perfil
+    </button>
+  </div>
+
+  <!-- Cartão de Informações -->
+  <div class="profile-card">
+    <div class="form-grid">
+      <div class="field-group">
+        <span class="icon">👤</span>
+        <span class="field-value">{{ usuario.nome }}</span>
+      </div>
+
+      <div class="field-group">
+        <span class="field-value" [class.placeholder-text]="!usuario.sobrenome">
+          {{ usuario.sobrenome || 'Adicionar sobrenome' }}
+        </span>
+      </div>
+
+      <div class="field-group">
+        <span class="icon">✉️</span>
+        <span class="field-value">{{ usuario.email }}</span>
+      </div>
+
+      <div class="field-group">
+        <span class="icon">📱</span>
+        <span class="field-value">{{ usuario.telefone }}</span>
+      </div>
+
+      <div class="field-group full-width">
+        <span class="icon">🪪</span>
+        <span class="field-value" [class.placeholder-text]="!usuario.cpf">
+          {{ usuario.cpf || 'Adicionar CPF' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal / Popup -->
+  @if (modalAberta) {
+    <div class="modal-overlay" (click)="fecharModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Editar Informações</h3>
+          <button class="close-btn" (click)="fecharModal()">&times;</button>
+        </div>
+
+        <form (ngSubmit)="salvarPerfil()">
+          <div class="input-group">
+            <label for="nome">Nome</label>
+            <input id="nome" type="text" [(ngModel)]="dadosEdicao.nome" name="nome" required>
+          </div>
+
+          <div class="input-group">
+            <label for="sobrenome">Sobrenome</label>
+            <input id="sobrenome" type="text" [(ngModel)]="dadosEdicao.sobrenome" name="sobrenome" placeholder="Ex: Todynho">
+          </div>
+
+          <div class="input-group">
+            <label for="email">E-mail</label>
+            <input id="email" type="email" [(ngModel)]="dadosEdicao.email" name="email">
+          </div>
+
+          <div class="input-group">
+            <label for="telefone">Telefone / Celular</label>
+            <input id="telefone" type="text" [(ngModel)]="dadosEdicao.telefone" (input)="formatarTelefone($event)" name="telefone" placeholder="(21) 99999-9999">
+          </div>
+
+          <div class="input-group">
+            <label for="cpf">CPF</label>
+            <input id="cpf" type="text" [(ngModel)]="dadosEdicao.cpf" (input)="formatarCPF($event)" name="cpf" placeholder="000.000.000-00">
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="fecharModal()">Cancelar</button>
+            <button type="submit" class="btn-save">Salvar Alterações</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>
+</div>

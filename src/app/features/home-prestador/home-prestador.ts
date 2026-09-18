@@ -25,6 +25,25 @@ export class HomePrestador {
   filterMenuOpen = false;
   selectedCategory = '';
   selectedSort = 'relevance';
+  notificationsOpen = false;
+
+  readonly agendaDemo = [
+    { horario: '09:00', cliente: 'João Silva', servico: 'Corte masculino' },
+    { horario: '10:30', cliente: 'Maria Souza', servico: 'Barba e toalha quente' },
+    { horario: '14:00', cliente: 'Ana Costa', servico: 'Manicure' },
+  ];
+
+  get agendamentosAtivos(): number {
+    const reais = this.agendamentoService.obterAgendamentos().filter((item) => item.status !== 'Cancelado').length;
+    return Math.max(reais, this.agendaDemo.length);
+  }
+
+  get receitaPrevista(): string {
+    const reais = this.agendamentoService.obterAgendamentos()
+      .filter((item) => item.status !== 'Cancelado')
+      .reduce((total, item) => total + Number(item.valor.replace(/[^\d,]/g, '').replace(',', '.')), 0);
+    return (reais || 275).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
 
   get userName(): string {
     return this.auth.currentUser()?.nome || 'Prestador';
@@ -32,23 +51,6 @@ export class HomePrestador {
 
   get userInitial(): string {
     return this.userName.charAt(0).toUpperCase();
-  }
-
-  get activeAppointments(): number {
-    return this.agendamentoService.obterAgendamentos()
-      .filter((item) => item.status === 'Confirmado').length;
-  }
-
-  get pendingAppointments(): number {
-    return this.agendamentoService.obterAgendamentos()
-      .filter((item) => item.status === 'Pendente').length;
-  }
-
-  get projectedRevenue(): string {
-    const total = this.agendamentoService.obterAgendamentos()
-      .filter((item) => item.status !== 'Cancelado')
-      .reduce((sum, item) => sum + Number.parseFloat(item.valor.replace(/[^\d,.-]/g, '').replace(',', '.')), 0);
-    return total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 
   toggleSidebar(): void {
@@ -67,6 +69,10 @@ export class HomePrestador {
 
   toggleProfileMenu(): void {
     this.profileMenuOpen = !this.profileMenuOpen;
+  }
+
+  toggleNotifications(): void {
+    this.notificationsOpen = !this.notificationsOpen;
   }
 
   logout(): void {
