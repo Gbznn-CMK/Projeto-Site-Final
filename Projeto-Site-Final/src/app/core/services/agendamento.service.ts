@@ -32,7 +32,15 @@ export class AgendamentoService {
 
     const agendamentos = this.getAgendamentos();
     const [appointmentDate, appointmentTime] = dataHora.split('T');
+    if (!appointmentDate || !appointmentTime) {
+      return false;
+    }
+
     const [appointmentH, appointmentM] = appointmentTime.substring(0, 5).split(':').map(Number);
+    if (!Number.isInteger(appointmentH) || !Number.isInteger(appointmentM)
+      || appointmentH < 0 || appointmentH > 23 || appointmentM < 0 || appointmentM > 59) {
+      return false;
+    }
 
     const appointmentStart = appointmentH * 60 + appointmentM;
     const appointmentEnd = appointmentStart + duracao;
@@ -45,6 +53,7 @@ export class AgendamentoService {
       if (aDate !== appointmentDate) return false;
 
       const [aH, aM] = aTime.substring(0, 5).split(':').map(Number);
+      if (!Number.isInteger(aH) || !Number.isInteger(aM)) return false;
       const aStart = aH * 60 + aM;
       const aEnd = aStart + a.duracao;
 

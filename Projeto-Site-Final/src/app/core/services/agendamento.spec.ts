@@ -36,6 +36,13 @@ describe('AgendamentoService', () => {
     expect(await firstValueFrom(service.getByCliente('user-1'))).toEqual([created]);
   });
 
+  it('rejects invalid date and time values', async () => {
+    await expect(firstValueFrom(service.create(appointment({ dataHora: '2099-09-10' }))))
+      .rejects.toThrow('Horário inválido');
+    await expect(firstValueFrom(service.create(appointment({ dataHora: '2099-09-10T25:00:00' }))))
+      .rejects.toThrow('Horário inválido');
+  });
+
   it('rejects overlapping appointments for the same provider', async () => {
     await firstValueFrom(service.create(appointment()));
 
