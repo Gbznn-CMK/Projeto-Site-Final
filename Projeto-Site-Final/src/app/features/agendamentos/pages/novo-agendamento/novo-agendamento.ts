@@ -5,22 +5,23 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AgendamentoService } from '../../../../core/services/agendamento';
 import { Servico } from '../../../../core/models/agendamento';
 import { LojaService } from '../../../../core/services/loja';
+import { AuthService } from '../../../../core/services/auth';
 
 @Component({
   selector: 'app-novo-agendamento',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './novo-agendamento.html',
-  styleUrls: ['./novo-agendamento.css']
+  styleUrls: ['./novo-agendamento.css'],
 })
 export class NovoAgendamentoComponent implements OnInit {
   passoAtual: number = 2;
 
   private readonly servicosPorCategoria: Record<string, Servico[]> = {
     Barbearia: [
-    { id: 1, nome: 'Corte Completo', duracao: '30 min', preco: 'R$ 45,00' },
-    { id: 2, nome: 'Barba e Toalha Quente', duracao: '30 min', preco: 'R$ 35,00' },
-    { id: 3, nome: 'Combo Cabelo + Barba', duracao: '50 min', preco: 'R$ 70,00' }
+      { id: 1, nome: 'Corte Completo', duracao: '30 min', preco: 'R$ 45,00' },
+      { id: 2, nome: 'Barba e Toalha Quente', duracao: '30 min', preco: 'R$ 35,00' },
+      { id: 3, nome: 'Combo Cabelo + Barba', duracao: '50 min', preco: 'R$ 70,00' },
     ],
     'Salão de Beleza': [
       { id: 4, nome: 'Escova e finalização', duracao: '45 min', preco: 'R$ 60,00' },
@@ -52,30 +53,34 @@ export class NovoAgendamentoComponent implements OnInit {
   ) {}
 
   private readonly lojaService = inject(LojaService);
+  private readonly auth = inject(AuthService);
 
   ngOnInit(): void {
     const prestadorId = Number(this.route?.snapshot.queryParamMap.get('prestador') ?? 1);
     const prestador = this.obterPrestador(prestadorId);
     this.estabelecimento = prestador.nome;
     this.categoriaEstabelecimento = prestador.categoria;
-    this.servicosDisponiveis = this.servicosPorCategoria[prestador.categoria] ?? this.servicosPorCategoria['Barbearia'];
+    this.servicosDisponiveis =
+      this.servicosPorCategoria[prestador.categoria] ?? this.servicosPorCategoria['Barbearia'];
 
     const loja = this.lojaService.obterPorId(prestadorId);
     if (loja) {
       const servicos = this.lojaService.listarServicos(loja.id);
       this.servicosDisponiveis = servicos.length
         ? servicos.map((servico) => ({
-          id: servico.id,
-          nome: servico.nome,
-          duracao: `${servico.duracao} min`,
-          preco: servico.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
-        }))
-        : [{
-          id: loja.id,
-          nome: 'Atendimento personalizado',
-          duracao: '60 min',
-          preco: 'A combinar',
-        }];
+            id: servico.id,
+            nome: servico.nome,
+            duracao: `${servico.duracao} min`,
+            preco: servico.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
+          }))
+        : [
+            {
+              id: loja.id,
+              nome: 'Atendimento personalizado',
+              duracao: '60 min',
+              preco: 'A combinar',
+            },
+          ];
     }
   }
 
@@ -105,6 +110,20 @@ export class NovoAgendamentoComponent implements OnInit {
       return;
     }
 
+    if (
+      this.servicoSelecionado &&
+      !this.agendamentoService.isHorarioDisponivel(
+        this.estabelecimento,
+        data,
+        horario,
+        this.servicoSelecionado,
+      )
+    ) {
+      this.erroDataHora =
+        'Este horário entra em conflito com outro agendamento. Escolha outro horário.';
+      return;
+    }
+
     this.dataSelecionada = data;
     this.horarioSelecionado = horario;
     this.erroDataHora = '';
@@ -116,13 +135,20 @@ export class NovoAgendamentoComponent implements OnInit {
       return;
     }
 
-    this.agendamentoService.adicionarAgendamento(
-      this.estabelecimento,
-      this.servicoSelecionado,
-      this.dataSelecionada,
-      this.horarioSelecionado
-    );
-    this.passoAtual = 5;
+    try {
+      this.agendamentoService.adicionarAgendamento(
+        this.estabelecimento,
+        this.servicoSelecionado,
+        this.dataSelecionada,
+        this.horarioSelecionado,
+        this.auth.currentUser()?.email,
+      );
+      this.passoAtual = 5;
+    } catch (error) {
+      this.erroDataHora =
+        error instanceof Error ? error.message : 'Não foi possível confirmar o agendamento.';
+      this.passoAtual = 3;
+    }
   }
 
   reiniciar() {
@@ -151,6 +177,6 @@ export class NovoAgendamentoComponent implements OnInit {
     const loja = this.lojaService.obterPorId(id);
     return loja
       ? { nome: loja.nome, categoria: loja.categoria }
-      : prestadores[id] ?? prestadores[1];
+      : (prestadores[id] ?? prestadores[1]);
   }
 }

@@ -7,8 +7,8 @@ import {
 } from '@angular/forms';
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../core/services/auth';
-import { UserType } from '../../core/models/user';
+import { AuthService } from '../../core/services/auth.service';
+import { TipoUsuario } from '../../core/models/types';
 
 @Component({
   selector: 'app-cadastro',
@@ -55,15 +55,23 @@ export class CadastroComponent {
       return;
     }
 
-    if (!this.auth.register({ ...user, tipoUsuario: user.tipoUsuario })) {
-      this.registerMessage = 'Este email já está cadastrado.';
-      return;
-    }
-
-    this.registerMessage = 'Cadastro realizado com sucesso!';
-    void this.router.navigate([
-      user.tipoUsuario === 'prestador' ? '/cadastro-loja' : '/home-cliente',
-    ]);
+    this.auth.signup({
+      nome: user.nome,
+      email: user.email,
+      password: user.senha,
+      telefone: '',
+      tipo: user.tipoUsuario,
+    }).subscribe({
+      next: () => {
+        this.registerMessage = 'Cadastro realizado com sucesso!';
+        void this.router.navigate([
+          user.tipoUsuario === 'prestador' ? '/cadastro-loja' : '/home-cliente',
+        ]);
+      },
+      error: (error: Error) => {
+        this.registerMessage = error.message || 'Este email já está cadastrado.';
+      },
+    });
   }
 
   isInvalid(field: 'nome' | 'email' | 'senha' | 'confirmarSenha'): boolean {
@@ -82,7 +90,7 @@ export class CadastroComponent {
     return senha === confirmarSenha ? null : { passwordsMismatch: true };
   }
 
-  private isUserType(value: string): value is UserType {
+  private isUserType(value: string): value is TipoUsuario {
     return value === 'cliente' || value === 'prestador';
   }
 }

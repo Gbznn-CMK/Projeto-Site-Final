@@ -24,7 +24,8 @@ export class PrestadorService {
   }
 
   getById(id: string): Observable<Prestador | undefined> {
-    return of(this.getPrestadores().find(p => p.id === id));
+    const normalizedId = id.startsWith('prest-') ? id : `prest-${id}`;
+    return of(this.getPrestadores().find(p => p.id === id || p.id === normalizedId));
   }
 
   getByUsuarioId(usuarioId: string): Observable<Prestador | undefined> {

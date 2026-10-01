@@ -215,24 +215,12 @@
       <section class="agenda-section">
         <div class="section-head">
           <div>
-            <span class="eyebrow">PRÓXIMOS HORÁRIOS</span>
-            <h2>Agenda de hoje e amanhã</h2>
+            <span class="eyebrow">AGENDA</span>
+            <h2>Gerencie seus atendimentos</h2>
           </div>
           <a routerLink="/agenda-prestador">Abrir agenda <span aria-hidden="true">›</span></a>
         </div>
-
-        <div class="agenda-list">
-          @for (item of agendaDemo; track item.horario) {
-            <article class="agenda-item">
-              <time>{{ item.horario }}</time>
-              <div>
-                <strong>{{ item.cliente }}</strong
-                ><span>{{ item.servico }}</span>
-              </div>
-              <span class="agenda-status">Confirmado</span>
-            </article>
-          }
-        </div>
+        <p class="empty-state">Os atendimentos aparecerão na agenda conforme forem recebidos.</p>
       </section>
     </div>
   </main>

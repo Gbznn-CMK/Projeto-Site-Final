@@ -1,16 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Buscar } from './buscar';
+import { provideRouter } from '@angular/router';
+import { BuscarComponent } from './buscar';
 
-describe('Buscar', () => {
-  let component: Buscar;
-  let fixture: ComponentFixture<Buscar>;
+describe('BuscarComponent', () => {
+  let component: BuscarComponent;
+  let fixture: ComponentFixture<BuscarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Buscar],
+      imports: [BuscarComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Buscar);
+    fixture = TestBed.createComponent(BuscarComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

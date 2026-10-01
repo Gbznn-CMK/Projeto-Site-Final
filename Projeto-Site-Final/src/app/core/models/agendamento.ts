@@ -16,8 +16,10 @@ export interface Loja {
 
 export interface Agendamento {
   id: number;
+  clienteEmail?: string;
   empresa: string;
   servico: string;
+  duracaoMinutos?: number;
   data: string;
   horario: string;
   valor: string;

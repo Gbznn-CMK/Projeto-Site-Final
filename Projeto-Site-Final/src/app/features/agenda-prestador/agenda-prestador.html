@@ -55,25 +55,6 @@
         <a class="primary-btn" routerLink="/home-prestador">Voltar ao painel</a>
       </section>
 
-      <section class="agenda-toolbar" aria-label="Controles da agenda">
-        <button type="button" class="date-chip active">Hoje, {{ agendaDemo.length }} atendimentos</button>
-        <button type="button" class="date-chip">Amanhã</button>
-        <button type="button" class="date-chip">Próxima semana</button>
-      </section>
-
-      <section class="agenda-board" aria-label="Agenda de atendimentos">
-        <div class="agenda-board-header"><strong>Hoje</strong><span>Horários reservados</span></div>
-        @for (item of agendaDemo; track item.horario) {
-          <article class="agenda-row">
-            <time>{{ item.horario }}</time>
-            <div class="agenda-avatar">{{ item.cliente.charAt(0) }}</div>
-            <div class="agenda-client"><strong>{{ item.cliente }}</strong><span>{{ item.servico }}</span></div>
-            <span class="agenda-status" [class.pending]="item.status === 'Pendente'">{{ item.status }}</span>
-            <button type="button" class="agenda-action" (click)="openAppointmentDetails(item)">Detalhes</button>
-          </article>
-        }
-      </section>
-
       @if (agendamentos.length > 0) {
         <section class="real-bookings">
           <h2>Agendamentos recebidos</h2>
@@ -83,20 +64,5 @@
         </section>
       }
     </div>
-
-    @if (selectedAppointment) {
-      <div class="appointment-modal-backdrop" role="presentation" (click)="closeAppointmentDetails()">
-        <section class="appointment-modal" role="dialog" aria-modal="true" aria-labelledby="appointment-details-title" (click)="$event.stopPropagation()">
-          <button type="button" class="appointment-modal-close" aria-label="Fechar detalhes" (click)="closeAppointmentDetails()">×</button>
-          <span class="eyebrow">DETALHES DO ATENDIMENTO</span>
-          <h2 id="appointment-details-title">{{ selectedAppointment.cliente }}</h2>
-          <div class="appointment-details">
-            <p><span>Horário</span><strong>{{ selectedAppointment.horario }}</strong></p>
-            <p><span>Serviço</span><strong>{{ selectedAppointment.servico }}</strong></p>
-            <p><span>Status</span><strong>{{ selectedAppointment.status }}</strong></p>
-          </div>
-        </section>
-      </div>
-    }
   </main>
 </div>

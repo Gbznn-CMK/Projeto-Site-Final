@@ -16,13 +16,6 @@ export class AgendaPrestadorComponent implements OnInit {
   profileMenuOpen = false;
   notificationsOpen = false;
   agendamentos: Agendamento[] = [];
-  selectedAppointment: (typeof this.agendaDemo)[number] | null = null;
-
-  readonly agendaDemo = [
-    { horario: '09:00', cliente: 'João Silva', servico: 'Corte masculino', status: 'Confirmado' },
-    { horario: '10:30', cliente: 'Maria Souza', servico: 'Barba e toalha quente', status: 'Pendente' },
-    { horario: '14:00', cliente: 'Ana Costa', servico: 'Manicure', status: 'Confirmado' },
-  ];
 
   constructor(
     private readonly auth: AuthService,
@@ -58,14 +51,6 @@ export class AgendaPrestadorComponent implements OnInit {
     this.notificationsOpen = !this.notificationsOpen;
   }
 
-  openAppointmentDetails(appointment: (typeof this.agendaDemo)[number]): void {
-    this.selectedAppointment = appointment;
-  }
-
-  closeAppointmentDetails(): void {
-    this.selectedAppointment = null;
-  }
-
   logout(): void {
     this.auth.logout();
     void this.router.navigate(['/login']);
@@ -76,11 +61,6 @@ export class AgendaPrestadorComponent implements OnInit {
     if (!this.isMobile()) {
       this.mobileExpanded = false;
     }
-  }
-
-  @HostListener('document:keydown.escape')
-  onEscape(): void {
-    this.closeAppointmentDetails();
   }
 
   private isMobile(): boolean {

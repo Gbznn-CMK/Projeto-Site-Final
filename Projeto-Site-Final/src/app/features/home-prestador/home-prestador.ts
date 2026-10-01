@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../core/services/auth';
-import { AgendamentoService } from '../../core/services/agendamento';
+import { AuthService } from '../../core/services/auth.service';
+import { Agendamento } from '../../core/models/types';
+import { AgendamentoService } from '../../core/services/agendamento.service';
 
 @Component({
   selector: 'app-home-prestador',
@@ -12,7 +13,7 @@ import { AgendamentoService } from '../../core/services/agendamento';
   templateUrl: './home-prestador.html',
   styleUrl: './home-prestador.css',
 })
-export class HomePrestador {
+export class HomePrestador implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly auth: AuthService,
@@ -27,26 +28,33 @@ export class HomePrestador {
   selectedSort = 'relevance';
   notificationsOpen = false;
 
-  readonly agendaDemo = [
-    { horario: '09:00', cliente: 'João Silva', servico: 'Corte masculino' },
-    { horario: '10:30', cliente: 'Maria Souza', servico: 'Barba e toalha quente' },
-    { horario: '14:00', cliente: 'Ana Costa', servico: 'Manicure' },
-  ];
+  private agendamentos: Agendamento[] = [];
+  private receita = 0;
+  private prestadorNome = 'Prestador';
+
+  ngOnInit(): void {
+    this.auth.getCurrentUser().subscribe((user) => {
+      if (!user) return;
+
+      this.prestadorNome = user.nome;
+
+      this.agendamentoService.getByPrestador(user.id).subscribe((agendamentos) => {
+        this.agendamentos = agendamentos.filter((item) => item.status !== 'cancelado');
+        this.receita = this.agendamentos.reduce((total, item) => total + item.valor, 0);
+      });
+    });
+  }
 
   get agendamentosAtivos(): number {
-    const reais = this.agendamentoService.obterAgendamentos().filter((item) => item.status !== 'Cancelado').length;
-    return Math.max(reais, this.agendaDemo.length);
+    return this.agendamentos.length;
   }
 
   get receitaPrevista(): string {
-    const reais = this.agendamentoService.obterAgendamentos()
-      .filter((item) => item.status !== 'Cancelado')
-      .reduce((total, item) => total + Number(item.valor.replace(/[^\d,]/g, '').replace(',', '.')), 0);
-    return (reais || 275).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    return this.receita.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 
   get userName(): string {
-    return this.auth.currentUser()?.nome || 'Prestador';
+    return this.prestadorNome;
   }
 
   get userInitial(): string {

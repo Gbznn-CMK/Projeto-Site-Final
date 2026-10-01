@@ -36,12 +36,12 @@ export class AuthService {
     }
   }
 
-  private getUsuarios(): Usuario[] {
+  private getUsuarios(): Array<Usuario & { password: string }> {
     const data = getLocalStorage()?.getItem(`${this.PREFIX}usuarios`);
-    return data ? JSON.parse(data) : MOCK_USUARIOS;
+    return data ? JSON.parse(data) : (MOCK_USUARIOS as Array<Usuario & { password: string }>);
   }
 
-  private saveUsuarios(usuarios: Usuario[]) {
+  private saveUsuarios(usuarios: Array<Usuario & { password: string }>) {
     getLocalStorage()?.setItem(`${this.PREFIX}usuarios`, JSON.stringify(usuarios));
   }
 
@@ -79,7 +79,7 @@ export class AuthService {
 
         console.log('USUÁRIOS:', usuarios);
 
-        const user = usuarios.find((u) => u.email === email);
+        const user = usuarios.find((u) => u.email === email && u.password === password);
 
         console.log('USUÁRIO ENCONTRADO:', user);
 
@@ -114,9 +114,10 @@ export class AuthService {
         }
 
         // Create new user
-        const newUser: Usuario = {
+        const newUser: Usuario & { password: string } = {
           id: `user-${Date.now()}`,
           nome: request.nome,
+          password: request.password,
           email: request.email,
           telefone: request.telefone,
           tipo: request.tipo,

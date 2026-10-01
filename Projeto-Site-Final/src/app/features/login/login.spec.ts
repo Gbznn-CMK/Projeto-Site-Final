@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { LoginComponent } from './login';
-import { AuthService } from '../../core/services/auth';
+import { AuthService } from '../../core/services/auth.service';
 import { Component } from '@angular/core';
 
 @Component({ template: '' })
@@ -27,16 +28,18 @@ describe('LoginComponent', () => {
     expect(component.loginMessage).toBe('');
   });
 
-  it('logs in a registered user', () => {
-    TestBed.inject(AuthService).register({
+  it('authenticates a registered user', async () => {
+    const auth = TestBed.inject(AuthService);
+    await firstValueFrom(auth.signup({
       nome: 'Ana',
-      email: 'ana@example.com',
-      senha: '12345678',
-      tipoUsuario: 'cliente',
-    });
-    TestBed.inject(AuthService).logout();
-    component.loginForm.setValue({ email: 'ana@example.com', senha: '12345678' });
-    component.onSubmit();
-    expect(component.loginMessage).toContain('sucesso');
+      email: 'login-test@example.com',
+      password: '12345678',
+      telefone: '',
+      tipo: 'cliente',
+    }));
+    auth.logout();
+
+    const response = await firstValueFrom(auth.login('login-test@example.com', '12345678'));
+    expect(response.usuario.email).toBe('login-test@example.com');
   });
 });

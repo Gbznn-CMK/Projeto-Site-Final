@@ -13,7 +13,7 @@ export class AgendamentoService {
 
   private getAgendamentos(): Agendamento[] {
     const data = getLocalStorage()?.getItem(`${this.PREFIX}agendamentos`);
-    return data ? JSON.parse(data) : MOCK_AGENDAMENTOS;
+    return data ? JSON.parse(data) : [...MOCK_AGENDAMENTOS];
   }
 
   private saveAgendamentos(agendamentos: Agendamento[]) {
@@ -26,6 +26,10 @@ export class AgendamentoService {
     duracao: number,
     excludeId?: string
   ): boolean {
+    if (!dataHora || duracao <= 0 || Number.isNaN(new Date(dataHora).getTime())) {
+      return false;
+    }
+
     const agendamentos = this.getAgendamentos();
     const [appointmentDate, appointmentTime] = dataHora.split('T');
     const [appointmentH, appointmentM] = appointmentTime.substring(0, 5).split(':').map(Number);
@@ -61,7 +65,12 @@ export class AgendamentoService {
       setTimeout(() => {
         // Check if time slot is available
         if (!this.isTimeSlotAvailable(agendamento.prestadorId, agendamento.dataHora, agendamento.duracao)) {
-          observer.error(new Error('Horário não está disponível'));
+          observer.error(new Error('Horário inválido ou não está disponível'));
+          return;
+        }
+
+        if (new Date(agendamento.dataHora).getTime() <= Date.now()) {
+          observer.error(new Error('O agendamento deve ser feito para um horário futuro'));
           return;
         }
 
@@ -102,6 +111,11 @@ export class AgendamentoService {
 
         if (!agendamento) {
           observer.error(new Error('Agendamento não encontrado'));
+          return;
+        }
+
+        if (!this.canUpdateStatus(agendamento.status, novoStatus)) {
+          observer.error(new Error('Transição de status não permitida'));
           return;
         }
 
@@ -198,5 +212,14 @@ export class AgendamentoService {
   // Check if appointment can be canceled/rescheduled
   canCancel(dataHora: string): boolean {
     return this.canCancelOrReschedule(dataHora);
+  }
+
+  private canUpdateStatus(currentStatus: StatusAgendamento, nextStatus: StatusAgendamento): boolean {
+    if (currentStatus === 'cancelado' || currentStatus === 'concluido') {
+      return false;
+    }
+
+    return (currentStatus === 'pendente' && (nextStatus === 'confirmado' || nextStatus === 'cancelado'))
+      || (currentStatus === 'confirmado' && (nextStatus === 'concluido' || nextStatus === 'cancelado'));
   }
 }

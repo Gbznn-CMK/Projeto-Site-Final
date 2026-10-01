@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../core/services/auth';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -30,16 +30,16 @@ export class LoginComponent {
     }
 
     const { email, senha } = this.loginForm.getRawValue();
-    if (!this.auth.login(email, senha)) {
-      this.loginMessage = 'Email ou senha inválidos.';
-      return;
-    }
-
-    this.loginMessage = 'Login realizado com sucesso!';
-    const destination = this.auth.currentUser()?.tipoUsuario === 'prestador'
-      ? '/home-prestador'
-      : '/home-cliente';
-    void this.router.navigate([destination]);
+    this.auth.login(email, senha).subscribe({
+      next: ({ usuario }) => {
+        this.loginMessage = 'Login realizado com sucesso!';
+        const destination = usuario.tipo === 'prestador' ? '/home-prestador' : '/home-cliente';
+        void this.router.navigate([destination]);
+      },
+      error: () => {
+        this.loginMessage = 'Email ou senha inválidos.';
+      },
+    });
   }
 
   isInvalid(field: 'email' | 'senha'): boolean {

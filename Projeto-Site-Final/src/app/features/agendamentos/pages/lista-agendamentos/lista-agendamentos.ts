@@ -30,18 +30,20 @@ export class ListaAgendamentosComponent implements OnInit {
   }
 
   carregarAgendamentos() {
-    this.agendamentos = this.agendamentoService.obterAgendamentos();
+    const email = this.auth.currentUser()?.email;
+    this.agendamentos = email ? this.agendamentoService.obterAgendamentos(email) : [];
   }
 
   novoAgendamento() {
-    this.router.navigate(['/agendamentos/novo']);
+    this.router.navigate(['/buscar']);
   }
 
   cancelar(id: number) {
     if (!window.confirm('Deseja realmente cancelar este agendamento?')) {
       return;
     }
-    this.agendamentoService.cancelarAgendamento(id);
+    const email = this.auth.currentUser()?.email;
+    this.agendamentoService.cancelarAgendamento(id, email);
     this.carregarAgendamentos();
   }
 

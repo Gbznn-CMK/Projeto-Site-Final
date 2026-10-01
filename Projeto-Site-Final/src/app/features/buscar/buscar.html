@@ -148,7 +148,7 @@
                   <span class="preco-label">A partir de</span>
                   <span class="preco-valor">R$ {{ prestador.precoDesde }}</span>
                 </div>
-                <a [routerLink]="['/agendamentos/novo']">
+                <a [routerLink]="['/agendamentos/novo', prestador.id]">
                 <button type="button"  class="btn-agendar">Agendar</button>
                 </a>
               </div>

@@ -9,6 +9,7 @@ export interface Usuario {
   tipo: TipoUsuario;
   foto?: string;
   dataCadastro?: string;
+  password?: string; // Only for internal use, not exposed in API responses
 }
 
 // Provider types

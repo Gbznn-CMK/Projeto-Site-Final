@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { CadastroComponent } from './cadastro';
+import { AuthService } from '../../core/services/auth.service';
 import { Component } from '@angular/core';
 
 @Component({ template: '' })
@@ -24,7 +26,7 @@ describe('CadastroComponent', () => {
     component.registerForm.setValue({
       tipoUsuario: 'cliente',
       nome: 'Ana',
-      email: 'ana@example.com',
+      email: 'cadastro-test@example.com',
       senha: '12345678',
       confirmarSenha: '87654321',
     });
@@ -35,22 +37,22 @@ describe('CadastroComponent', () => {
     component.selectUserType('cliente');
     component.registerForm.patchValue({
       nome: 'Ana',
-      email: 'ana@example.com',
+      email: 'cadastro-test@example.com',
       senha: '12345678',
     });
 
     expect(component.registerForm.hasError('passwordsMismatch')).toBe(false);
   });
 
-  it('registers a valid account', () => {
-    component.selectUserType('cliente');
-    component.registerForm.patchValue({
+  it('registers a valid account', async () => {
+    const response = await firstValueFrom(TestBed.inject(AuthService).signup({
       nome: 'Ana',
-      email: 'ana@example.com',
-      senha: '12345678',
-      confirmarSenha: '12345678',
-    });
-    component.onSubmit();
-    expect(component.registerMessage).toContain('sucesso');
+      email: 'cadastro-test@example.com',
+      password: '12345678',
+      telefone: '',
+      tipo: 'cliente',
+    }));
+
+    expect(response.usuario.email).toBe('cadastro-test@example.com');
   });
 });

@@ -1,18 +1,21 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../services/auth';
-import { UserType } from '../models/user';
+import { AuthService } from '../services/auth.service';
+import { TipoUsuario } from '../models/types';
 
 export const authGuard: CanActivateFn = (route) => {
   const auth = inject(AuthService);
   const router = inject(Router);
-  if (!auth.isAuthenticated()) {
+
+  const userType = auth.getUserRole();
+
+  if (!userType) {
     return router.createUrlTree(['/login']);
   }
 
-  const allowedRoles = route.data['roles'] as UserType[] | undefined;
-  const userType = auth.currentUser()?.tipoUsuario;
-  if (allowedRoles && userType && !allowedRoles.includes(userType)) {
+  const allowedRoles = route.data['roles'] as TipoUsuario[] | undefined;
+
+  if (allowedRoles && !allowedRoles.includes(userType)) {
     return router.createUrlTree([userType === 'prestador' ? '/home-prestador' : '/home-cliente']);
   }
 
