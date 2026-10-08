@@ -23,8 +23,14 @@ export class CadastroLojaComponent implements OnInit {
     nome: ['', [Validators.required, Validators.minLength(3)]],
     categoria: ['Barbearia', Validators.required],
     endereco: ['', [Validators.required, Validators.minLength(5)]],
+    cep: ['', [Validators.required, Validators.pattern(/^\d{5}-?\d{3}$/)]],
     horario: ['', [Validators.required, Validators.minLength(5)]],
+    imagemUrl: [''],
   });
+  fotos: string[] = [];
+  buscandoCep = false;
+  erroCep = '';
+  erroFoto = '';
 
   ngOnInit(): void {
     this.auth.getCurrentUser().subscribe((user) => {
@@ -45,12 +51,80 @@ export class CadastroLojaComponent implements OnInit {
     }
 
     this.lojaService.criar({
-      ...this.lojaForm.getRawValue(),
+      nome: this.lojaForm.controls.nome.value,
+      categoria: this.lojaForm.controls.categoria.value,
+      endereco: this.lojaForm.controls.endereco.value,
+      cep: this.lojaForm.controls.cep.value,
+      horario: this.lojaForm.controls.horario.value,
       proprietarioEmail: user.email,
-      imagemUrl: '/img/barbearia.webp',
+      imagemUrl: this.fotos[0] || this.lojaForm.controls.imagemUrl.value || '/img/barbearia.webp',
+      fotos: this.fotos,
       disponivel: true,
       servicos: [],
     });
     void this.router.navigate(['/servicos-prestador']);
+  }
+
+  async buscarCep(): Promise<void> {
+    const cep = this.lojaForm.controls.cep.value.replace(/\D/g, '');
+    if (cep.length !== 8) return;
+    this.buscandoCep = true;
+    this.erroCep = '';
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      if (!response.ok) throw new Error('Falha na consulta');
+      const data = await response.json() as { erro?: boolean; logradouro?: string; bairro?: string; localidade?: string; uf?: string };
+      if (data.erro) {
+        this.erroCep = 'CEP não encontrado.';
+        return;
+      }
+      const address = [data.logradouro, data.bairro, data.localidade && `${data.localidade} - ${data.uf}`]
+        .filter(Boolean)
+        .join(', ');
+      this.lojaForm.controls.endereco.setValue(address);
+    } catch {
+      this.erroCep = 'Não foi possível consultar o CEP agora. Preencha o endereço manualmente.';
+    } finally {
+      this.buscandoCep = false;
+    }
+  }
+
+  adicionarUrl(): void {
+    const url = this.lojaForm.controls.imagemUrl.value.trim();
+    if (!url) return;
+    try {
+      new URL(url);
+    } catch {
+      this.erroFoto = 'Informe uma URL válida para a imagem.';
+      return;
+    }
+    this.fotos = [...this.fotos, url];
+    this.lojaForm.controls.imagemUrl.setValue('');
+    this.erroFoto = '';
+  }
+
+  selecionarArquivo(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      this.erroFoto = 'Selecione um arquivo de imagem.';
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      this.erroFoto = 'A imagem deve ter no máximo 2 MB.';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') this.fotos = [...this.fotos, reader.result];
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+    this.erroFoto = '';
+  }
+
+  removerFoto(index: number): void {
+    this.fotos = this.fotos.filter((_, currentIndex) => currentIndex !== index);
   }
 }

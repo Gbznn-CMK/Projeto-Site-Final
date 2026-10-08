@@ -27,10 +27,41 @@
         <small>Informe um endereço válido.</small>
       }
 
+      <label for="cep">CEP</label>
+      <div class="cep-row">
+        <input id="cep" type="text" formControlName="cep" placeholder="00000-000" inputmode="numeric" (blur)="buscarCep()">
+        <button type="button" class="secondary-button" (click)="buscarCep()" [disabled]="buscandoCep">
+          {{ buscandoCep ? 'Consultando...' : 'Buscar CEP' }}
+        </button>
+      </div>
+      @if (lojaForm.controls.cep.touched && lojaForm.controls.cep.invalid) {
+        <small>Informe um CEP válido.</small>
+      }
+      @if (erroCep) { <small>{{ erroCep }}</small> }
+
       <label for="horario">Horário de funcionamento</label>
       <input id="horario" type="text" formControlName="horario" placeholder="Ex.: Seg. a Sáb., 09:00–18:00">
       @if (lojaForm.controls.horario.touched && lojaForm.controls.horario.invalid) {
         <small>Informe o horário de funcionamento.</small>
+      }
+
+      <label for="imagemUrl">Foto por link (opcional)</label>
+      <div class="cep-row">
+        <input id="imagemUrl" type="url" formControlName="imagemUrl" placeholder="https://...">
+        <button type="button" class="secondary-button" (click)="adicionarUrl()">Adicionar</button>
+      </div>
+      <label for="imagemArquivo">Ou envie uma foto</label>
+      <input id="imagemArquivo" type="file" accept="image/*" (change)="selecionarArquivo($event)">
+      @if (erroFoto) { <small>{{ erroFoto }}</small> }
+      @if (fotos.length) {
+        <div class="photo-grid" aria-label="Fotos adicionadas">
+          @for (foto of fotos; track foto; let index = $index) {
+            <div class="photo-preview">
+              <img [src]="foto" alt="Prévia da foto do estabelecimento">
+              <button type="button" (click)="removerFoto(index)" [attr.aria-label]="'Remover foto ' + (index + 1)">Remover</button>
+            </div>
+          }
+        </div>
       }
 
       <button type="submit">Criar loja e cadastrar serviços</button>

@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { Agendamento } from '../../core/models/types';
 import { AgendamentoService } from '../../core/services/agendamento.service';
+import { Notificacao, NotificacaoService } from '../../core/services/notificacao.service';
 
 @Component({
   selector: 'app-home-prestador',
@@ -18,6 +19,7 @@ export class HomePrestador implements OnInit {
     private readonly router: Router,
     private readonly auth: AuthService,
     private readonly agendamentoService: AgendamentoService,
+    private readonly notificacaoService: NotificacaoService,
   ) {}
 
   collapsed = false;
@@ -27,6 +29,7 @@ export class HomePrestador implements OnInit {
   selectedCategory = '';
   selectedSort = 'relevance';
   notificationsOpen = false;
+  notificacoes: Notificacao[] = [];
 
   private agendamentos: Agendamento[] = [];
   private receita = 0;
@@ -42,6 +45,9 @@ export class HomePrestador implements OnInit {
         this.agendamentos = agendamentos.filter((item) => item.status !== 'cancelado');
         this.receita = this.agendamentos.reduce((total, item) => total + item.valor, 0);
       });
+      this.notificacaoService.paraUsuario(user.id, 'prestador').subscribe({
+        next: notificacoes => this.notificacoes = notificacoes,
+      });
     });
   }
 
@@ -51,6 +57,10 @@ export class HomePrestador implements OnInit {
 
   get receitaPrevista(): string {
     return this.receita.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  get notificationCount(): number {
+    return this.notificacoes.length;
   }
 
   get userName(): string {

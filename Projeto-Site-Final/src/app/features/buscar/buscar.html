@@ -113,7 +113,11 @@
           <option value="menor-preco">Menor preço</option>
           <option value="maior-preco">Maior preço</option>
         </select>
+        <button type="button" class="chip location-button" (click)="buscarProximos()">📍 Mais próximos</button>
       </div>
+      @if (locationMessage) {
+        <p class="location-message" role="status">{{ locationMessage }}</p>
+      }
 
       <div class="resultados-info">
         {{ prestadoresFiltrados.length }} prestador(es) encontrado(s)
@@ -147,6 +151,9 @@
                 <div class="produto-preco">
                   <span class="preco-label">A partir de</span>
                   <span class="preco-valor">R$ {{ prestador.precoDesde }}</span>
+                  @if (prestador.distanciaKm !== undefined) {
+                    <span class="produto-distancia">{{ prestador.distanciaKm | number: '1.1-1' }} km</span>
+                  }
                 </div>
                 <a [routerLink]="['/agendamentos/novo', prestador.id]">
                 <button type="button"  class="btn-agendar">Agendar</button>

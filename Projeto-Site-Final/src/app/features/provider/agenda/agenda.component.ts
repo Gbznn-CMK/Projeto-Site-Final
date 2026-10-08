@@ -31,6 +31,12 @@ import { DateTimePipe, CurrencyPipe } from '../../../shared/pipes/formatting.pip
           {{ option.label }}
         </button>
       </div>
+      <div class="date-navigation" aria-label="Navegação da agenda">
+        <button type="button" (click)="setDate('today')" [class.active]="dateFilter === 'today'">Hoje</button>
+        <button type="button" (click)="setDate('tomorrow')" [class.active]="dateFilter === 'tomorrow'">Amanhã</button>
+        <button type="button" (click)="setDate('week')" [class.active]="dateFilter === 'week'">Próxima semana</button>
+        <button type="button" (click)="setDate('all')" [class.active]="dateFilter === 'all'">Todos</button>
+      </div>
       <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
       <p class="loading-state" *ngIf="loading">Carregando agenda...</p>
       <div class="agenda-list" *ngIf="!loading && filteredAppointments.length">
@@ -43,6 +49,9 @@ import { DateTimePipe, CurrencyPipe } from '../../../shared/pipes/formatting.pip
             <h2>{{ item.serviceName }}</h2>
             <p>{{ item.clientName }}</p>
             <span>{{ item.agendamento.valor | currency }}</span>
+            <a *ngIf="item.clientPhone" class="contact-link" [href]="whatsappUrl(item.clientPhone, item.clientName)" target="_blank" rel="noopener">
+              Conversar com cliente
+            </a>
           </div>
           <div class="appointment-actions">
             <app-status-badge [status]="item.agendamento.status"></app-status-badge
@@ -66,6 +75,20 @@ import { DateTimePipe, CurrencyPipe } from '../../../shared/pipes/formatting.pip
               (click)="changeStatus(item.agendamento, 'cancelado')"
             >
               Cancelar
+            </button>
+            <button
+              *ngIf="item.agendamento.status !== 'cancelado' && item.agendamento.status !== 'concluido'"
+              class="btn btn-secondary"
+              (click)="editAppointment(item)"
+            >
+              Editar horário
+            </button>
+            <button
+              *ngIf="item.agendamento.status === 'cancelado'"
+              class="btn btn-danger"
+              (click)="deleteAppointment(item.agendamento)"
+            >
+              Apagar
             </button>
           </div>
         </article>
@@ -105,6 +128,25 @@ import { DateTimePipe, CurrencyPipe } from '../../../shared/pipes/formatting.pip
         gap: var(--space-sm);
         overflow-x: auto;
         margin-bottom: var(--space-xl);
+      }
+      .date-navigation {
+        display: flex;
+        gap: var(--space-sm);
+        flex-wrap: wrap;
+        margin: 0 0 var(--space-xl);
+      }
+      .date-navigation button {
+        padding: var(--space-sm) var(--space-md);
+        background: white;
+        border: 1px solid var(--color-neutral-300);
+        border-radius: var(--radius-md);
+        color: var(--color-neutral-700);
+        cursor: pointer;
+      }
+      .date-navigation button.active {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: white;
       }
       .filters button {
         background: white;
@@ -156,6 +198,13 @@ import { DateTimePipe, CurrencyPipe } from '../../../shared/pipes/formatting.pip
       .appointment-copy span {
         color: var(--color-success-dark);
         font-weight: var(--font-weight-bold);
+      }
+      .contact-link {
+        display: block;
+        margin-top: var(--space-sm);
+        color: var(--color-primary);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
       }
       .appointment-actions {
         display: flex;
@@ -214,8 +263,8 @@ import { DateTimePipe, CurrencyPipe } from '../../../shared/pipes/formatting.pip
   ],
 })
 export class AgendaComponent implements OnInit {
-  appointments: { agendamento: Agendamento; clientName: string; serviceName: string }[] = [];
-  filteredAppointments: { agendamento: Agendamento; clientName: string; serviceName: string }[] =
+  appointments: { agendamento: Agendamento; clientName: string; clientPhone: string; serviceName: string }[] = [];
+  filteredAppointments: { agendamento: Agendamento; clientName: string; clientPhone: string; serviceName: string }[] =
     [];
   filters = [
     { label: 'Todos', value: 'todos' },
@@ -228,6 +277,7 @@ export class AgendaComponent implements OnInit {
   loading = true;
   errorMessage = '';
   private prestadorId = '';
+  dateFilter: 'all' | 'today' | 'tomorrow' | 'week' = 'all';
 
   constructor(
     private authService: AuthService,
@@ -268,6 +318,7 @@ export class AgendaComponent implements OnInit {
                 agendamento: appointment,
                 serviceName: service?.nome || 'Serviço',
                 clientName: client?.nome || 'Cliente',
+                clientPhone: client?.telefone || '',
               });
               loaded++;
               if (loaded === appointments.length) {
@@ -286,10 +337,10 @@ export class AgendaComponent implements OnInit {
   }
 
   applyFilter() {
-    this.filteredAppointments =
-      this.filter === 'todos'
-        ? this.appointments
-        : this.appointments.filter((item) => item.agendamento.status === this.filter);
+    const byStatus = this.filter === 'todos'
+      ? this.appointments
+      : this.appointments.filter((item) => item.agendamento.status === this.filter);
+    this.filteredAppointments = byStatus.filter(item => this.matchesDate(item.agendamento.dataHora));
   }
 
   setFilter(value: string) {
@@ -306,5 +357,58 @@ export class AgendaComponent implements OnInit {
       error: (error) =>
         (this.errorMessage = error.message || 'Não foi possível atualizar o status.'),
     });
+  }
+
+  setDate(filter: 'all' | 'today' | 'tomorrow' | 'week') {
+    this.dateFilter = filter;
+    this.applyFilter();
+  }
+
+  editAppointment(item: { agendamento: Agendamento; clientName: string; clientPhone: string; serviceName: string }) {
+    const current = item.agendamento.dataHora.slice(0, 16);
+    const next = prompt(`Novo horário para ${item.clientName} (AAAA-MM-DDTHH:mm):`, current);
+    if (!next || next === current) return;
+    this.agendamentoService.rescheduleByPrestador(item.agendamento.id, next, this.prestadorId).subscribe({
+      next: updated => {
+        item.agendamento.dataHora = updated.dataHora;
+        item.agendamento.status = updated.status;
+        this.applyFilter();
+      },
+      error: error => this.errorMessage = error.message || 'Não foi possível editar o agendamento.',
+    });
+  }
+
+  deleteAppointment(appointment: Agendamento) {
+    if (!confirm('Apagar definitivamente este agendamento cancelado?')) return;
+    this.agendamentoService.deleteByPrestador(appointment.id, this.prestadorId).subscribe({
+      next: () => {
+        this.appointments = this.appointments.filter(item => item.agendamento.id !== appointment.id);
+        this.applyFilter();
+      },
+      error: error => this.errorMessage = error.message || 'Não foi possível apagar o agendamento.',
+    });
+  }
+
+  whatsappUrl(phone: string, clientName: string): string {
+    const digits = phone.replace(/\D/g, '');
+    const number = digits.startsWith('55') ? digits : `55${digits}`;
+    return `https://wa.me/${number}?text=${encodeURIComponent(`Olá, ${clientName}! Estou entrando em contato sobre seu agendamento.`)}`;
+  }
+
+  private matchesDate(dataHora: string): boolean {
+    if (this.dateFilter === 'all') return true;
+    const date = new Date(dataHora);
+    const target = new Date();
+    target.setHours(0, 0, 0, 0);
+    if (this.dateFilter === 'tomorrow') target.setDate(target.getDate() + 1);
+    if (this.dateFilter === 'week') {
+      const day = target.getDay();
+      const daysUntilNextMonday = day === 0 ? 1 : 8 - day;
+      target.setDate(target.getDate() + daysUntilNextMonday);
+      const end = new Date(target);
+      end.setDate(end.getDate() + 7);
+      return date >= target && date < end;
+    }
+    return date.toDateString() === target.toDateString();
   }
 }

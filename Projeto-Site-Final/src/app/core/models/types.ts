@@ -22,6 +22,10 @@ export interface Prestador {
   endereco: string;
   horarioFuncionamento: string; // e.g., "09:00-18:00"
   foto?: string;
+  fotos?: string[];
+  cep?: string;
+  latitude?: number;
+  longitude?: number;
   dataCadastro?: string;
 }
 

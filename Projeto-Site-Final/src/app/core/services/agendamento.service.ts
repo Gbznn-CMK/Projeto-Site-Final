@@ -5,7 +5,7 @@ import { MOCK_AGENDAMENTOS } from '../data/mock-data';
 import { getLocalStorage } from '../utils/storage';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AgendamentoService {
   private readonly PREFIX = 'nahora_';
@@ -24,7 +24,7 @@ export class AgendamentoService {
     prestadorId: string,
     dataHora: string,
     duracao: number,
-    excludeId?: string
+    excludeId?: string,
   ): boolean {
     if (!dataHora || duracao <= 0 || Number.isNaN(new Date(dataHora).getTime())) {
       return false;
@@ -37,15 +37,21 @@ export class AgendamentoService {
     }
 
     const [appointmentH, appointmentM] = appointmentTime.substring(0, 5).split(':').map(Number);
-    if (!Number.isInteger(appointmentH) || !Number.isInteger(appointmentM)
-      || appointmentH < 0 || appointmentH > 23 || appointmentM < 0 || appointmentM > 59) {
+    if (
+      !Number.isInteger(appointmentH) ||
+      !Number.isInteger(appointmentM) ||
+      appointmentH < 0 ||
+      appointmentH > 23 ||
+      appointmentM < 0 ||
+      appointmentM > 59
+    ) {
       return false;
     }
 
     const appointmentStart = appointmentH * 60 + appointmentM;
     const appointmentEnd = appointmentStart + duracao;
 
-    return !agendamentos.some(a => {
+    return !agendamentos.some((a) => {
       if (a.id === excludeId || a.prestadorId !== prestadorId) return false;
       if (a.status === 'cancelado') return false; // Canceled appointments don't block
 
@@ -70,10 +76,16 @@ export class AgendamentoService {
   }
 
   create(agendamento: Agendamento): Observable<Agendamento> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         // Check if time slot is available
-        if (!this.isTimeSlotAvailable(agendamento.prestadorId, agendamento.dataHora, agendamento.duracao)) {
+        if (
+          !this.isTimeSlotAvailable(
+            agendamento.prestadorId,
+            agendamento.dataHora,
+            agendamento.duracao,
+          )
+        ) {
           observer.error(new Error('Horário inválido ou não está disponível'));
           return;
         }
@@ -88,7 +100,7 @@ export class AgendamentoService {
           ...agendamento,
           id: `agend-${Date.now()}`,
           status: 'pendente',
-          dataCadastro: new Date().toISOString()
+          dataCadastro: new Date().toISOString(),
         };
 
         agendamentos.push(newAgendamento);
@@ -101,22 +113,22 @@ export class AgendamentoService {
   }
 
   getByCliente(clienteId: string): Observable<Agendamento[]> {
-    return of(this.getAgendamentos().filter(a => a.clienteId === clienteId));
+    return of(this.getAgendamentos().filter((a) => a.clienteId === clienteId));
   }
 
   getByPrestador(prestadorId: string): Observable<Agendamento[]> {
-    return of(this.getAgendamentos().filter(a => a.prestadorId === prestadorId));
+    return of(this.getAgendamentos().filter((a) => a.prestadorId === prestadorId));
   }
 
   getById(agendamentoId: string): Observable<Agendamento | undefined> {
-    return of(this.getAgendamentos().find(a => a.id === agendamentoId));
+    return of(this.getAgendamentos().find((a) => a.id === agendamentoId));
   }
 
   updateStatus(agendamentoId: string, novoStatus: StatusAgendamento): Observable<Agendamento> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const agendamentos = this.getAgendamentos();
-        const agendamento = agendamentos.find(a => a.id === agendamentoId);
+        const agendamento = agendamentos.find((a) => a.id === agendamentoId);
 
         if (!agendamento) {
           observer.error(new Error('Agendamento não encontrado'));
@@ -138,10 +150,10 @@ export class AgendamentoService {
   }
 
   cancel(agendamentoId: string, clienteId: string): Observable<void> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const agendamentos = this.getAgendamentos();
-        const agendamento = agendamentos.find(a => a.id === agendamentoId);
+        const agendamento = agendamentos.find((a) => a.id === agendamentoId);
 
         if (!agendamento) {
           observer.error(new Error('Agendamento não encontrado'));
@@ -154,7 +166,9 @@ export class AgendamentoService {
         }
 
         if (!this.canCancelOrReschedule(agendamento.dataHora)) {
-          observer.error(new Error('Agendamento não pode ser cancelado com menos de 24 horas de antecedência'));
+          observer.error(
+            new Error('Agendamento não pode ser cancelado com menos de 24 horas de antecedência'),
+          );
           return;
         }
 
@@ -170,12 +184,12 @@ export class AgendamentoService {
   reschedule(
     agendamentoId: string,
     novaDataHora: string,
-    clienteId: string
+    clienteId: string,
   ): Observable<Agendamento> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const agendamentos = this.getAgendamentos();
-        const agendamento = agendamentos.find(a => a.id === agendamentoId);
+        const agendamento = agendamentos.find((a) => a.id === agendamentoId);
 
         if (!agendamento) {
           observer.error(new Error('Agendamento não encontrado'));
@@ -188,17 +202,21 @@ export class AgendamentoService {
         }
 
         if (!this.canCancelOrReschedule(agendamento.dataHora)) {
-          observer.error(new Error('Agendamento não pode ser reagendado com menos de 24 horas de antecedência'));
+          observer.error(
+            new Error('Agendamento não pode ser reagendado com menos de 24 horas de antecedência'),
+          );
           return;
         }
 
         // Check if new time slot is available
-        if (!this.isTimeSlotAvailable(
-          agendamento.prestadorId,
-          novaDataHora,
-          agendamento.duracao,
-          agendamentoId
-        )) {
+        if (
+          !this.isTimeSlotAvailable(
+            agendamento.prestadorId,
+            novaDataHora,
+            agendamento.duracao,
+            agendamentoId,
+          )
+        ) {
           observer.error(new Error('Novo horário não está disponível'));
           return;
         }
@@ -213,6 +231,74 @@ export class AgendamentoService {
     });
   }
 
+  rescheduleByPrestador(
+    agendamentoId: string,
+    novaDataHora: string,
+    prestadorId: string,
+  ): Observable<Agendamento> {
+    return new Observable((observer) => {
+      setTimeout(() => {
+        const agendamentos = this.getAgendamentos();
+        const agendamento = agendamentos.find((a) => a.id === agendamentoId);
+
+        if (!agendamento) {
+          observer.error(new Error('Agendamento não encontrado'));
+          return;
+        }
+        if (agendamento.prestadorId !== prestadorId) {
+          observer.error(new Error('Você não pode editar este agendamento'));
+          return;
+        }
+        if (agendamento.status === 'cancelado' || agendamento.status === 'concluido') {
+          observer.error(new Error('Este agendamento não pode ser editado'));
+          return;
+        }
+        if (new Date(novaDataHora).getTime() <= Date.now()) {
+          observer.error(new Error('O agendamento deve ser feito para um horário futuro'));
+          return;
+        }
+        if (
+          !this.isTimeSlotAvailable(
+            agendamento.prestadorId,
+            novaDataHora,
+            agendamento.duracao,
+            agendamento.id,
+          )
+        ) {
+          observer.error(new Error('Novo horário não está disponível'));
+          return;
+        }
+
+        agendamento.dataHora = novaDataHora;
+        agendamento.status = 'pendente';
+        this.saveAgendamentos(agendamentos);
+        observer.next(agendamento);
+        observer.complete();
+      }, 500);
+    });
+  }
+
+  deleteByPrestador(agendamentoId: string, prestadorId: string): Observable<void> {
+    return new Observable((observer) => {
+      setTimeout(() => {
+        const agendamentos = this.getAgendamentos();
+        const index = agendamentos.findIndex((a) => a.id === agendamentoId);
+        if (index < 0) {
+          observer.error(new Error('Agendamento não encontrado'));
+          return;
+        }
+        if (agendamentos[index].prestadorId !== prestadorId) {
+          observer.error(new Error('Você não pode apagar este agendamento'));
+          return;
+        }
+        agendamentos.splice(index, 1);
+        this.saveAgendamentos(agendamentos);
+        observer.next();
+        observer.complete();
+      }, 300);
+    });
+  }
+
   // Check if a specific time slot is available (for UI validation)
   isAvailable(prestadorId: string, dataHora: string, duracao: number): boolean {
     return this.isTimeSlotAvailable(prestadorId, dataHora, duracao);
@@ -223,12 +309,18 @@ export class AgendamentoService {
     return this.canCancelOrReschedule(dataHora);
   }
 
-  private canUpdateStatus(currentStatus: StatusAgendamento, nextStatus: StatusAgendamento): boolean {
+  private canUpdateStatus(
+    currentStatus: StatusAgendamento,
+    nextStatus: StatusAgendamento,
+  ): boolean {
     if (currentStatus === 'cancelado' || currentStatus === 'concluido') {
       return false;
     }
 
-    return (currentStatus === 'pendente' && (nextStatus === 'confirmado' || nextStatus === 'cancelado'))
-      || (currentStatus === 'confirmado' && (nextStatus === 'concluido' || nextStatus === 'cancelado'));
+    return (
+      (currentStatus === 'pendente' &&
+        (nextStatus === 'confirmado' || nextStatus === 'cancelado')) ||
+      (currentStatus === 'confirmado' && (nextStatus === 'concluido' || nextStatus === 'cancelado'))
+    );
   }
 }

@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth';
 import { FavoritosService } from '../../services/favoritos';
 import { LojaService } from '../../core/services/loja';
+import { Notificacao, NotificacaoService } from '../../core/services/notificacao.service';
 
 @Component({
   selector: 'app-home-cliente',
@@ -18,6 +19,7 @@ export class HomeCliente implements OnInit {
     private readonly router: Router,
     private readonly auth: AuthService,
     private readonly favoritosService: FavoritosService,
+    private readonly notificacaoService: NotificacaoService,
   ) {}
 
   private readonly lojaService = inject(LojaService);
@@ -33,6 +35,7 @@ export class HomeCliente implements OnInit {
   favorites = new Set<string>();
   selectedProvider: (typeof this.providers)[number] | null = null;
   notificationsOpen = false;
+  notificacoes: Notificacao[] = [];
 
   ngOnInit(): void {
     for (const loja of this.lojaService.listar()) {
@@ -54,6 +57,12 @@ export class HomeCliente implements OnInit {
           .map((provider) => provider.name),
       );
     });
+    const userId = this.auth.currentUser()?.email;
+    if (userId) {
+      this.notificacaoService.paraUsuario(userId, 'cliente').subscribe({
+        next: notificacoes => this.notificacoes = notificacoes,
+      });
+    }
   }
 
   readonly providers = [
@@ -194,6 +203,10 @@ export class HomeCliente implements OnInit {
 
   toggleNotifications(): void {
     this.notificationsOpen = !this.notificationsOpen;
+  }
+
+  get notificationCount(): number {
+    return this.notificacoes.length;
   }
 
   logout(): void {

@@ -14,8 +14,12 @@ export interface Loja {
   nome: string;
   categoria: string;
   endereco: string;
+  cep?: string;
   horario: string;
   imagemUrl: string;
+  fotos?: string[];
+  latitude?: number;
+  longitude?: number;
   disponivel: boolean;
   servicos: ServicoLoja[];
 }

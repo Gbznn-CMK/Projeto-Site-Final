@@ -139,13 +139,21 @@
         [attr.aria-expanded]="notificationsOpen"
       >
         <img src="/img/sino.png" alt="" />
-        <span class="badge">2</span>
+        <span class="badge">{{ notificationCount }}</span>
       </button>
       @if (notificationsOpen) {
         <div class="notification-menu" role="status">
           <strong>Notificações</strong>
-          <p>Seu agendamento está confirmado.</p>
-          <p>Há novos prestadores em destaque.</p>
+          @if (notificacoes.length) {
+            @for (notificacao of notificacoes; track notificacao.id) {
+              <a class="notification-item" [routerLink]="notificacao.link" (click)="notificationsOpen = false">
+                <strong>{{ notificacao.titulo }}</strong>
+                <span>{{ notificacao.mensagem }}</span>
+              </a>
+            }
+          } @else {
+            <p>Nenhuma atualização de agendamento no momento.</p>
+          }
         </div>
       }
     </header>
