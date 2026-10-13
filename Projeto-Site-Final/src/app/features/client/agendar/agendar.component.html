@@ -1,0 +1,142 @@
+<section class="booking-page">
+      <a class="back-link" routerLink="/buscar">← Voltar para a busca</a>
+
+      <div class="heading">
+        <p class="eyebrow">Novo agendamento</p>
+        <h1>{{ prestador?.nomeEstabelecimento || 'Agendar atendimento' }}</h1>
+      </div>
+
+      <div class="steps" aria-label="Etapas do agendamento">
+        <span [class.active]="step >= 1">1 Serviço</span>
+        <span [class.active]="step >= 2">2 Data e horário</span>
+        <span [class.active]="step >= 3">3 Confirmação</span>
+      </div>
+
+      <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+      <div class="success-message" *ngIf="successMessage">
+        <p>{{ successMessage }}</p>
+        <a class="btn btn-primary" routerLink="/agendamentos">Ver meus agendamentos</a>
+      </div>
+
+      <div class="booking-card" *ngIf="!loading && !successMessage">
+        <ng-container *ngIf="step === 1">
+          <h2>Escolha um serviço</h2>
+          <div class="service-options" *ngIf="servicos.length; else noServices">
+            <button
+              class="service-option"
+              *ngFor="let servico of servicos"
+              [class.selected]="selectedService?.id === servico.id"
+              (click)="selectService(servico)"
+            >
+              <span>
+                <strong>{{ servico.nome }}</strong>
+                <small>{{ servico.descricao }} · {{ servico.duracaoMinutos | duration }}</small>
+              </span>
+              <b>{{ servico.preco | currency }}</b>
+            </button>
+          </div>
+          <ng-template #noServices
+            ><p>Este prestador não possui serviços disponíveis.</p></ng-template
+          >
+          <button
+            class="btn btn-primary next-button"
+            [disabled]="!selectedService"
+            (click)="nextStep()"
+          >
+            Continuar
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="step === 2">
+          <h2>Escolha data e horário</h2>
+          <label class="field">
+            <span>Data do atendimento</span>
+            <input
+              type="date"
+              [(ngModel)]="date"
+              name="date"
+              [min]="minimumDate"
+              (change)="loadTimeSlots()"
+            />
+          </label>
+
+          <div class="slot-section" *ngIf="date">
+            <span class="field-label">Horários disponíveis</span>
+            <p class="loading-state" *ngIf="loadingSlots">Buscando horários...</p>
+            <div class="slots" *ngIf="!loadingSlots && timeSlots.length">
+              <button
+                class="slot"
+                *ngFor="let slot of timeSlots"
+                [class.selected]="selectedTime === slot.hora"
+                [disabled]="!slot.disponivel"
+                (click)="selectedTime = slot.hora"
+              >
+                {{ slot.hora }}
+              </button>
+            </div>
+            <p class="empty-state" *ngIf="!loadingSlots && !timeSlots.length">
+              Não há horários disponíveis nessa data.
+            </p>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-secondary" (click)="previousStep()">Voltar</button>
+            <button
+              class="btn btn-primary"
+              [disabled]="!date || !selectedTime"
+              (click)="nextStep()"
+            >
+              Continuar
+            </button>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="step === 3">
+          <h2>Confirme seu agendamento</h2>
+          <div class="summary">
+            <div>
+              <span>Prestador</span><strong>{{ prestador?.nomeEstabelecimento }}</strong>
+            </div>
+            <div>
+              <span>Serviço</span><strong>{{ selectedService?.nome }}</strong>
+            </div>
+            <div>
+              <span>Data e horário</span
+              ><strong>{{ date | date: 'dd/MM/yyyy' }} às {{ selectedTime }}</strong>
+            </div>
+            <div>
+              <span>Valor</span><strong>{{ selectedService?.preco || 0 | currency }}</strong>
+            </div>
+          </div>
+
+          <label class="field">
+            <span>Forma de pagamento</span>
+            <select [(ngModel)]="payment" name="payment">
+              <option value="pix">Pix</option>
+              <option value="cartao">Cartão</option>
+              <option value="dinheiro">Dinheiro</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Observações (opcional)</span>
+            <textarea
+              [(ngModel)]="notes"
+              name="notes"
+              rows="3"
+              placeholder="Algum detalhe para o prestador?"
+            ></textarea>
+          </label>
+
+          <div class="actions">
+            <button class="btn btn-secondary" [disabled]="saving" (click)="previousStep()">
+              Voltar
+            </button>
+            <button class="btn btn-success" [disabled]="saving" (click)="confirmBooking()">
+              {{ saving ? 'Confirmando...' : 'Confirmar agendamento' }}
+            </button>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="loading-state" *ngIf="loading">Carregando agendamento...</div>
+    </section>

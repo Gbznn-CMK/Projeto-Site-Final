@@ -1,0 +1,78 @@
+<section class="support-page">
+      <header class="page-heading">
+        <div>
+          <p class="eyebrow">Ajuda</p>
+          <h1>SAC e suporte</h1>
+          <p class="subtitle">Fale com nossa equipe e acompanhe suas solicitações.</p>
+        </div>
+        <button class="btn btn-primary" (click)="showForm = !showForm">
+          {{ showForm ? 'Fechar formulário' : 'Abrir chamado' }}
+        </button>
+      </header>
+      <form class="ticket-form" *ngIf="showForm" (ngSubmit)="createTicket()" #ticketForm="ngForm">
+        <h2>Novo chamado</h2>
+        <label class="field"
+          ><span>Assunto</span
+          ><input
+            name="subject"
+            [(ngModel)]="subject"
+            required
+            placeholder="Sobre o que você precisa de ajuda?" /></label
+        ><label class="field"
+          ><span>Mensagem</span
+          ><textarea
+            name="message"
+            [(ngModel)]="message"
+            rows="5"
+            required
+            placeholder="Descreva o que aconteceu"
+          ></textarea>
+        </label>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="showForm = false">
+            Cancelar</button
+          ><button class="btn btn-success" type="submit" [disabled]="ticketForm.invalid || saving">
+            {{ saving ? 'Enviando...' : 'Enviar chamado' }}
+          </button>
+        </div>
+      </form>
+      <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+      <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
+      <p class="loading-state" *ngIf="loading">Carregando chamados...</p>
+      <ng-container *ngIf="!loading"
+        ><div class="filters">
+          <button
+            *ngFor="let option of filters"
+            [class.active]="filter === option.value"
+            (click)="setFilter(option.value)"
+          >
+            {{ option.label }}
+          </button>
+        </div>
+        <div class="tickets-list" *ngIf="filteredTickets.length; else emptyTickets">
+          <article class="ticket" *ngFor="let ticket of filteredTickets">
+            <div class="ticket-header">
+              <div>
+                <h2>{{ ticket.assunto }}</h2>
+                <span>{{ ticket.dataCadastro || '' | dateTime: 'datetime' }}</span>
+              </div>
+              <app-status-badge [status]="ticket.status"></app-status-badge>
+            </div>
+            <p class="ticket-message">{{ ticket.mensagem }}</p>
+            <div class="response" *ngIf="ticket.resposta">
+              <strong>Resposta da equipe</strong>
+              <p>{{ ticket.resposta }}</p>
+            </div>
+          </article>
+        </div>
+        <ng-template #emptyTickets
+          ><div class="empty-state">
+            <h2>Nenhum chamado encontrado</h2>
+            <p>Quando precisar de ajuda, abra um chamado e acompanhe a resposta por aqui.</p>
+            <button class="btn btn-success" (click)="showForm = true">
+              Abrir primeiro chamado
+            </button>
+          </div></ng-template
+        ></ng-container
+      >
+    </section>

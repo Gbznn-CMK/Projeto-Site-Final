@@ -3,12 +3,11 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-import { LojaService } from '../../core/services/loja';
 import { CATEGORIAS_SERVICOS } from '../../core/models/types';
 import { PrestadorService } from '../../core/services/prestador.service';
 
 export interface Prestador {
-  id: number;
+  id: string | number;
   nome: string;
   categoria: string;
   avaliacao: number;
@@ -125,24 +124,27 @@ export class BuscarComponent {
     private readonly router: Router,
     private readonly auth: AuthService,
     @Inject(PLATFORM_ID) private platformId: Object,
-    private readonly lojaService: LojaService,
     private readonly prestadorService: PrestadorService,
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
-    this.prestadores.push(
-      ...this.lojaService.listar().map((loja) => ({
-        id: loja.id,
-        nome: loja.nome,
-        categoria: loja.categoria,
-        avaliacao: 0,
-        numAvaliacoes: 0,
-        precoDesde: 0,
-        foto: loja.imagemUrl,
-        favorito: false,
-        latitude: loja.latitude,
-        longitude: loja.longitude,
-      })),
-    );
+    this.prestadorService.getAll().subscribe((providers) => {
+      this.prestadores.push(
+        ...providers
+          .filter((provider) => !this.prestadores.some((item) => item.id === provider.id))
+          .map((provider) => ({
+            id: provider.id,
+            nome: provider.nomeEstabelecimento,
+            categoria: provider.categoria,
+            avaliacao: 0,
+            numAvaliacoes: 0,
+            precoDesde: 0,
+            foto: provider.foto || '/img/barbearia.webp',
+            favorito: false,
+            latitude: provider.latitude,
+            longitude: provider.longitude,
+          })),
+      );
+    });
     this.prestadorService.getCategories().subscribe((categories) => {
       this.categorias = ['Todos', ...categories];
     });

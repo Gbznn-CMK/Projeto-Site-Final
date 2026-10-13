@@ -34,6 +34,7 @@ export interface Servico {
   id: string;
   prestadorId: string;
   nome: string;
+  categoria?: string;
   descricao: string;
   duracaoMinutos: number;
   preco: number;

@@ -1,0 +1,123 @@
+<app-confirm-modal
+      [open]="appointmentToDelete !== null"
+      title="Apagar agendamento"
+      message="Apagar definitivamente este agendamento cancelado?"
+      (confirmed)="confirmDeleteAppointment()"
+      (cancel)="closeDeleteConfirmation()"
+    />
+    <section class="agenda-page">
+      <header class="page-heading">
+        <div>
+          <p class="eyebrow">Área do prestador</p>
+          <h1>Minha agenda</h1>
+          <p class="subtitle">Gerencie seus atendimentos e mantenha seus horários em dia.</p>
+        </div>
+      </header>
+      <div class="filters">
+        <button
+          *ngFor="let option of filters"
+          [class.active]="filter === option.value"
+          (click)="setFilter(option.value)"
+        >
+          {{ option.label }}
+        </button>
+      </div>
+      <div class="date-navigation" aria-label="Navegação da agenda">
+        <button type="button" (click)="setDate('today')" [class.active]="dateFilter === 'today'">
+          Hoje
+        </button>
+        <button
+          type="button"
+          (click)="setDate('tomorrow')"
+          [class.active]="dateFilter === 'tomorrow'"
+        >
+          Amanhã
+        </button>
+        <button type="button" (click)="setDate('week')" [class.active]="dateFilter === 'week'">
+          Próxima semana
+        </button>
+        <button type="button" (click)="setDate('all')" [class.active]="dateFilter === 'all'">
+          Todos
+        </button>
+      </div>
+      <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+      <p class="loading-state" *ngIf="loading">Carregando agenda...</p>
+      <div class="agenda-list" *ngIf="!loading && filteredAppointments.length">
+        <article class="agenda-item" *ngFor="let item of filteredAppointments">
+          <div class="date-block">
+            <strong>{{ item.agendamento.dataHora | dateTime: 'date' }}</strong
+            ><span>{{ item.agendamento.dataHora | dateTime: 'time' }}</span>
+          </div>
+          <div class="appointment-copy">
+            <h2>{{ item.serviceName }}</h2>
+            <p>{{ item.clientName }}</p>
+            <span>{{ item.agendamento.valor | currency }}</span>
+            <a
+              *ngIf="item.clientPhone"
+              class="contact-link"
+              [href]="whatsappUrl(item.clientPhone, item.clientName)"
+              target="_blank"
+              rel="noopener"
+            >
+              Conversar com cliente
+            </a>
+          </div>
+          <div class="appointment-actions">
+            <app-status-badge [status]="item.agendamento.status"></app-status-badge
+            ><button
+              *ngIf="item.agendamento.status === 'pendente'"
+              class="btn btn-success"
+              (click)="changeStatus(item.agendamento, 'confirmado')"
+            >
+              Confirmar</button
+            ><button
+              *ngIf="item.agendamento.status === 'confirmado'"
+              class="btn btn-primary"
+              (click)="changeStatus(item.agendamento, 'concluido')"
+            >
+              Concluir</button
+            ><button
+              *ngIf="
+                item.agendamento.status !== 'cancelado' && item.agendamento.status !== 'concluido'
+              "
+              class="btn btn-danger"
+              (click)="changeStatus(item.agendamento, 'cancelado')"
+            >
+              Cancelar
+            </button>
+            <button
+              *ngIf="
+                item.agendamento.status !== 'cancelado' && item.agendamento.status !== 'concluido'
+              "
+              class="btn btn-secondary"
+              (click)="startEditing(item)"
+            >
+              Editar horário
+            </button>
+            <div class="edit-form" *ngIf="editingId === item.agendamento.id">
+              <label>
+                Novo horário
+                <input type="datetime-local" [(ngModel)]="editingDate" />
+              </label>
+              <button type="button" class="btn btn-success" (click)="saveEditedAppointment(item)">
+                Salvar
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="cancelEditing()">
+                Cancelar
+              </button>
+            </div>
+            <button
+              *ngIf="item.agendamento.status === 'cancelado'"
+              class="btn btn-danger"
+              (click)="deleteAppointment(item.agendamento)"
+            >
+              Apagar
+            </button>
+          </div>
+        </article>
+      </div>
+      <div class="empty-state" *ngIf="!loading && !filteredAppointments.length">
+        <h2>Nenhum atendimento encontrado</h2>
+        <p>Os agendamentos aparecerão aqui conforme seus clientes reservarem horários.</p>
+      </div>
+    </section>

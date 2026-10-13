@@ -4,7 +4,7 @@ import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { FavoritosService } from '../../services/favoritos';
-import { LojaService } from '../../core/services/loja';
+import { PrestadorService } from '../../core/services/prestador.service';
 import { Notificacao, NotificacaoService } from '../../core/services/notificacao.service';
 import { UsuarioService } from '../../core/services/usuario.service';
 
@@ -24,7 +24,7 @@ export class HomeCliente implements OnInit {
     private readonly usuarioService: UsuarioService,
   ) {}
 
-  private readonly lojaService = inject(LojaService);
+  private readonly prestadorService = inject(PrestadorService);
 
   collapsed = false;
   mobileExpanded = false;
@@ -40,23 +40,26 @@ export class HomeCliente implements OnInit {
   notificacoes: Notificacao[] = [];
 
   ngOnInit(): void {
-    for (const loja of this.lojaService.listar()) {
-      this.providers.push({
-        name: loja.nome,
-        id: loja.id,
-        image: loja.imagemUrl,
-        photos: loja.fotos ?? [loja.imagemUrl],
-        category: loja.categoria,
-        address: loja.endereco,
-        hours: loja.horario,
-        rating: 'Novo',
-        stars: '☆☆☆☆☆',
-      });
-    }
+    this.prestadorService.getAll().subscribe((providers) => {
+      for (const provider of providers) {
+        if (this.providers.some((item) => item.id === provider.id)) continue;
+        this.providers.push({
+          name: provider.nomeEstabelecimento,
+          id: provider.id,
+          image: provider.foto || '/img/barbearia.webp',
+          photos: provider.fotos ?? [provider.foto || '/img/barbearia.webp'],
+          category: provider.categoria,
+          address: provider.endereco,
+          hours: provider.horarioFuncionamento,
+          rating: 'Novo',
+          stars: '☆☆☆☆☆',
+        });
+      }
+    });
     this.favoritosService.listarIds().subscribe((ids) => {
       this.favorites = new Set(
         this.providers
-          .filter((provider) => ids.includes(provider.id))
+          .filter((provider) => typeof provider.id === 'number' && ids.includes(provider.id))
           .map((provider) => provider.name),
       );
     });
@@ -71,7 +74,17 @@ export class HomeCliente implements OnInit {
     }
   }
 
-  readonly providers = [
+  readonly providers: {
+    name: string;
+    id: string | number;
+    image: string;
+    category: string;
+    address: string;
+    hours: string;
+    rating: string;
+    stars: string;
+    photos: string[];
+  }[] = [
     {
       name: 'Barbearia Central',
       id: 1,
@@ -180,6 +193,9 @@ export class HomeCliente implements OnInit {
     }
 
     const isFavorite = this.favorites.has(providerName);
+    if (typeof provider.id !== 'number') {
+      return;
+    }
     const request = isFavorite
       ? this.favoritosService.desfavoritar(provider.id)
       : this.favoritosService.favoritar(provider.id);

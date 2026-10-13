@@ -1,0 +1,178 @@
+.agenda-page {
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .page-heading {
+        margin-bottom: var(--space-xl);
+      }
+      .eyebrow {
+        color: var(--color-success-dark);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-bold);
+        margin: 0 0 var(--space-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      h1 {
+        margin: 0;
+      }
+      .subtitle {
+        color: var(--color-neutral-600);
+        margin: var(--space-xs) 0 0;
+      }
+      .filters {
+        display: flex;
+        gap: var(--space-sm);
+        overflow-x: auto;
+        margin-bottom: var(--space-xl);
+      }
+      .date-navigation {
+        display: flex;
+        gap: var(--space-sm);
+        flex-wrap: wrap;
+        margin: 0 0 var(--space-xl);
+      }
+      .date-navigation button {
+        padding: var(--space-sm) var(--space-md);
+        background: white;
+        border: 1px solid var(--color-neutral-300);
+        border-radius: var(--radius-md);
+        color: var(--color-neutral-700);
+        cursor: pointer;
+      }
+      .date-navigation button.active {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: white;
+      }
+      .filters button {
+        background: white;
+        border: 1px solid var(--color-neutral-300);
+        color: var(--color-neutral-700);
+        white-space: nowrap;
+      }
+      .filters button.active {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: white;
+      }
+      .agenda-list {
+        display: grid;
+        gap: var(--space-md);
+      }
+      .agenda-item {
+        display: grid;
+        grid-template-columns: 150px 1fr auto;
+        align-items: center;
+        gap: var(--space-lg);
+        padding: var(--space-lg);
+        background: white;
+        border: 1px solid var(--color-neutral-200);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+      }
+      .date-block {
+        display: grid;
+        gap: var(--space-xs);
+        padding-right: var(--space-lg);
+        border-right: 1px solid var(--color-neutral-200);
+      }
+      .date-block strong {
+        color: var(--color-primary);
+      }
+      .date-block span {
+        color: var(--color-neutral-600);
+        font-size: var(--font-size-lg);
+      }
+      .appointment-copy h2 {
+        font-size: var(--font-size-lg);
+        margin: 0 0 var(--space-xs);
+      }
+      .appointment-copy p {
+        color: var(--color-neutral-700);
+        margin: 0 0 var(--space-xs);
+      }
+      .appointment-copy span {
+        color: var(--color-success-dark);
+        font-weight: var(--font-weight-bold);
+      }
+      .contact-link {
+        display: block;
+        margin-top: var(--space-sm);
+        color: var(--color-primary);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+      }
+      .edit-form {
+        display: grid;
+        grid-column: 2 / -1;
+        gap: var(--space-sm);
+        padding: var(--space-md);
+        background: var(--color-neutral-50);
+        border-radius: var(--radius-md);
+      }
+      .edit-form label {
+        display: grid;
+        gap: var(--space-xs);
+        color: var(--color-neutral-700);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+      }
+      .edit-form input {
+        padding: var(--space-sm);
+        border: 1px solid var(--color-neutral-300);
+        border-radius: var(--radius-md);
+      }
+      .appointment-actions {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        gap: var(--space-sm);
+        flex-wrap: wrap;
+      }
+      .btn {
+        padding: var(--space-sm) var(--space-md);
+        color: white;
+      }
+      .btn-success {
+        background: var(--color-success-dark);
+      }
+      .btn-primary {
+        background: var(--color-primary);
+      }
+      .btn-danger {
+        background: var(--color-danger);
+      }
+      .loading-state,
+      .empty-state {
+        padding: var(--space-3xl) var(--space-lg);
+        text-align: center;
+        color: var(--color-neutral-600);
+      }
+      .empty-state h2 {
+        color: var(--color-neutral-900);
+        margin-bottom: var(--space-sm);
+      }
+      .empty-state p {
+        margin: 0;
+      }
+      .error-message {
+        padding: var(--space-md);
+        color: var(--color-danger-dark);
+        background: #fff1f0;
+        border-radius: var(--radius-md);
+      }
+      @media (max-width: 760px) {
+        .agenda-item {
+          grid-template-columns: 1fr;
+          gap: var(--space-md);
+        }
+        .date-block {
+          border-right: 0;
+          border-bottom: 1px solid var(--color-neutral-200);
+          padding: 0 0 var(--space-md);
+        }
+        .appointment-actions {
+          justify-content: start;
+        }
+      }

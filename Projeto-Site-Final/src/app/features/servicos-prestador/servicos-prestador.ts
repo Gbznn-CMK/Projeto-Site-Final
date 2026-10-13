@@ -3,10 +3,11 @@ import { CurrencyPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-import { LojaService } from '../../core/services/loja';
-import { ServicoLoja } from '../../core/models/loja';
+import { PrestadorService } from '../../core/services/prestador.service';
+import { ServicoService } from '../../core/services/servico.service';
+import { Servico } from '../../core/models/types';
 
-type ServicoPrestador = ServicoLoja;
+type ServicoPrestador = Servico;
 
 @Component({
   selector: 'app-servicos-prestador',
@@ -18,20 +19,35 @@ type ServicoPrestador = ServicoLoja;
 export class ServicosPrestadorComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly auth = inject(AuthService);
-  private readonly lojaService = inject(LojaService);
+  private readonly prestadorService = inject(PrestadorService);
+  private readonly servicoService = inject(ServicoService);
   private readonly router = inject(Router);
 
-  readonly editingId = signal<number | null>(null);
+  readonly editingId = signal<string | null>(null);
   readonly savedMessage = signal('');
-  readonly servicos = signal<ServicoPrestador[]>(this.obterServicosIniciais());
+  readonly servicos = signal<ServicoPrestador[]>([]);
+  private prestadorId = '';
 
   readonly serviceForm = this.formBuilder.nonNullable.group({
     nome: ['', [Validators.required, Validators.minLength(3)]],
     categoria: ['Barbearia', Validators.required],
-    duracao: [30, [Validators.required, Validators.min(5)]],
-    valor: [0, [Validators.required, Validators.min(0)]],
+    duracaoMinutos: [30, [Validators.required, Validators.min(5)]],
+    preco: [0, [Validators.required, Validators.min(0)]],
     descricao: ['', [Validators.required, Validators.maxLength(180)]],
   });
+
+  constructor() {
+    const userId = this.auth.currentUser()?.id;
+    if (userId) {
+      this.prestadorService.getByUsuarioId(userId).subscribe((provider) => {
+        if (!provider) return;
+        this.prestadorId = provider.id;
+        this.servicoService.getAllByPrestador(provider.id).subscribe((services) => {
+          this.servicos.set(services);
+        });
+      });
+    }
+  }
 
   get userName(): string {
     return this.auth.currentUser()?.nome || 'Prestador';
@@ -51,15 +67,25 @@ export class ServicosPrestadorComponent {
     const editingId = this.editingId();
     if (editingId === null) {
       this.servicos.update((items) => {
-        const next = [...items, { ...value, id: Date.now(), ativo: true }];
-        this.persistirServicos(next);
+        const next = [...items, {
+          ...value,
+          id: '',
+          prestadorId: this.prestadorId,
+          ativo: true,
+        }];
+        this.servicoService.create(next[next.length - 1]).subscribe((created) => this.servicos.set(
+          this.servicos().map((item) => item.id ? item : created),
+        ));
         return next;
       });
       this.savedMessage.set('Serviço criado com sucesso.');
     } else {
       this.servicos.update((items) => {
+        const current = items.find((item) => item.id === editingId);
+        if (current) {
+          this.servicoService.update({ ...current, ...value }).subscribe();
+        }
         const next = items.map((item) => (item.id === editingId ? { ...item, ...value } : item));
-        this.persistirServicos(next);
         return next;
       });
       this.savedMessage.set('Serviço atualizado com sucesso.');
@@ -74,17 +100,17 @@ export class ServicosPrestadorComponent {
     this.serviceForm.setValue({
       nome: service.nome,
       categoria: service.categoria,
-      duracao: service.duracao,
-      valor: service.valor,
+      duracaoMinutos: service.duracaoMinutos,
+      preco: service.preco,
       descricao: service.descricao,
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  removeService(id: number): void {
+  removeService(id: string): void {
     this.servicos.update((items) => {
       const next = items.filter((item) => item.id !== id);
-      this.persistirServicos(next);
+      this.servicoService.delete(id).subscribe();
       return next;
     });
     if (this.editingId() === id) {
@@ -92,10 +118,11 @@ export class ServicosPrestadorComponent {
     }
   }
 
-  toggleService(id: number): void {
+  toggleService(id: string): void {
     this.servicos.update((items) => {
       const next = items.map((item) => (item.id === id ? { ...item, ativo: !item.ativo } : item));
-      this.persistirServicos(next);
+      const service = next.find((item) => item.id === id);
+      if (service) this.servicoService.update(service).subscribe();
       return next;
     });
   }
@@ -105,8 +132,8 @@ export class ServicosPrestadorComponent {
     this.serviceForm.reset({
       nome: '',
       categoria: 'Barbearia',
-      duracao: 30,
-      valor: 0,
+      duracaoMinutos: 30,
+      preco: 0,
       descricao: '',
     });
   }
@@ -116,16 +143,4 @@ export class ServicosPrestadorComponent {
     void this.router.navigate(['/login']);
   }
 
-  private obterServicosIniciais(): ServicoPrestador[] {
-    const email = this.auth.currentUser()?.email;
-    const loja = email ? this.lojaService.obterDoPrestador(email) : undefined;
-    return loja?.servicos ?? [];
-  }
-
-  private persistirServicos(servicos: ServicoPrestador[]): void {
-    const email = this.auth.currentUser()?.email;
-    if (email && this.lojaService.obterDoPrestador(email)) {
-      this.lojaService.atualizarServicos(email, servicos);
-    }
-  }
 }
