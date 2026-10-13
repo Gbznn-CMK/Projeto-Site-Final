@@ -1,4 +1,4 @@
-import { Usuario, Prestador, Servico, Agendamento, Disponibilidade, Bloqueio, ChamadoSac, CATEGORIAS_SERVICOS } from '../models/types';
+import { Usuario, Prestador, Servico, Agendamento, Disponibilidade, Bloqueio, ChamadoSac } from '../models/types';
 import { getLocalStorage } from '../utils/storage';
 
 // Mock Users
@@ -9,6 +9,7 @@ export const MOCK_USUARIOS: Usuario[] = [
     email: 'ana@example.com',
     telefone: '(11) 98765-4321',
     tipo: 'cliente',
+    password: '12345678',
     foto: 'https://i.pravatar.cc/150?u=ana',
     dataCadastro: '2026-01-01'
   },
@@ -18,6 +19,7 @@ export const MOCK_USUARIOS: Usuario[] = [
     email: 'carlos@example.com',
     telefone: '(11) 97654-3210',
     tipo: 'cliente',
+    password: '12345678',
     foto: 'https://i.pravatar.cc/150?u=carlos',
     dataCadastro: '2026-01-02'
   },
@@ -27,6 +29,7 @@ export const MOCK_USUARIOS: Usuario[] = [
     email: 'joao@barbearia.com',
     telefone: '(11) 95555-1111',
     tipo: 'prestador',
+    password: '12345678',
     foto: 'https://i.pravatar.cc/150?u=joao',
     dataCadastro: '2026-01-03'
   },
@@ -36,6 +39,7 @@ export const MOCK_USUARIOS: Usuario[] = [
     email: 'maria@salon.com',
     telefone: '(11) 94444-2222',
     tipo: 'prestador',
+    password: '12345678',
     foto: 'https://i.pravatar.cc/150?u=maria',
     dataCadastro: '2026-01-04'
   },
@@ -45,6 +49,7 @@ export const MOCK_USUARIOS: Usuario[] = [
     email: 'fernanda@nails.com',
     telefone: '(11) 93333-3333',
     tipo: 'prestador',
+    password: '12345678',
     foto: 'https://i.pravatar.cc/150?u=fernanda',
     dataCadastro: '2026-01-05'
   },
@@ -54,6 +59,7 @@ export const MOCK_USUARIOS: Usuario[] = [
     email: 'roberto@tecnico.com',
     telefone: '(11) 92222-4444',
     tipo: 'prestador',
+    password: '12345678',
     foto: 'https://i.pravatar.cc/150?u=roberto',
     dataCadastro: '2026-01-06'
   },
@@ -63,6 +69,7 @@ export const MOCK_USUARIOS: Usuario[] = [
     email: 'sofia@estetica.com',
     telefone: '(11) 91111-5555',
     tipo: 'prestador',
+    password: '12345678',
     foto: 'https://i.pravatar.cc/150?u=sofia',
     dataCadastro: '2026-01-07'
   },
@@ -72,6 +79,7 @@ export const MOCK_USUARIOS: Usuario[] = [
     email: 'lucas@foto.com',
     telefone: '(11) 90000-6666',
     tipo: 'prestador',
+    password: '12345678',
     foto: 'https://i.pravatar.cc/150?u=lucas',
     dataCadastro: '2026-01-08'
   },
@@ -81,6 +89,7 @@ export const MOCK_USUARIOS: Usuario[] = [
     email: 'patricia@salon2.com',
     telefone: '(11) 89999-7777',
     tipo: 'prestador',
+    password: '12345678',
     foto: 'https://i.pravatar.cc/150?u=patricia',
     dataCadastro: '2026-01-09'
   },
@@ -90,6 +99,7 @@ export const MOCK_USUARIOS: Usuario[] = [
     email: 'felipe@barber2.com',
     telefone: '(11) 88888-8888',
     tipo: 'prestador',
+    password: '12345678',
     foto: 'https://i.pravatar.cc/150?u=felipe',
     dataCadastro: '2026-01-10'
   }
@@ -403,6 +413,22 @@ export function initializeMockData() {
   
   // Only initialize if not already done
   if (storage.getItem(`${prefix}initialized`)) {
+    const usersRaw = storage.getItem(`${prefix}usuarios`);
+    if (usersRaw) {
+      try {
+        const users = JSON.parse(usersRaw) as Array<Usuario & { password?: string }>;
+        const updatedUsers = users.map((user) => ({
+          ...user,
+          password:
+            user.password ||
+            MOCK_USUARIOS.find((mockUser) => mockUser.email === user.email)?.password ||
+            '12345678',
+        }));
+        storage.setItem(`${prefix}usuarios`, JSON.stringify(updatedUsers));
+      } catch {
+        storage.setItem(`${prefix}usuarios`, JSON.stringify(MOCK_USUARIOS));
+      }
+    }
     return;
   }
 

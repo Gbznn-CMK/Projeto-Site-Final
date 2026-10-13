@@ -9,12 +9,27 @@ import { ServicoService } from '../../../core/services/servico.service';
 import { UsuarioService } from '../../../core/services/usuario.service';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { DateTimePipe, CurrencyPipe } from '../../../shared/pipes/formatting.pipes';
+import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-agenda',
   standalone: true,
-  imports: [CommonModule, FormsModule, StatusBadgeComponent, DateTimePipe, CurrencyPipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    StatusBadgeComponent,
+    DateTimePipe,
+    CurrencyPipe,
+    ConfirmModalComponent,
+  ],
   template: `
+    <app-confirm-modal
+      [open]="appointmentToDelete !== null"
+      title="Apagar agendamento"
+      message="Apagar definitivamente este agendamento cancelado?"
+      (confirmed)="confirmDeleteAppointment()"
+      (cancel)="closeDeleteConfirmation()"
+    />
     <section class="agenda-page">
       <header class="page-heading">
         <div>
@@ -342,6 +357,7 @@ export class AgendaComponent implements OnInit {
   dateFilter: 'all' | 'today' | 'tomorrow' | 'week' = 'all';
   editingId = '';
   editingDate = '';
+  appointmentToDelete: Agendamento | null = null;
 
   constructor(
     private authService: AuthService,
@@ -471,7 +487,13 @@ export class AgendaComponent implements OnInit {
   }
 
   deleteAppointment(appointment: Agendamento) {
-    if (!confirm('Apagar definitivamente este agendamento cancelado?')) return;
+    this.appointmentToDelete = appointment;
+  }
+
+  confirmDeleteAppointment() {
+    const appointment = this.appointmentToDelete;
+    this.closeDeleteConfirmation();
+    if (!appointment) return;
     this.agendamentoService.deleteByPrestador(appointment.id, this.prestadorId).subscribe({
       next: () => {
         this.appointments = this.appointments.filter(
@@ -482,6 +504,10 @@ export class AgendaComponent implements OnInit {
       error: (error) =>
         (this.errorMessage = error.message || 'Não foi possível apagar o agendamento.'),
     });
+  }
+
+  closeDeleteConfirmation() {
+    this.appointmentToDelete = null;
   }
 
   whatsappUrl(phone: string, clientName: string): string {

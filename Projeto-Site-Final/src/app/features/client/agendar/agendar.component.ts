@@ -23,7 +23,7 @@ import { CurrencyPipe, DurationPipe } from '../../../shared/pipes/formatting.pip
   imports: [CommonModule, FormsModule, RouterLink, CurrencyPipe, DurationPipe],
   template: `
     <section class="booking-page">
-      <a class="back-link" [routerLink]="['/prestador', prestador?.id]">← Voltar para o perfil</a>
+      <a class="back-link" routerLink="/buscar">← Voltar para a busca</a>
 
       <div class="heading">
         <p class="eyebrow">Novo agendamento</p>

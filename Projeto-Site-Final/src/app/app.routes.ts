@@ -13,6 +13,9 @@ import { DisponibilidadePrestadorComponent } from './features/disponibilidade-pr
 import { CadastroLojaComponent } from './features/cadastro-loja/cadastro-loja';
 import { PerfilComponent } from './features/perfil-cliente/perfil-cliente';
 import { BuscarComponent } from './features/buscar/buscar';
+import { SacComponent } from './features/support/sac/sac.component';
+import { ConfiguracoesComponent } from './features/configuracoes/configuracoes.component';
+import { NotFoundComponent } from './shared/pages/not-found/not-found.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home-cliente', pathMatch: 'full' },
@@ -85,9 +88,22 @@ export const routes: Routes = [
     canActivate: [authGuard],
     data: { roles: ['prestador'] },
   },
+  {
+    path: 'suporte',
+    component: SacComponent,
+    canActivate: [authGuard],
+    data: { roles: ['cliente', 'prestador'] },
+  },
+  {
+    path: 'configuracoes',
+    component: ConfiguracoesComponent,
+    canActivate: [authGuard],
+    data: { roles: ['cliente', 'prestador'] },
+  },
   { path: 'meus-agendamentos', redirectTo: 'agendamentos', pathMatch: 'full' },
   { path: 'prestadores', redirectTo: 'buscar', pathMatch: 'full' },
   // Mantém compatibilidade com links antigos enquanto o fluxo é migrado.
   { path: 'lista-agendamentos', redirectTo: 'agendamentos', pathMatch: 'full' },
   { path: 'novo-agendamento', redirectTo: 'buscar', pathMatch: 'full' },
+  { path: '**', component: NotFoundComponent },
 ];

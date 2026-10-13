@@ -7,12 +7,22 @@ import { AuthService } from '../../../core/services/auth.service';
 import { PrestadorService } from '../../../core/services/prestador.service';
 import { ServicoService } from '../../../core/services/servico.service';
 import { AppointmentCardComponent } from '../../../shared/components/appointment-card/appointment-card.component';
+import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-meus-agendamentos',
   standalone: true,
-  imports: [CommonModule, RouterLink, AppointmentCardComponent],
+  imports: [CommonModule, RouterLink, AppointmentCardComponent, ConfirmModalComponent],
   template: `
+    <app-confirm-modal
+      [open]="confirmationAction !== null"
+      [title]="confirmationAction === 'cancel' ? 'Cancelar agendamento' : 'Confirmar conclusão'"
+      [message]="confirmationAction === 'cancel'
+        ? 'Deseja cancelar este agendamento?'
+        : 'Confirma que o serviço foi concluído?'"
+      (confirmed)="executeConfirmation()"
+      (cancel)="closeConfirmation()"
+    />
     <section class="appointments-page">
       <div class="page-heading">
         <div>
@@ -122,6 +132,8 @@ export class MeusAgendamentosComponent implements OnInit {
   currentUser?: Usuario;
   loading = true;
   errorMessage = '';
+  confirmationAction: 'cancel' | 'completion' | null = null;
+  private pendingAppointment?: Agendamento;
 
   constructor(
     private authService: AuthService,
@@ -174,28 +186,48 @@ export class MeusAgendamentosComponent implements OnInit {
   }
 
   cancelAppointment(agendamento: Agendamento) {
-    if (!this.currentUser || !confirm('Deseja cancelar este agendamento?')) return;
+    if (!this.currentUser) return;
+    this.pendingAppointment = agendamento;
+    this.confirmationAction = 'cancel';
+  }
 
-    this.agendamentoService.cancel(agendamento.id, this.currentUser.id).subscribe({
+  confirmCompletion(agendamento: Agendamento) {
+    if (!this.currentUser) return;
+    this.pendingAppointment = agendamento;
+    this.confirmationAction = 'completion';
+  }
+
+  executeConfirmation() {
+    const appointment = this.pendingAppointment;
+    const action = this.confirmationAction;
+    const user = this.currentUser;
+    this.closeConfirmation();
+    if (!appointment || !user) return;
+
+    if (action === 'cancel') {
+    this.agendamentoService.cancel(appointment.id, user.id).subscribe({
       next: () => {
-        agendamento.status = 'cancelado';
+        appointment.status = 'cancelado';
       },
       error: (error) => {
         this.errorMessage = error.message || 'Não foi possível cancelar o agendamento.';
       },
     });
-  }
-
-  confirmCompletion(agendamento: Agendamento) {
-    if (!this.currentUser || !confirm('Confirmar que o serviço foi concluído?')) return;
-    this.agendamentoService
-      .confirmCompletionByClient(agendamento.id, this.currentUser.id)
+    } else {
+      this.agendamentoService
+      .confirmCompletionByClient(appointment.id, user.id)
       .subscribe({
         next: (updated) =>
-          (agendamento.clienteConfirmouConclusao = updated.clienteConfirmouConclusao),
+          (appointment.clienteConfirmouConclusao = updated.clienteConfirmouConclusao),
         error: (error) =>
           (this.errorMessage = error.message || 'Não foi possível confirmar a conclusão.'),
       });
+    }
+  }
+
+  closeConfirmation() {
+    this.confirmationAction = null;
+    this.pendingAppointment = undefined;
   }
 
   private finishLoading() {

@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { Usuario } from '../../core/models/types';
-import { LojaService } from '../../core/services/loja';
 import { PrestadorService } from '../../core/services/prestador.service';
 
 @Component({
@@ -17,7 +16,6 @@ import { PrestadorService } from '../../core/services/prestador.service';
 export class CadastroLojaComponent implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly auth = inject(AuthService);
-  private readonly lojaService = inject(LojaService);
   private readonly router = inject(Router);
   private readonly prestadorService = inject(PrestadorService);
   private currentUser: Usuario | null = null;
@@ -65,21 +63,25 @@ export class CadastroLojaComponent implements OnInit {
       return;
     }
 
-    this.lojaService.criar({
-      nome: this.lojaForm.controls.nome.value,
+    this.prestadorService.create({
+      id: '',
+      usuarioId: user.id,
+      nomeEstabelecimento: this.lojaForm.controls.nome.value,
       categoria: this.lojaForm.controls.categoria.value,
+      descricao: 'Estabelecimento cadastrado no NaHora Serv.',
       endereco: this.lojaForm.controls.endereco.value,
       cep: this.lojaForm.controls.cep.value,
-      horario: this.lojaForm.controls.horario.value,
-      proprietarioEmail: user.email,
-      imagemUrl: this.fotos[0] || this.lojaForm.controls.imagemUrl.value || '/img/barbearia.webp',
+      horarioFuncionamento: this.lojaForm.controls.horario.value,
+      foto: this.fotos[0] || this.lojaForm.controls.imagemUrl.value || '/img/barbearia.webp',
       fotos: this.fotos,
       latitude: this.coordenadas?.latitude,
       longitude: this.coordenadas?.longitude,
-      disponivel: true,
-      servicos: [],
+    }).subscribe({
+      next: () => void this.router.navigate(['/servicos-prestador']),
+      error: () => {
+        this.erroFoto = 'Não foi possível cadastrar o estabelecimento agora.';
+      },
     });
-    void this.router.navigate(['/servicos-prestador']);
   }
 
   async buscarCep(): Promise<void> {
