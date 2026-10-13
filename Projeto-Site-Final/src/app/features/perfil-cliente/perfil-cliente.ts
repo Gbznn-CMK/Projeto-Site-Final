@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID, HostListener } from '@angular/c
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../core/services/auth';
+import { AuthService } from '../../core/services/auth.service';
 
 export interface UserProfile {
   nome: string;

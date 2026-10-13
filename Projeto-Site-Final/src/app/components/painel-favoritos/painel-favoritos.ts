@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../core/services/auth';
+import { AuthService } from '../../core/services/auth.service';
 import { Favorito, FavoritosService } from '../../services/favoritos';
 import { BotaoFavoritoComponent } from '../botao-favoritos/botao-favoritos';
 

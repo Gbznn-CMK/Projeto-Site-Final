@@ -28,7 +28,12 @@ export const routes: Routes = [
     canActivate: [authGuard],
     data: { roles: ['prestador'] },
   },
-  { path: 'perfil', component: PerfilComponent, data: { roles: ['cliente', 'prestador'] } },
+  {
+    path: 'perfil',
+    component: PerfilComponent,
+    canActivate: [authGuard],
+    data: { roles: ['cliente', 'prestador'] },
+  },
   {
     path: 'buscar',
     component: BuscarComponent,

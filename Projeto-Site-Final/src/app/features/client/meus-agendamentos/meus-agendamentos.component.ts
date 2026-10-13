@@ -20,7 +20,7 @@ import { AppointmentCardComponent } from '../../../shared/components/appointment
           <h1>Meus agendamentos</h1>
           <p class="subtitle">Acompanhe seus próximos atendimentos em um só lugar.</p>
         </div>
-        <a class="btn btn-primary" routerLink="/prestadores">Novo agendamento</a>
+        <a class="btn btn-primary" routerLink="/buscar">Novo agendamento</a>
       </div>
 
       <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
@@ -41,7 +41,7 @@ import { AppointmentCardComponent } from '../../../shared/components/appointment
       <div class="empty-state" *ngIf="!loading && !appointments.length">
         <h2>Você ainda não tem agendamentos</h2>
         <p>Encontre um prestador e reserve seu primeiro horário.</p>
-        <a class="btn btn-success" routerLink="/prestadores">Buscar prestadores</a>
+        <a class="btn btn-success" routerLink="/buscar">Buscar prestadores</a>
       </div>
     </section>
   `,

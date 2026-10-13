@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../core/services/auth';
+import { AuthService } from '../../core/services/auth.service';
 import { FavoritosService } from '../../services/favoritos';
 import { LojaService } from '../../core/services/loja';
 import { Notificacao, NotificacaoService } from '../../core/services/notificacao.service';

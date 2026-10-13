@@ -39,7 +39,7 @@ import { CurrencyPipe, DurationPipe } from '../../../shared/pipes/formatting.pip
       <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
       <div class="success-message" *ngIf="successMessage">
         <p>{{ successMessage }}</p>
-        <a class="btn btn-primary" routerLink="/meus-agendamentos">Ver meus agendamentos</a>
+        <a class="btn btn-primary" routerLink="/agendamentos">Ver meus agendamentos</a>
       </div>
 
       <div class="booking-card" *ngIf="!loading && !successMessage">

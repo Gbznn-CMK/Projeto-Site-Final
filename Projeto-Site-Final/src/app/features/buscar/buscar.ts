@@ -2,7 +2,7 @@ import { Component, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../core/services/auth';
+import { AuthService } from '../../core/services/auth.service';
 import { LojaService } from '../../core/services/loja';
 import { CATEGORIAS_SERVICOS } from '../../core/models/types';
 import { PrestadorService } from '../../core/services/prestador.service';
