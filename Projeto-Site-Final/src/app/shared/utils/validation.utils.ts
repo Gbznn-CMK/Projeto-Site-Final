@@ -42,7 +42,10 @@ export function validatePassword(password: string): { valid: boolean; message: s
     return { valid: false, message: 'Senha deve conter pelo menos 1 número' };
   }
   if (!/[!@#$%^&*]/.test(password)) {
-    return { valid: false, message: 'Senha deve conter pelo menos 1 caractere especial (!@#$%^&*)' };
+    return {
+      valid: false,
+      message: 'Senha deve conter pelo menos 1 caractere especial (!@#$%^&*)',
+    };
   }
   return { valid: true, message: 'Senha forte' };
 }
@@ -100,9 +103,7 @@ export function isFutureDateTime(dateStr: string): boolean {
  * @returns Sanitized string
  */
 export function sanitizeInput(input: string): string {
-  return input
-    .replace(/[<>]/g, '')
-    .trim();
+  return input.replace(/[<>]/g, '').trim();
 }
 
 /**

@@ -156,7 +156,11 @@
           <strong>Notificações</strong>
           @if (notificacoes.length) {
             @for (notificacao of notificacoes; track notificacao.id) {
-              <a class="notification-item" [routerLink]="notificacao.link" (click)="notificationsOpen = false">
+              <a
+                class="notification-item"
+                [routerLink]="notificacao.link"
+                (click)="notificationsOpen = false"
+              >
                 <strong>{{ notificacao.titulo }}</strong>
                 <span>{{ notificacao.mensagem }}</span>
               </a>

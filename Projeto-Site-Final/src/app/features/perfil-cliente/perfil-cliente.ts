@@ -17,7 +17,7 @@ export interface UserProfile {
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './perfil-cliente.html',
-  styleUrl: './perfil-cliente.css'
+  styleUrl: './perfil-cliente.css',
 })
 export class PerfilComponent implements OnInit {
   modalAberta = false;
@@ -33,7 +33,7 @@ export class PerfilComponent implements OnInit {
     sobrenome: '',
     email: 'gbznnn@exemplo.com',
     telefone: '(21) 98168-6514',
-    cpf: ''
+    cpf: '',
   };
 
   dadosEdicao: UserProfile = { ...this.usuario };
@@ -41,7 +41,7 @@ export class PerfilComponent implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly auth: AuthService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }

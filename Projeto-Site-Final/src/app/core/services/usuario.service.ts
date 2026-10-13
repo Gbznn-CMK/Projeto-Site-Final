@@ -5,7 +5,7 @@ import { MOCK_USUARIOS } from '../data/mock-data';
 import { getLocalStorage } from '../utils/storage';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UsuarioService {
   private readonly PREFIX = 'nahora_';
@@ -29,7 +29,7 @@ export class UsuarioService {
     const favMap = new Map<string, string[]>();
     if (data) {
       const favObj = JSON.parse(data);
-      Object.keys(favObj).forEach(key => {
+      Object.keys(favObj).forEach((key) => {
         favMap.set(key, favObj[key]);
       });
     }
@@ -45,20 +45,32 @@ export class UsuarioService {
   }
 
   getById(id: string): Observable<Usuario | undefined> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const usuarios = this.getUsuarios();
-        observer.next(usuarios.find(u => u.id === id));
+        observer.next(usuarios.find((u) => u.id === id));
+        observer.complete();
+      }, 300);
+    });
+  }
+
+  getByEmail(email: string): Observable<Usuario | undefined> {
+    return new Observable((observer) => {
+      setTimeout(() => {
+        const usuario = this.getUsuarios().find(
+          (u) => u.email.toLowerCase() === email.toLowerCase(),
+        );
+        observer.next(usuario);
         observer.complete();
       }, 300);
     });
   }
 
   updateProfile(user: Usuario): Observable<void> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const usuarios = this.getUsuarios();
-        const index = usuarios.findIndex(u => u.id === user.id);
+        const index = usuarios.findIndex((u) => u.id === user.id);
         if (index >= 0) {
           usuarios[index] = { ...usuarios[index], ...user };
           this.saveUsuarios(usuarios);
@@ -72,7 +84,7 @@ export class UsuarioService {
   }
 
   getFavorites(usuarioId: string): Observable<string[]> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const favorites = this.favoritos$.value.get(usuarioId) || [];
         observer.next(favorites);
@@ -82,22 +94,22 @@ export class UsuarioService {
   }
 
   toggleFavorite(usuarioId: string, prestadorId: string): Observable<void> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const favoritos = this.favoritos$.value;
         const userFavs = favoritos.get(usuarioId) || [];
-        
+
         const index = userFavs.indexOf(prestadorId);
         if (index >= 0) {
           userFavs.splice(index, 1);
         } else {
           userFavs.push(prestadorId);
         }
-        
+
         favoritos.set(usuarioId, userFavs);
         this.favoritos$.next(new Map(favoritos));
         this.saveFavoritos();
-        
+
         observer.next();
         observer.complete();
       }, 300);

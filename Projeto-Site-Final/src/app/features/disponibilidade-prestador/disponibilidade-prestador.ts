@@ -64,7 +64,9 @@ export class DisponibilidadePrestadorComponent {
       this.horarios.update((items) => [...items, { ...value, id: Date.now(), ativo: true }]);
       this.savedMessage.set('Horário criado com sucesso.');
     } else {
-      this.horarios.update((items) => items.map((item) => item.id === editingId ? { ...item, ...value } : item));
+      this.horarios.update((items) =>
+        items.map((item) => (item.id === editingId ? { ...item, ...value } : item)),
+      );
       this.savedMessage.set('Horário atualizado com sucesso.');
     }
 
@@ -74,7 +76,11 @@ export class DisponibilidadePrestadorComponent {
 
   editAvailability(schedule: HorarioDisponivel): void {
     this.editingId.set(schedule.id);
-    this.availabilityForm.setValue({ dia: schedule.dia, inicio: schedule.inicio, fim: schedule.fim });
+    this.availabilityForm.setValue({
+      dia: schedule.dia,
+      inicio: schedule.inicio,
+      fim: schedule.fim,
+    });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -86,7 +92,9 @@ export class DisponibilidadePrestadorComponent {
   }
 
   toggleAvailability(id: number): void {
-    this.horarios.update((items) => items.map((item) => item.id === id ? { ...item, ativo: !item.ativo } : item));
+    this.horarios.update((items) =>
+      items.map((item) => (item.id === id ? { ...item, ativo: !item.ativo } : item)),
+    );
   }
 
   cancelEdit(): void {

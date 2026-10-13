@@ -58,7 +58,7 @@ export class ServicosPrestadorComponent {
       this.savedMessage.set('Serviço criado com sucesso.');
     } else {
       this.servicos.update((items) => {
-        const next = items.map((item) => item.id === editingId ? { ...item, ...value } : item);
+        const next = items.map((item) => (item.id === editingId ? { ...item, ...value } : item));
         this.persistirServicos(next);
         return next;
       });
@@ -94,7 +94,7 @@ export class ServicosPrestadorComponent {
 
   toggleService(id: number): void {
     this.servicos.update((items) => {
-      const next = items.map((item) => item.id === id ? { ...item, ativo: !item.ativo } : item);
+      const next = items.map((item) => (item.id === id ? { ...item, ativo: !item.ativo } : item));
       this.persistirServicos(next);
       return next;
     });
@@ -102,7 +102,13 @@ export class ServicosPrestadorComponent {
 
   cancelEdit(): void {
     this.editingId.set(null);
-    this.serviceForm.reset({ nome: '', categoria: 'Barbearia', duracao: 30, valor: 0, descricao: '' });
+    this.serviceForm.reset({
+      nome: '',
+      categoria: 'Barbearia',
+      duracao: 30,
+      valor: 0,
+      descricao: '',
+    });
   }
 
   logout(): void {

@@ -5,7 +5,7 @@ import { MOCK_CHAMADOS } from '../data/mock-data';
 import { getLocalStorage } from '../utils/storage';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SacService {
   private readonly PREFIX = 'nahora_';
@@ -20,7 +20,7 @@ export class SacService {
   }
 
   criarChamado(usuarioId: string, assunto: string, mensagem: string): Observable<ChamadoSac> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const chamados = this.getChamadosFromStorage();
         const newChamado: ChamadoSac = {
@@ -29,7 +29,7 @@ export class SacService {
           assunto,
           mensagem,
           status: 'aberto',
-          dataCadastro: new Date().toISOString()
+          dataCadastro: new Date().toISOString(),
         };
 
         chamados.push(newChamado);
@@ -42,12 +42,12 @@ export class SacService {
   }
 
   getChamados(usuarioId: string, status?: StatusChamado): Observable<ChamadoSac[]> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
-        let chamados = this.getChamadosFromStorage().filter(c => c.usuarioId === usuarioId);
+        let chamados = this.getChamadosFromStorage().filter((c) => c.usuarioId === usuarioId);
 
         if (status) {
-          chamados = chamados.filter(c => c.status === status);
+          chamados = chamados.filter((c) => c.status === status);
         }
 
         observer.next(chamados);
@@ -57,20 +57,20 @@ export class SacService {
   }
 
   getById(chamadoId: string): Observable<ChamadoSac | undefined> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const chamados = this.getChamadosFromStorage();
-        observer.next(chamados.find(c => c.id === chamadoId));
+        observer.next(chamados.find((c) => c.id === chamadoId));
         observer.complete();
       }, 300);
     });
   }
 
   updateStatus(chamadoId: string, novoStatus: StatusChamado): Observable<ChamadoSac> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const chamados = this.getChamadosFromStorage();
-        const chamado = chamados.find(c => c.id === chamadoId);
+        const chamado = chamados.find((c) => c.id === chamadoId);
 
         if (!chamado) {
           observer.error(new Error('Chamado não encontrado'));
@@ -92,10 +92,10 @@ export class SacService {
   }
 
   addResposta(chamadoId: string, resposta: string): Observable<ChamadoSac> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const chamados = this.getChamadosFromStorage();
-        const chamado = chamados.find(c => c.id === chamadoId);
+        const chamado = chamados.find((c) => c.id === chamadoId);
 
         if (!chamado) {
           observer.error(new Error('Chamado não encontrado'));

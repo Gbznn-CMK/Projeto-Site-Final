@@ -281,6 +281,13 @@
         [src]="selectedProvider.image"
         [alt]="selectedProvider.name"
       />
+      @if (selectedProvider.photos.length > 1) {
+        <div class="profile-gallery" aria-label="Galeria de fotos">
+          @for (photo of selectedProvider.photos; track photo) {
+            <img [src]="photo" [alt]="'Foto de ' + selectedProvider.name">
+          }
+        </div>
+      }
       <div class="profile-modal-content">
         <span class="provider-cat">{{ selectedProvider.category }}</span>
         <h2>{{ selectedProvider.name }}</h2>

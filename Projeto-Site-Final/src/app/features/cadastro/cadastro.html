@@ -30,53 +30,46 @@
       <p>Preencha os campos abaixo para criar sua conta e começar a agendar serviços.</p>
     </div>
     <div class="register-content">
-        
       <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-
         <fieldset class="user-type-field">
-  <legend>Como você deseja utilizar a NaHora Serv?</legend>
+          <legend>Como você deseja utilizar a NaHora Serv?</legend>
 
-  <div class="user-type-options">
-    <button
-      type="button"
-      class="user-type-option"
-      [class.selected]="registerForm.controls.tipoUsuario.value === 'cliente'"
-      [attr.aria-pressed]="
-        registerForm.controls.tipoUsuario.value === 'cliente'
-      "
-      (click)="selectUserType('cliente')"
-    >
-      <span class="user-type-icon" aria-hidden="true">👤</span>
+          <div class="user-type-options">
+            <button
+              type="button"
+              class="user-type-option"
+              [class.selected]="registerForm.controls.tipoUsuario.value === 'cliente'"
+              [attr.aria-pressed]="registerForm.controls.tipoUsuario.value === 'cliente'"
+              (click)="selectUserType('cliente')"
+            >
+              <span class="user-type-icon" aria-hidden="true">👤</span>
 
-      <strong>Sou cliente</strong>
+              <strong>Sou cliente</strong>
 
-      <span>Quero contratar serviços</span>
-    </button>
+              <span>Quero contratar serviços</span>
+            </button>
 
-    <button
-      type="button"
-      class="user-type-option"
-      [class.selected]="registerForm.controls.tipoUsuario.value === 'prestador'"
-      [attr.aria-pressed]="
-        registerForm.controls.tipoUsuario.value === 'prestador'
-      "
-      (click)="selectUserType('prestador')"
-    >
-      <span class="user-type-icon" aria-hidden="true">🛠️</span>
+            <button
+              type="button"
+              class="user-type-option"
+              [class.selected]="registerForm.controls.tipoUsuario.value === 'prestador'"
+              [attr.aria-pressed]="registerForm.controls.tipoUsuario.value === 'prestador'"
+              (click)="selectUserType('prestador')"
+            >
+              <span class="user-type-icon" aria-hidden="true">🛠️</span>
 
-      <strong>Sou prestador</strong>
+              <strong>Sou prestador</strong>
 
-      <span>Quero oferecer meus serviços</span>
-    </button>
-  </div>
+              <span>Quero oferecer meus serviços</span>
+            </button>
+          </div>
 
-  @if (registerForm.controls.tipoUsuario.invalid &&
-  registerForm.controls.tipoUsuario.touched) {
-    <small class="error-message">
-      Selecione uma opção para continuar.
-    </small>
-  }
-</fieldset>
+          @if (
+            registerForm.controls.tipoUsuario.invalid && registerForm.controls.tipoUsuario.touched
+          ) {
+            <small class="error-message"> Selecione uma opção para continuar. </small>
+          }
+        </fieldset>
         <div class="form-group">
           <label for="nome">Nome completo</label>
 
@@ -172,9 +165,7 @@
             @if (registerForm.controls.confirmarSenha.hasError('required')) {
               <small class="error-message">A confirmação de senha é obrigatória.</small>
             } @else if (registerForm.controls.confirmarSenha.hasError('minlength')) {
-              <small class="error-message">
-                A confirmação deve ter ao menos 8 caracteres.
-              </small>
+              <small class="error-message"> A confirmação deve ter ao menos 8 caracteres. </small>
             }
           } @else if (registerForm.hasError('passwordsMismatch')) {
             <small class="error-message">As senhas não coincidem.</small>

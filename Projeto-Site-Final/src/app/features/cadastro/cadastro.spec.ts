@@ -45,13 +45,15 @@ describe('CadastroComponent', () => {
   });
 
   it('registers a valid account', async () => {
-    const response = await firstValueFrom(TestBed.inject(AuthService).signup({
-      nome: 'Ana',
-      email: 'cadastro-test@example.com',
-      password: '12345678',
-      telefone: '',
-      tipo: 'cliente',
-    }));
+    const response = await firstValueFrom(
+      TestBed.inject(AuthService).signup({
+        nome: 'Ana',
+        email: 'cadastro-test@example.com',
+        password: '12345678',
+        telefone: '',
+        tipo: 'cliente',
+      }),
+    );
 
     expect(response.usuario.email).toBe('cadastro-test@example.com');
   });

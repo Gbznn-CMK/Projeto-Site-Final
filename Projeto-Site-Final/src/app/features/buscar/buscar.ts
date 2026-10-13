@@ -3,6 +3,9 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth';
+import { LojaService } from '../../core/services/loja';
+import { CATEGORIAS_SERVICOS } from '../../core/models/types';
+import { PrestadorService } from '../../core/services/prestador.service';
 
 export interface Prestador {
   id: number;
@@ -13,8 +16,8 @@ export interface Prestador {
   precoDesde: number;
   foto: string;
   favorito: boolean;
-  latitude: number;
-  longitude: number;
+  latitude?: number;
+  longitude?: number;
   distanciaKm?: number;
 }
 
@@ -23,7 +26,7 @@ export interface Prestador {
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './buscar.html',
-  styleUrl: './buscar.css'
+  styleUrl: './buscar.css',
 })
 export class BuscarComponent {
   isBrowser: boolean;
@@ -41,23 +44,108 @@ export class BuscarComponent {
   locationMessage = '';
   userLocation?: { latitude: number; longitude: number };
 
-  categorias = ['Todos', 'Barbearia', 'Salão de Beleza', 'Manicure', 'Personal Trainer', 'Pet Shop', 'Estética'];
+  categorias = ['Todos', ...CATEGORIAS_SERVICOS];
 
   prestadores: Prestador[] = [
-    { id: 1, nome: 'Barbearia Central', categoria: 'Barbearia', avaliacao: 4.8, numAvaliacoes: 132, precoDesde: 35, foto: '/img/barbearia.webp', favorito: false, latitude: -22.875, longitude: -43.463 },
-    { id: 2, nome: 'Salão da Maria', categoria: 'Salão de Beleza', avaliacao: 4.6, numAvaliacoes: 98, precoDesde: 50, foto: '/img/salao-maria.png', favorito: true, latitude: -23.561, longitude: -46.656 },
-    { id: 3, nome: 'Studio Unhas & Cia', categoria: 'Manicure', avaliacao: 4.9, numAvaliacoes: 210, precoDesde: 25, foto: '/img/manicure.png', favorito: false, latitude: -22.906, longitude: -43.172 },
-    { id: 4, nome: 'Fit Pro Personal', categoria: 'Personal Trainer', avaliacao: 4.7, numAvaliacoes: 64, precoDesde: 80, foto: '/img/studio-fit.png', favorito: false, latitude: -22.883, longitude: -43.103 },
-    { id: 5, nome: 'Pet Amigo', categoria: 'Pet Shop', avaliacao: 4.5, numAvaliacoes: 47, precoDesde: 40, foto: '/img/pet-shop.jpg', favorito: false, latitude: -22.906, longitude: -43.177 },
-    { id: 6, nome: 'Espaço Bem Estar', categoria: 'Estética', avaliacao: 4.4, numAvaliacoes: 71, precoDesde: 60, foto: '/img/bem-star.jpg', favorito: false, latitude: -25.429, longitude: -49.271 },
+    {
+      id: 1,
+      nome: 'Barbearia Central',
+      categoria: 'Barbearia',
+      avaliacao: 4.8,
+      numAvaliacoes: 132,
+      precoDesde: 35,
+      foto: '/img/barbearia.webp',
+      favorito: false,
+      latitude: -22.875,
+      longitude: -43.463,
+    },
+    {
+      id: 2,
+      nome: 'Salão da Maria',
+      categoria: 'Salão de Beleza',
+      avaliacao: 4.6,
+      numAvaliacoes: 98,
+      precoDesde: 50,
+      foto: '/img/salao-maria.png',
+      favorito: true,
+      latitude: -23.561,
+      longitude: -46.656,
+    },
+    {
+      id: 3,
+      nome: 'Studio Unhas & Cia',
+      categoria: 'Manicure',
+      avaliacao: 4.9,
+      numAvaliacoes: 210,
+      precoDesde: 25,
+      foto: '/img/manicure.png',
+      favorito: false,
+      latitude: -22.906,
+      longitude: -43.172,
+    },
+    {
+      id: 4,
+      nome: 'Fit Pro Personal',
+      categoria: 'Personal Trainer',
+      avaliacao: 4.7,
+      numAvaliacoes: 64,
+      precoDesde: 80,
+      foto: '/img/studio-fit.png',
+      favorito: false,
+      latitude: -22.883,
+      longitude: -43.103,
+    },
+    {
+      id: 5,
+      nome: 'Pet Amigo',
+      categoria: 'Pet Shop',
+      avaliacao: 4.5,
+      numAvaliacoes: 47,
+      precoDesde: 40,
+      foto: '/img/pet-shop.jpg',
+      favorito: false,
+      latitude: -22.906,
+      longitude: -43.177,
+    },
+    {
+      id: 6,
+      nome: 'Espaço Bem Estar',
+      categoria: 'Estética',
+      avaliacao: 4.4,
+      numAvaliacoes: 71,
+      precoDesde: 60,
+      foto: '/img/bem-star.jpg',
+      favorito: false,
+      latitude: -25.429,
+      longitude: -49.271,
+    },
   ];
 
   constructor(
-    private readonly router: Router,      
+    private readonly router: Router,
     private readonly auth: AuthService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private readonly lojaService: LojaService,
+    private readonly prestadorService: PrestadorService,
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+    this.prestadores.push(
+      ...this.lojaService.listar().map((loja) => ({
+        id: loja.id,
+        nome: loja.nome,
+        categoria: loja.categoria,
+        avaliacao: 0,
+        numAvaliacoes: 0,
+        precoDesde: 0,
+        foto: loja.imagemUrl,
+        favorito: false,
+        latitude: loja.latitude,
+        longitude: loja.longitude,
+      })),
+    );
+    this.prestadorService.getCategories().subscribe((categories) => {
+      this.categorias = ['Todos', ...categories];
+    });
   }
 
   // ---------- Getters da Sidebar ----------
@@ -101,10 +189,12 @@ export class BuscarComponent {
 
   // ---------- Lógica da Busca ----------
   get prestadoresFiltrados(): Prestador[] {
-    let lista = this.prestadores.filter(p => {
-      const bateCategoria = this.categoriaSelecionada === 'Todos' || p.categoria === this.categoriaSelecionada;
-      const bateBusca = p.nome.toLowerCase().includes(this.termoBusca.toLowerCase()) ||
-                         p.categoria.toLowerCase().includes(this.termoBusca.toLowerCase());
+    let lista = this.prestadores.filter((p) => {
+      const bateCategoria =
+        this.categoriaSelecionada === 'Todos' || p.categoria === this.categoriaSelecionada;
+      const bateBusca =
+        p.nome.toLowerCase().includes(this.termoBusca.toLowerCase()) ||
+        p.categoria.toLowerCase().includes(this.termoBusca.toLowerCase());
       return bateCategoria && bateBusca;
     });
 
@@ -120,7 +210,9 @@ export class BuscarComponent {
         break;
     }
     if (this.ordenacaoLocalizacao && this.userLocation) {
-      lista = lista.slice().sort((a, b) => (a.distanciaKm ?? Infinity) - (b.distanciaKm ?? Infinity));
+      lista = lista
+        .slice()
+        .sort((a, b) => (a.distanciaKm ?? Infinity) - (b.distanciaKm ?? Infinity));
     }
     return lista;
   }
@@ -132,12 +224,13 @@ export class BuscarComponent {
     }
     this.locationMessage = 'Obtendo sua localização...';
     navigator.geolocation.getCurrentPosition(
-      position => {
+      (position) => {
         this.userLocation = {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         };
-        this.prestadores.forEach(prestador => {
+        this.prestadores.forEach((prestador) => {
+          if (prestador.latitude === undefined || prestador.longitude === undefined) return;
           prestador.distanciaKm = this.distanceKm(
             this.userLocation!.latitude,
             this.userLocation!.longitude,
@@ -148,17 +241,22 @@ export class BuscarComponent {
         this.ordenacaoLocalizacao = true;
         this.locationMessage = 'Resultados ordenados pela distância estimada.';
       },
-      () => this.locationMessage = 'Não foi possível obter sua localização. Verifique a permissão do navegador.',
+      () =>
+        (this.locationMessage =
+          'Não foi possível obter sua localização. Verifique a permissão do navegador.'),
       { enableHighAccuracy: false, timeout: 10000 },
     );
   }
 
   private distanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
     const earthRadius = 6371;
-    const latitudeDelta = (lat2 - lat1) * Math.PI / 180;
-    const longitudeDelta = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(latitudeDelta / 2) ** 2
-      + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(longitudeDelta / 2) ** 2;
+    const latitudeDelta = ((lat2 - lat1) * Math.PI) / 180;
+    const longitudeDelta = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(latitudeDelta / 2) ** 2 +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(longitudeDelta / 2) ** 2;
     return earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 

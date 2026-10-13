@@ -30,13 +30,15 @@ describe('LoginComponent', () => {
 
   it('authenticates a registered user', async () => {
     const auth = TestBed.inject(AuthService);
-    await firstValueFrom(auth.signup({
-      nome: 'Ana',
-      email: 'login-test@example.com',
-      password: '12345678',
-      telefone: '',
-      tipo: 'cliente',
-    }));
+    await firstValueFrom(
+      auth.signup({
+        nome: 'Ana',
+        email: 'login-test@example.com',
+        password: '12345678',
+        telefone: '',
+        tipo: 'cliente',
+      }),
+    );
     auth.logout();
 
     const response = await firstValueFrom(auth.login('login-test@example.com', '12345678'));

@@ -19,34 +19,36 @@ import { HeaderComponent } from '../shared/components/header/header.component';
       </div>
     </div>
   `,
-  styles: [`
-    .app-container {
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    .app-wrapper {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      margin-left: 250px;
-      min-width: 0;
-    }
-
-    .app-main {
-      flex: 1;
-      overflow-y: auto;
-      padding: clamp(1.25rem, 3vw, 2.5rem);
-      margin-top: 68px;
-      background-color: var(--color-neutral-50);
-    }
-
-    @media (max-width: 768px) {
-      .app-wrapper {
-        margin-left: 80px;
+  styles: [
+    `
+      .app-container {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
       }
-    }
-  `]
+
+      .app-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        margin-left: 250px;
+        min-width: 0;
+      }
+
+      .app-main {
+        flex: 1;
+        overflow-y: auto;
+        padding: clamp(1.25rem, 3vw, 2.5rem);
+        margin-top: 68px;
+        background-color: var(--color-neutral-50);
+      }
+
+      @media (max-width: 768px) {
+        .app-wrapper {
+          margin-left: 80px;
+        }
+      }
+    `,
+  ],
 })
 export class MainLayoutComponent {}

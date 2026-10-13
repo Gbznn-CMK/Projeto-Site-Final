@@ -55,23 +55,25 @@ export class CadastroComponent {
       return;
     }
 
-    this.auth.signup({
-      nome: user.nome,
-      email: user.email,
-      password: user.senha,
-      telefone: '',
-      tipo: user.tipoUsuario,
-    }).subscribe({
-      next: () => {
-        this.registerMessage = 'Cadastro realizado com sucesso!';
-        void this.router.navigate([
-          user.tipoUsuario === 'prestador' ? '/cadastro-loja' : '/home-cliente',
-        ]);
-      },
-      error: (error: Error) => {
-        this.registerMessage = error.message || 'Este email já está cadastrado.';
-      },
-    });
+    this.auth
+      .signup({
+        nome: user.nome,
+        email: user.email,
+        password: user.senha,
+        telefone: '',
+        tipo: user.tipoUsuario,
+      })
+      .subscribe({
+        next: () => {
+          this.registerMessage = 'Cadastro realizado com sucesso!';
+          void this.router.navigate([
+            user.tipoUsuario === 'prestador' ? '/cadastro-loja' : '/home-cliente',
+          ]);
+        },
+        error: (error: Error) => {
+          this.registerMessage = error.message || 'Este email já está cadastrado.';
+        },
+      });
   }
 
   isInvalid(field: 'nome' | 'email' | 'senha' | 'confirmarSenha'): boolean {

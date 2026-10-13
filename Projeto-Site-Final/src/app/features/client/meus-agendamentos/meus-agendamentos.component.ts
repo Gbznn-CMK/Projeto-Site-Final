@@ -34,6 +34,7 @@ import { AppointmentCardComponent } from '../../../shared/components/appointment
           [serviceName]="item.serviceName"
           [isUpcoming]="isUpcoming(item.agendamento)"
           (cancel)="cancelAppointment($event)"
+          (confirmCompletion)="confirmCompletion($event)"
         ></app-appointment-card>
       </div>
 
@@ -44,20 +45,77 @@ import { AppointmentCardComponent } from '../../../shared/components/appointment
       </div>
     </section>
   `,
-  styles: [`
-    .appointments-page { max-width: 1000px; margin: 0 auto; }
-    .page-heading { display: flex; align-items: end; justify-content: space-between; gap: var(--space-lg); margin-bottom: var(--space-2xl); }
-    .eyebrow { color: var(--color-success-dark); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); margin: 0 0 var(--space-xs); text-transform: uppercase; letter-spacing: 0.08em; }
-    h1 { margin: 0 0 var(--space-xs); }
-    .subtitle { color: var(--color-neutral-600); margin: 0; }
-    .btn { display: inline-block; padding: var(--space-md) var(--space-lg); border-radius: var(--radius-md); font-weight: var(--font-weight-bold); white-space: nowrap; }
-    .appointments-list { display: grid; gap: var(--space-lg); }
-    .loading-state, .empty-state { padding: var(--space-3xl) var(--space-lg); text-align: center; color: var(--color-neutral-600); }
-    .empty-state h2 { color: var(--color-neutral-900); margin-bottom: var(--space-sm); }
-    .empty-state p { margin-bottom: var(--space-lg); }
-    .error-message { padding: var(--space-md); color: var(--color-danger-dark); background: #fff1f0; border-radius: var(--radius-md); margin-bottom: var(--space-lg); }
-    @media (max-width: 640px) { .page-heading { align-items: start; flex-direction: column; } .page-heading .btn { width: 100%; text-align: center; } }
-  `]
+  styles: [
+    `
+      .appointments-page {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      .page-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: var(--space-lg);
+        margin-bottom: var(--space-2xl);
+      }
+      .eyebrow {
+        color: var(--color-success-dark);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-bold);
+        margin: 0 0 var(--space-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      h1 {
+        margin: 0 0 var(--space-xs);
+      }
+      .subtitle {
+        color: var(--color-neutral-600);
+        margin: 0;
+      }
+      .btn {
+        display: inline-block;
+        padding: var(--space-md) var(--space-lg);
+        border-radius: var(--radius-md);
+        font-weight: var(--font-weight-bold);
+        white-space: nowrap;
+      }
+      .appointments-list {
+        display: grid;
+        gap: var(--space-lg);
+      }
+      .loading-state,
+      .empty-state {
+        padding: var(--space-3xl) var(--space-lg);
+        text-align: center;
+        color: var(--color-neutral-600);
+      }
+      .empty-state h2 {
+        color: var(--color-neutral-900);
+        margin-bottom: var(--space-sm);
+      }
+      .empty-state p {
+        margin-bottom: var(--space-lg);
+      }
+      .error-message {
+        padding: var(--space-md);
+        color: var(--color-danger-dark);
+        background: #fff1f0;
+        border-radius: var(--radius-md);
+        margin-bottom: var(--space-lg);
+      }
+      @media (max-width: 640px) {
+        .page-heading {
+          align-items: start;
+          flex-direction: column;
+        }
+        .page-heading .btn {
+          width: 100%;
+          text-align: center;
+        }
+      }
+    `,
+  ],
 })
 export class MeusAgendamentosComponent implements OnInit {
   appointments: { agendamento: Agendamento; providerName: string; serviceName: string }[] = [];
@@ -69,11 +127,11 @@ export class MeusAgendamentosComponent implements OnInit {
     private authService: AuthService,
     private agendamentoService: AgendamentoService,
     private prestadorService: PrestadorService,
-    private servicoService: ServicoService
+    private servicoService: ServicoService,
   ) {}
 
   ngOnInit() {
-    this.authService.getCurrentUser().subscribe(user => {
+    this.authService.getCurrentUser().subscribe((user) => {
       this.currentUser = user || undefined;
       if (this.currentUser) this.loadAppointments(this.currentUser.id);
     });
@@ -81,19 +139,19 @@ export class MeusAgendamentosComponent implements OnInit {
 
   private loadAppointments(clienteId: string) {
     this.agendamentoService.getByCliente(clienteId).subscribe({
-      next: agendamentos => {
+      next: (agendamentos) => {
         if (!agendamentos.length) {
           this.loading = false;
           return;
         }
 
         let loaded = 0;
-        agendamentos.forEach(agendamento => {
+        agendamentos.forEach((agendamento) => {
           let providerName = 'Prestador';
           let serviceName = 'Serviço';
-          this.prestadorService.getById(agendamento.prestadorId).subscribe(prestador => {
+          this.prestadorService.getById(agendamento.prestadorId).subscribe((prestador) => {
             providerName = prestador?.nomeEstabelecimento || providerName;
-            this.servicoService.getById(agendamento.servicoId).subscribe(servico => {
+            this.servicoService.getById(agendamento.servicoId).subscribe((servico) => {
               serviceName = servico?.nome || serviceName;
               this.appointments.push({ agendamento, providerName, serviceName });
               loaded++;
@@ -105,12 +163,14 @@ export class MeusAgendamentosComponent implements OnInit {
       error: () => {
         this.errorMessage = 'Não foi possível carregar seus agendamentos.';
         this.finishLoading();
-      }
+      },
     });
   }
 
   isUpcoming(agendamento: Agendamento): boolean {
-    return agendamento.status !== 'cancelado' && new Date(agendamento.dataHora).getTime() > Date.now();
+    return (
+      agendamento.status !== 'cancelado' && new Date(agendamento.dataHora).getTime() > Date.now()
+    );
   }
 
   cancelAppointment(agendamento: Agendamento) {
@@ -120,15 +180,29 @@ export class MeusAgendamentosComponent implements OnInit {
       next: () => {
         agendamento.status = 'cancelado';
       },
-      error: error => {
+      error: (error) => {
         this.errorMessage = error.message || 'Não foi possível cancelar o agendamento.';
-      }
+      },
     });
   }
 
+  confirmCompletion(agendamento: Agendamento) {
+    if (!this.currentUser || !confirm('Confirmar que o serviço foi concluído?')) return;
+    this.agendamentoService
+      .confirmCompletionByClient(agendamento.id, this.currentUser.id)
+      .subscribe({
+        next: (updated) =>
+          (agendamento.clienteConfirmouConclusao = updated.clienteConfirmouConclusao),
+        error: (error) =>
+          (this.errorMessage = error.message || 'Não foi possível confirmar a conclusão.'),
+      });
+  }
+
   private finishLoading() {
-    this.appointments.sort((first, second) =>
-      new Date(first.agendamento.dataHora).getTime() - new Date(second.agendamento.dataHora).getTime()
+    this.appointments.sort(
+      (first, second) =>
+        new Date(first.agendamento.dataHora).getTime() -
+        new Date(second.agendamento.dataHora).getTime(),
     );
     this.loading = false;
   }

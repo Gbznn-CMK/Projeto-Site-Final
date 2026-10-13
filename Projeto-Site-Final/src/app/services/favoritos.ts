@@ -14,10 +14,38 @@ export interface Favorito {
 export class FavoritosService {
   private readonly storageKey = 'nahora-favoritos';
   private readonly lojas: Favorito[] = [
-    { id: 1, nome: 'Barbearia Central', endereco: 'Rua Belterra 291, Bangu, RJ', horario: '09:00-18:00', disponivel: true, imagemUrl: '/img/barbearia.webp' },
-    { id: 2, nome: 'Salão da Maria', endereco: 'Av. Paulista 1000, São Paulo, SP', horario: '09:00-19:00', disponivel: true, imagemUrl: '/img/salao-maria.png' },
-    { id: 3, nome: 'Nails & More', endereco: 'Rua das Flores 123, Rio de Janeiro, RJ', horario: '10:00-18:00', disponivel: true, imagemUrl: '/img/manicure.png' },
-    { id: 4, nome: 'Studio Fit', endereco: 'Rua Ipiranga 55, Niterói, RJ', horario: '06:00-21:00', disponivel: true, imagemUrl: '/img/studio-fit.png' },
+    {
+      id: 1,
+      nome: 'Barbearia Central',
+      endereco: 'Rua Belterra 291, Bangu, RJ',
+      horario: '09:00-18:00',
+      disponivel: true,
+      imagemUrl: '/img/barbearia.webp',
+    },
+    {
+      id: 2,
+      nome: 'Salão da Maria',
+      endereco: 'Av. Paulista 1000, São Paulo, SP',
+      horario: '09:00-19:00',
+      disponivel: true,
+      imagemUrl: '/img/salao-maria.png',
+    },
+    {
+      id: 3,
+      nome: 'Nails & More',
+      endereco: 'Rua das Flores 123, Rio de Janeiro, RJ',
+      horario: '10:00-18:00',
+      disponivel: true,
+      imagemUrl: '/img/manicure.png',
+    },
+    {
+      id: 4,
+      nome: 'Studio Fit',
+      endereco: 'Rua Ipiranga 55, Niterói, RJ',
+      horario: '06:00-21:00',
+      disponivel: true,
+      imagemUrl: '/img/studio-fit.png',
+    },
   ];
 
   listarIds(): Observable<number[]> {

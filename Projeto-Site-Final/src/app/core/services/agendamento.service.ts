@@ -287,6 +287,7 @@ export class AgendamentoService {
           observer.error(new Error('Agendamento não encontrado'));
           return;
         }
+
         if (agendamentos[index].prestadorId !== prestadorId) {
           observer.error(new Error('Você não pode apagar este agendamento'));
           return;
@@ -294,6 +295,31 @@ export class AgendamentoService {
         agendamentos.splice(index, 1);
         this.saveAgendamentos(agendamentos);
         observer.next();
+        observer.complete();
+      }, 300);
+    });
+  }
+
+  confirmCompletionByClient(agendamentoId: string, clienteId: string): Observable<Agendamento> {
+    return new Observable((observer) => {
+      setTimeout(() => {
+        const agendamentos = this.getAgendamentos();
+        const agendamento = agendamentos.find((a) => a.id === agendamentoId);
+        if (!agendamento) {
+          observer.error(new Error('Agendamento não encontrado'));
+          return;
+        }
+        if (agendamento.clienteId !== clienteId) {
+          observer.error(new Error('Você não pode confirmar este agendamento'));
+          return;
+        }
+        if (agendamento.status !== 'concluido') {
+          observer.error(new Error('O prestador ainda não marcou este atendimento como concluído'));
+          return;
+        }
+        agendamento.clienteConfirmouConclusao = true;
+        this.saveAgendamentos(agendamentos);
+        observer.next(agendamento);
         observer.complete();
       }, 300);
     });

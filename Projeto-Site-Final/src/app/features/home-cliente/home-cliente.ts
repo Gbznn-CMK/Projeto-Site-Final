@@ -6,6 +6,7 @@ import { AuthService } from '../../core/services/auth';
 import { FavoritosService } from '../../services/favoritos';
 import { LojaService } from '../../core/services/loja';
 import { Notificacao, NotificacaoService } from '../../core/services/notificacao.service';
+import { UsuarioService } from '../../core/services/usuario.service';
 
 @Component({
   selector: 'app-home-cliente',
@@ -20,6 +21,7 @@ export class HomeCliente implements OnInit {
     private readonly auth: AuthService,
     private readonly favoritosService: FavoritosService,
     private readonly notificacaoService: NotificacaoService,
+    private readonly usuarioService: UsuarioService,
   ) {}
 
   private readonly lojaService = inject(LojaService);
@@ -43,6 +45,7 @@ export class HomeCliente implements OnInit {
         name: loja.nome,
         id: loja.id,
         image: loja.imagemUrl,
+        photos: loja.fotos ?? [loja.imagemUrl],
         category: loja.categoria,
         address: loja.endereco,
         hours: loja.horario,
@@ -57,10 +60,13 @@ export class HomeCliente implements OnInit {
           .map((provider) => provider.name),
       );
     });
-    const userId = this.auth.currentUser()?.email;
-    if (userId) {
-      this.notificacaoService.paraUsuario(userId, 'cliente').subscribe({
-        next: notificacoes => this.notificacoes = notificacoes,
+    const userEmail = this.auth.currentUser()?.email;
+    if (userEmail) {
+      this.usuarioService.getByEmail(userEmail).subscribe(user => {
+        if (!user) return;
+        this.notificacaoService.paraUsuario(user.id, 'cliente').subscribe({
+          next: notificacoes => this.notificacoes = notificacoes,
+        });
       });
     }
   }
@@ -75,6 +81,7 @@ export class HomeCliente implements OnInit {
       hours: '09:00–18:00',
       rating: '4.5/5',
       stars: '★★★★☆',
+      photos: ['/img/barbearia.webp'],
     },
     {
       name: 'Salão da Maria',
@@ -85,6 +92,7 @@ export class HomeCliente implements OnInit {
       hours: '09:00–19:00',
       rating: '4.5/5',
       stars: '★★★★☆',
+      photos: ['/img/salao-maria.png'],
     },
     {
       name: 'Nails & More',
@@ -95,6 +103,7 @@ export class HomeCliente implements OnInit {
       hours: '10:00–18:00',
       rating: '4.7/5',
       stars: '★★★★★',
+      photos: ['/img/manicure.png'],
     },
     {
       name: 'Studio Fit',
@@ -105,6 +114,7 @@ export class HomeCliente implements OnInit {
       hours: '06:00–21:00',
       rating: '4.6/5',
       stars: '★★★★☆',
+      photos: ['/img/studio-fit.png'],
     },
   ];
 

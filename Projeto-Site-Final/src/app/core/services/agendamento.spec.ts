@@ -37,17 +37,20 @@ describe('AgendamentoService', () => {
   });
 
   it('rejects invalid date and time values', async () => {
-    await expect(firstValueFrom(service.create(appointment({ dataHora: '2099-09-10' }))))
-      .rejects.toThrow('Horário inválido');
-    await expect(firstValueFrom(service.create(appointment({ dataHora: '2099-09-10T25:00:00' }))))
-      .rejects.toThrow('Horário inválido');
+    await expect(
+      firstValueFrom(service.create(appointment({ dataHora: '2099-09-10' }))),
+    ).rejects.toThrow('Horário inválido');
+    await expect(
+      firstValueFrom(service.create(appointment({ dataHora: '2099-09-10T25:00:00' }))),
+    ).rejects.toThrow('Horário inválido');
   });
 
   it('rejects overlapping appointments for the same provider', async () => {
     await firstValueFrom(service.create(appointment()));
 
-    await expect(firstValueFrom(service.create(appointment({ id: '', dataHora: '2099-09-10T10:15:00' }))))
-      .rejects.toThrow('não está disponível');
+    await expect(
+      firstValueFrom(service.create(appointment({ id: '', dataHora: '2099-09-10T10:15:00' }))),
+    ).rejects.toThrow('não está disponível');
   });
 
   it('allows the same time for different providers', async () => {
@@ -63,8 +66,9 @@ describe('AgendamentoService', () => {
     const confirmed = await firstValueFrom(service.updateStatus(created.id, 'confirmado'));
     expect(confirmed.status).toBe('confirmado');
 
-    await expect(firstValueFrom(service.cancel(created.id, 'user-2')))
-      .rejects.toThrow('Você não pode cancelar este agendamento');
+    await expect(firstValueFrom(service.cancel(created.id, 'user-2'))).rejects.toThrow(
+      'Você não pode cancelar este agendamento',
+    );
 
     await firstValueFrom(service.cancel(created.id, 'user-1'));
     const canceled = await firstValueFrom(service.getById(created.id));

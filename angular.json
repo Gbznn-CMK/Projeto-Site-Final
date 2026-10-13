@@ -26,7 +26,8 @@
               }
             ],
             "styles": [
-              "Projeto-Site-Final/src/styles.css"
+              "Projeto-Site-Final/src/styles.css",
+              "Projeto-Site-Final/src/app/shared/styles/global.css"
             ],
             "server": "Projeto-Site-Final/src/main.server.ts",
             "outputMode": "server",

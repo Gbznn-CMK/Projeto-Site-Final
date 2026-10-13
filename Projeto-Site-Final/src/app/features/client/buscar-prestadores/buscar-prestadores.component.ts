@@ -26,12 +26,7 @@ import { ProviderCardComponent } from '../../../shared/components/provider-card/
       <form class="filters" (ngSubmit)="search()">
         <label class="filter-field search-field">
           <span>O que você procura?</span>
-          <input
-            type="search"
-            name="query"
-            [(ngModel)]="query"
-            placeholder="Nome ou descrição"
-          >
+          <input type="search" name="query" [(ngModel)]="query" placeholder="Nome ou descrição" />
         </label>
 
         <label class="filter-field">
@@ -49,7 +44,7 @@ import { ProviderCardComponent } from '../../../shared/components/provider-card/
             name="localizacao"
             [(ngModel)]="localizacao"
             placeholder="Cidade, bairro ou endereço"
-          >
+          />
         </label>
 
         <label class="filter-field">
@@ -61,7 +56,12 @@ import { ProviderCardComponent } from '../../../shared/components/provider-card/
         </label>
 
         <label class="favorite-filter">
-          <input type="checkbox" name="apenasFavoritos" [(ngModel)]="apenasFavoritos" (change)="search()">
+          <input
+            type="checkbox"
+            name="apenasFavoritos"
+            [(ngModel)]="apenasFavoritos"
+            (change)="search()"
+          />
           <span>Somente favoritos</span>
         </label>
 
@@ -83,128 +83,132 @@ import { ProviderCardComponent } from '../../../shared/components/provider-card/
       <div class="empty-state" *ngIf="!loading && !prestadores.length">
         <h2>Nenhum prestador encontrado</h2>
         <p>Tente remover um filtro ou buscar por outro termo.</p>
-        <button class="btn btn-secondary" type="button" (click)="clearFilters()">Limpar filtros</button>
+        <button class="btn btn-secondary" type="button" (click)="clearFilters()">
+          Limpar filtros
+        </button>
       </div>
     </section>
   `,
-  styles: [`
-    .search-page {
-      max-width: 1280px;
-      margin: 0 auto;
-    }
+  styles: [
+    `
+      .search-page {
+        max-width: 1280px;
+        margin: 0 auto;
+      }
 
-    .page-heading {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: var(--space-lg);
-      margin-bottom: var(--space-xl);
-    }
-
-    .eyebrow {
-      color: var(--color-success-dark);
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-bold);
-      margin: 0 0 var(--space-xs);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    h1 {
-      margin: 0 0 var(--space-xs);
-    }
-
-    .subtitle {
-      color: var(--color-neutral-600);
-      margin: 0;
-    }
-
-    .result-count {
-      color: var(--color-neutral-600);
-      font-size: var(--font-size-sm);
-      white-space: nowrap;
-    }
-
-    .filters {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr 1.2fr 1fr auto;
-      align-items: end;
-      gap: var(--space-md);
-      padding: var(--space-lg);
-      margin-bottom: var(--space-xl);
-      background: white;
-      border: 1px solid var(--color-neutral-200);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .filter-field {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-xs);
-    }
-
-    .filter-field span {
-      color: var(--color-neutral-700);
-      font-size: var(--font-size-xs);
-      font-weight: var(--font-weight-semibold);
-    }
-
-    .filter-button {
-      min-height: 44px;
-    }
-
-    .favorite-filter {
-      display: flex;
-      align-items: center;
-      gap: var(--space-xs);
-      min-height: 44px;
-      color: var(--color-neutral-700);
-      font-size: var(--font-size-sm);
-      white-space: nowrap;
-    }
-
-    .provider-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: var(--space-lg);
-    }
-
-    .loading-state,
-    .empty-state {
-      padding: var(--space-3xl) var(--space-lg);
-      text-align: center;
-      color: var(--color-neutral-600);
-    }
-
-    .empty-state h2 {
-      color: var(--color-neutral-900);
-      margin-bottom: var(--space-sm);
-    }
-
-    .empty-state p {
-      margin-bottom: var(--space-lg);
-    }
-
-    .error-message {
-      color: var(--color-danger-dark);
-      background: #fff1f0;
-      border: 1px solid #ffcdd2;
-      border-radius: var(--radius-md);
-      padding: var(--space-md);
-    }
-
-    @media (max-width: 768px) {
       .page-heading {
-        align-items: start;
-        flex-direction: column;
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: var(--space-lg);
+        margin-bottom: var(--space-xl);
+      }
+
+      .eyebrow {
+        color: var(--color-success-dark);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-bold);
+        margin: 0 0 var(--space-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      h1 {
+        margin: 0 0 var(--space-xs);
+      }
+
+      .subtitle {
+        color: var(--color-neutral-600);
+        margin: 0;
+      }
+
+      .result-count {
+        color: var(--color-neutral-600);
+        font-size: var(--font-size-sm);
+        white-space: nowrap;
       }
 
       .filters {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: 1.4fr 1fr 1.2fr 1fr auto;
+        align-items: end;
+        gap: var(--space-md);
+        padding: var(--space-lg);
+        margin-bottom: var(--space-xl);
+        background: white;
+        border: 1px solid var(--color-neutral-200);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
       }
-    }
-  `]
+
+      .filter-field {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+      }
+
+      .filter-field span {
+        color: var(--color-neutral-700);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+      }
+
+      .filter-button {
+        min-height: 44px;
+      }
+
+      .favorite-filter {
+        display: flex;
+        align-items: center;
+        gap: var(--space-xs);
+        min-height: 44px;
+        color: var(--color-neutral-700);
+        font-size: var(--font-size-sm);
+        white-space: nowrap;
+      }
+
+      .provider-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: var(--space-lg);
+      }
+
+      .loading-state,
+      .empty-state {
+        padding: var(--space-3xl) var(--space-lg);
+        text-align: center;
+        color: var(--color-neutral-600);
+      }
+
+      .empty-state h2 {
+        color: var(--color-neutral-900);
+        margin-bottom: var(--space-sm);
+      }
+
+      .empty-state p {
+        margin-bottom: var(--space-lg);
+      }
+
+      .error-message {
+        color: var(--color-danger-dark);
+        background: #fff1f0;
+        border: 1px solid #ffcdd2;
+        border-radius: var(--radius-md);
+        padding: var(--space-md);
+      }
+
+      @media (max-width: 768px) {
+        .page-heading {
+          align-items: start;
+          flex-direction: column;
+        }
+
+        .filters {
+          grid-template-columns: 1fr;
+        }
+      }
+    `,
+  ],
 })
 export class BuscarPrestadoresComponent implements OnInit {
   prestadores: Prestador[] = [];
@@ -223,21 +227,23 @@ export class BuscarPrestadoresComponent implements OnInit {
     private prestadorService: PrestadorService,
     private route: ActivatedRoute,
     private authService: AuthService,
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
   ) {}
 
   ngOnInit() {
-    this.authService.getCurrentUser().subscribe(user => {
+    this.authService.getCurrentUser().subscribe((user) => {
       if (!user) return;
       this.userId = user.id;
-      this.usuarioService.getFavorites(user.id).subscribe(ids => this.favoriteIds = new Set(ids));
+      this.usuarioService
+        .getFavorites(user.id)
+        .subscribe((ids) => (this.favoriteIds = new Set(ids)));
     });
 
-    this.prestadorService.getCategories().subscribe(categories => {
+    this.prestadorService.getCategories().subscribe((categories) => {
       this.categorias = categories;
     });
 
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       this.query = params['busca'] || '';
       this.search();
     });
@@ -247,20 +253,18 @@ export class BuscarPrestadoresComponent implements OnInit {
     this.loading = true;
     this.errorMessage = '';
 
-    this.prestadorService.search(
-      this.query.trim(),
-      this.categoria,
-      this.localizacao.trim()
-    ).subscribe({
-      next: prestadores => {
-        this.prestadores = this.aplicarFiltros(prestadores);
-        this.loading = false;
-      },
-      error: () => {
-        this.errorMessage = 'Não foi possível carregar os prestadores.';
-        this.loading = false;
-      }
-    });
+    this.prestadorService
+      .search(this.query.trim(), this.categoria, this.localizacao.trim())
+      .subscribe({
+        next: (prestadores) => {
+          this.prestadores = this.aplicarFiltros(prestadores);
+          this.loading = false;
+        },
+        error: () => {
+          this.errorMessage = 'Não foi possível carregar os prestadores.';
+          this.loading = false;
+        },
+      });
   }
 
   clearFilters() {
@@ -274,12 +278,12 @@ export class BuscarPrestadoresComponent implements OnInit {
 
   private aplicarFiltros(prestadores: Prestador[]) {
     const filtrados = this.apenasFavoritos
-      ? prestadores.filter(prestador => this.favoriteIds.has(prestador.id))
+      ? prestadores.filter((prestador) => this.favoriteIds.has(prestador.id))
       : prestadores;
 
     if (this.ordenacao === 'nome') {
       return [...filtrados].sort((a, b) =>
-        a.nomeEstabelecimento.localeCompare(b.nomeEstabelecimento, 'pt-BR')
+        a.nomeEstabelecimento.localeCompare(b.nomeEstabelecimento, 'pt-BR'),
       );
     }
 
@@ -302,7 +306,7 @@ export class BuscarPrestadoresComponent implements OnInit {
         this.favoriteIds = new Set(this.favoriteIds);
         this.prestadores = this.aplicarFiltros(this.prestadores);
         this.errorMessage = 'Não foi possível atualizar o favorito.';
-      }
+      },
     });
   }
 }

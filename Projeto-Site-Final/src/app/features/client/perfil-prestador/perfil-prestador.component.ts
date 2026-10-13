@@ -25,7 +25,10 @@ import { CurrencyPipe, DurationPipe } from '../../../shared/pipes/formatting.pip
 
       <ng-container *ngIf="!loading && prestador">
         <header class="profile-hero">
-          <img [src]="prestador.foto || '/assets/placeholder.png'" [alt]="prestador.nomeEstabelecimento">
+          <img
+            [src]="prestador.foto || '/assets/placeholder.png'"
+            [alt]="prestador.nomeEstabelecimento"
+          />
           <div class="hero-copy">
             <p class="eyebrow">{{ prestador.categoria }}</p>
             <h1>{{ prestador.nomeEstabelecimento }}</h1>
@@ -69,178 +72,180 @@ import { CurrencyPipe, DurationPipe } from '../../../shared/pipes/formatting.pip
       </ng-container>
     </section>
   `,
-  styles: [`
-    .profile-page {
-      max-width: 1120px;
-      margin: 0 auto;
-    }
+  styles: [
+    `
+      .profile-page {
+        max-width: 1120px;
+        margin: 0 auto;
+      }
 
-    .back-link {
-      display: inline-block;
-      margin-bottom: var(--space-lg);
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-semibold);
-    }
+      .back-link {
+        display: inline-block;
+        margin-bottom: var(--space-lg);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+      }
 
-    .profile-hero {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: var(--space-2xl);
-      align-items: center;
-      padding: var(--space-xl);
-      margin-bottom: var(--space-2xl);
-      background: white;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
-    }
-
-    .profile-hero img {
-      width: 100%;
-      aspect-ratio: 1;
-      object-fit: cover;
-      border-radius: var(--radius-md);
-      background: var(--color-neutral-200);
-    }
-
-    .eyebrow {
-      color: var(--color-success-dark);
-      font-size: var(--font-size-sm);
-      font-weight: var(--font-weight-bold);
-      margin: 0 0 var(--space-xs);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .hero-copy h1 {
-      margin: 0 0 var(--space-md);
-    }
-
-    .description {
-      color: var(--color-neutral-600);
-      max-width: 620px;
-    }
-
-    .details {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-lg);
-      color: var(--color-neutral-700);
-      font-size: var(--font-size-sm);
-    }
-
-    .favorite-button {
-      margin-top: var(--space-lg);
-      padding: var(--space-sm) var(--space-md);
-      color: var(--color-success-dark);
-      background: white;
-      border: 1px solid var(--color-success-dark);
-      border-radius: var(--radius-md);
-      font-weight: var(--font-weight-semibold);
-      cursor: pointer;
-    }
-
-    .section-heading {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: var(--space-lg);
-      margin-bottom: var(--space-lg);
-    }
-
-    .section-heading h2 {
-      margin: 0;
-    }
-
-    .section-heading > span {
-      color: var(--color-neutral-600);
-      font-size: var(--font-size-sm);
-    }
-
-    .services-list {
-      display: grid;
-      gap: var(--space-md);
-    }
-
-    .service-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-xl);
-      padding: var(--space-lg);
-      background: white;
-      border: 1px solid var(--color-neutral-200);
-      border-radius: var(--radius-lg);
-    }
-
-    .service-row h3 {
-      margin: 0 0 var(--space-xs);
-      font-size: var(--font-size-lg);
-    }
-
-    .service-row p {
-      margin: 0 0 var(--space-sm);
-      color: var(--color-neutral-600);
-    }
-
-    .duration {
-      color: var(--color-neutral-600);
-      font-size: var(--font-size-sm);
-    }
-
-    .service-action {
-      display: grid;
-      justify-items: end;
-      gap: var(--space-md);
-      min-width: 130px;
-    }
-
-    .service-action strong {
-      color: var(--color-success-dark);
-      font-size: var(--font-size-lg);
-    }
-
-    .btn {
-      display: inline-block;
-      padding: var(--space-sm) var(--space-lg);
-      border-radius: var(--radius-md);
-      font-weight: var(--font-weight-bold);
-      border: 0;
-    }
-
-    .loading-state,
-    .empty-state,
-    .error-state {
-      padding: var(--space-3xl) var(--space-lg);
-      text-align: center;
-    }
-
-    .error-state p {
-      color: var(--color-neutral-600);
-      margin-bottom: var(--space-lg);
-    }
-
-    @media (max-width: 680px) {
       .profile-hero {
-        grid-template-columns: 1fr;
-        gap: var(--space-lg);
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: var(--space-2xl);
+        align-items: center;
+        padding: var(--space-xl);
+        margin-bottom: var(--space-2xl);
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
       }
 
       .profile-hero img {
-        max-width: 280px;
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+        border-radius: var(--radius-md);
+        background: var(--color-neutral-200);
+      }
+
+      .eyebrow {
+        color: var(--color-success-dark);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-bold);
+        margin: 0 0 var(--space-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .hero-copy h1 {
+        margin: 0 0 var(--space-md);
+      }
+
+      .description {
+        color: var(--color-neutral-600);
+        max-width: 620px;
+      }
+
+      .details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-lg);
+        color: var(--color-neutral-700);
+        font-size: var(--font-size-sm);
+      }
+
+      .favorite-button {
+        margin-top: var(--space-lg);
+        padding: var(--space-sm) var(--space-md);
+        color: var(--color-success-dark);
+        background: white;
+        border: 1px solid var(--color-success-dark);
+        border-radius: var(--radius-md);
+        font-weight: var(--font-weight-semibold);
+        cursor: pointer;
+      }
+
+      .section-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: var(--space-lg);
+        margin-bottom: var(--space-lg);
+      }
+
+      .section-heading h2 {
+        margin: 0;
+      }
+
+      .section-heading > span {
+        color: var(--color-neutral-600);
+        font-size: var(--font-size-sm);
+      }
+
+      .services-list {
+        display: grid;
+        gap: var(--space-md);
       }
 
       .service-row {
-        align-items: start;
-        flex-direction: column;
-        gap: var(--space-lg);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-xl);
+        padding: var(--space-lg);
+        background: white;
+        border: 1px solid var(--color-neutral-200);
+        border-radius: var(--radius-lg);
+      }
+
+      .service-row h3 {
+        margin: 0 0 var(--space-xs);
+        font-size: var(--font-size-lg);
+      }
+
+      .service-row p {
+        margin: 0 0 var(--space-sm);
+        color: var(--color-neutral-600);
+      }
+
+      .duration {
+        color: var(--color-neutral-600);
+        font-size: var(--font-size-sm);
       }
 
       .service-action {
-        width: 100%;
-        justify-items: stretch;
+        display: grid;
+        justify-items: end;
+        gap: var(--space-md);
+        min-width: 130px;
       }
-    }
-  `]
+
+      .service-action strong {
+        color: var(--color-success-dark);
+        font-size: var(--font-size-lg);
+      }
+
+      .btn {
+        display: inline-block;
+        padding: var(--space-sm) var(--space-lg);
+        border-radius: var(--radius-md);
+        font-weight: var(--font-weight-bold);
+        border: 0;
+      }
+
+      .loading-state,
+      .empty-state,
+      .error-state {
+        padding: var(--space-3xl) var(--space-lg);
+        text-align: center;
+      }
+
+      .error-state p {
+        color: var(--color-neutral-600);
+        margin-bottom: var(--space-lg);
+      }
+
+      @media (max-width: 680px) {
+        .profile-hero {
+          grid-template-columns: 1fr;
+          gap: var(--space-lg);
+        }
+
+        .profile-hero img {
+          max-width: 280px;
+        }
+
+        .service-row {
+          align-items: start;
+          flex-direction: column;
+          gap: var(--space-lg);
+        }
+
+        .service-action {
+          width: 100%;
+          justify-items: stretch;
+        }
+      }
+    `,
+  ],
 })
 export class PerfilPrestadorComponent implements OnInit {
   prestador?: Prestador;
@@ -256,7 +261,7 @@ export class PerfilPrestadorComponent implements OnInit {
     private prestadorService: PrestadorService,
     private servicoService: ServicoService,
     private authService: AuthService,
-    private usuarioService: UsuarioService
+    private usuarioService: UsuarioService,
   ) {}
 
   ngOnInit() {
@@ -267,16 +272,16 @@ export class PerfilPrestadorComponent implements OnInit {
       return;
     }
 
-    this.authService.getCurrentUser().subscribe(user => {
+    this.authService.getCurrentUser().subscribe((user) => {
       if (!user) return;
       this.userId = user.id;
-      this.usuarioService.getFavorites(user.id).subscribe(ids => {
+      this.usuarioService.getFavorites(user.id).subscribe((ids) => {
         this.isFavorite = ids.includes(id);
       });
     });
 
     this.prestadorService.getById(id).subscribe({
-      next: prestador => {
+      next: (prestador) => {
         this.prestador = prestador;
         if (!prestador) {
           this.errorMessage = 'Não encontramos esse prestador.';
@@ -285,26 +290,26 @@ export class PerfilPrestadorComponent implements OnInit {
         }
 
         this.servicoService.getByPrestador(prestador.id).subscribe({
-          next: servicos => {
+          next: (servicos) => {
             this.servicos = servicos;
             this.loading = false;
           },
           error: () => {
             this.errorMessage = 'Não foi possível carregar os serviços.';
             this.loading = false;
-          }
+          },
         });
       },
       error: () => {
         this.errorMessage = 'Não foi possível carregar o perfil.';
         this.loading = false;
-      }
+      },
     });
   }
 
   schedule(servico: Servico) {
     this.router.navigate(['/agendar', this.prestador?.id], {
-      queryParams: { servico: servico.id }
+      queryParams: { servico: servico.id },
     });
   }
 
@@ -316,7 +321,7 @@ export class PerfilPrestadorComponent implements OnInit {
       error: () => {
         this.isFavorite = !this.isFavorite;
         this.errorMessage = 'Não foi possível atualizar o favorito.';
-      }
+      },
     });
   }
 }

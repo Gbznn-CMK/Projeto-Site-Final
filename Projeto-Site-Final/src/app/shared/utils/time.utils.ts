@@ -72,7 +72,7 @@ export function timeRangesOverlap(
   start1: number,
   end1: number,
   start2: number,
-  end2: number
+  end2: number,
 ): boolean {
   return !(end1 <= start2 || start1 >= end2);
 }

@@ -1,13 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { Usuario } from '../../core/models/types';
 import { LojaService } from '../../core/services/loja';
+import { PrestadorService } from '../../core/services/prestador.service';
 
 @Component({
   selector: 'app-cadastro-loja',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, FormsModule, RouterLink],
   templateUrl: './cadastro-loja.html',
   styleUrl: './cadastro-loja.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,6 +19,7 @@ export class CadastroLojaComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly lojaService = inject(LojaService);
   private readonly router = inject(Router);
+  private readonly prestadorService = inject(PrestadorService);
   private currentUser: Usuario | null = null;
 
   readonly lojaForm = this.formBuilder.nonNullable.group({
@@ -31,11 +34,23 @@ export class CadastroLojaComponent implements OnInit {
   buscandoCep = false;
   erroCep = '';
   erroFoto = '';
+  categorias: string[] = [];
+  novaCategoria = '';
+  coordenadas?: { latitude: number; longitude: number };
 
   ngOnInit(): void {
+    this.prestadorService.getCategories().subscribe((categories) => (this.categorias = categories));
     this.auth.getCurrentUser().subscribe((user) => {
       this.currentUser = user;
     });
+    if (typeof navigator !== 'undefined' && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.coordenadas = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        };
+      });
+    }
   }
 
   onSubmit(): void {
@@ -59,6 +74,8 @@ export class CadastroLojaComponent implements OnInit {
       proprietarioEmail: user.email,
       imagemUrl: this.fotos[0] || this.lojaForm.controls.imagemUrl.value || '/img/barbearia.webp',
       fotos: this.fotos,
+      latitude: this.coordenadas?.latitude,
+      longitude: this.coordenadas?.longitude,
       disponivel: true,
       servicos: [],
     });
@@ -73,12 +90,22 @@ export class CadastroLojaComponent implements OnInit {
     try {
       const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
       if (!response.ok) throw new Error('Falha na consulta');
-      const data = await response.json() as { erro?: boolean; logradouro?: string; bairro?: string; localidade?: string; uf?: string };
+      const data = (await response.json()) as {
+        erro?: boolean;
+        logradouro?: string;
+        bairro?: string;
+        localidade?: string;
+        uf?: string;
+      };
       if (data.erro) {
         this.erroCep = 'CEP não encontrado.';
         return;
       }
-      const address = [data.logradouro, data.bairro, data.localidade && `${data.localidade} - ${data.uf}`]
+      const address = [
+        data.logradouro,
+        data.bairro,
+        data.localidade && `${data.localidade} - ${data.uf}`,
+      ]
         .filter(Boolean)
         .join(', ');
       this.lojaForm.controls.endereco.setValue(address);
@@ -126,5 +153,15 @@ export class CadastroLojaComponent implements OnInit {
 
   removerFoto(index: number): void {
     this.fotos = this.fotos.filter((_, currentIndex) => currentIndex !== index);
+  }
+
+  adicionarCategoria(): void {
+    const category = this.novaCategoria.trim();
+    if (!category) return;
+    this.prestadorService.addCategory(category).subscribe((categories) => {
+      this.categorias = categories;
+      this.lojaForm.controls.categoria.setValue(category);
+      this.novaCategoria = '';
+    });
   }
 }

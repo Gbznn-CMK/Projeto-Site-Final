@@ -5,7 +5,7 @@ import { MOCK_PRESTADORES } from '../data/mock-data';
 import { getLocalStorage } from '../utils/storage';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PrestadorService {
   private readonly PREFIX = 'nahora_';
@@ -25,55 +25,63 @@ export class PrestadorService {
 
   getById(id: string): Observable<Prestador | undefined> {
     const normalizedId = id.startsWith('prest-') ? id : `prest-${id}`;
-    return of(this.getPrestadores().find(p => p.id === id || p.id === normalizedId));
+    return of(this.getPrestadores().find((p) => p.id === id || p.id === normalizedId));
   }
 
   getByUsuarioId(usuarioId: string): Observable<Prestador | undefined> {
-    return of(this.getPrestadores().find(p => p.usuarioId === usuarioId));
+    return of(this.getPrestadores().find((p) => p.usuarioId === usuarioId));
   }
 
-  search(
-    query?: string,
-    categoria?: string,
-    localizacao?: string
-  ): Observable<Prestador[]> {
+  search(query?: string, categoria?: string, localizacao?: string): Observable<Prestador[]> {
     let prestadores = this.getPrestadores();
 
     if (query) {
       const lowerQuery = query.toLowerCase();
       prestadores = prestadores.filter(
-        p =>
+        (p) =>
           p.nomeEstabelecimento.toLowerCase().includes(lowerQuery) ||
-          p.descricao?.toLowerCase().includes(lowerQuery)
+          p.descricao?.toLowerCase().includes(lowerQuery),
       );
     }
 
     if (categoria) {
-      prestadores = prestadores.filter(p => p.categoria === categoria);
+      prestadores = prestadores.filter((p) => p.categoria === categoria);
     }
 
     if (localizacao) {
       const lowerLoc = localizacao.toLowerCase();
-      prestadores = prestadores.filter(p =>
-        p.endereco.toLowerCase().includes(lowerLoc)
-      );
+      prestadores = prestadores.filter((p) => p.endereco.toLowerCase().includes(lowerLoc));
     }
 
     return of(prestadores);
   }
 
   getCategories(): Observable<string[]> {
-    return of(CATEGORIAS_SERVICOS);
+    const custom = getLocalStorage()?.getItem('nahora_categorias');
+    const categories = custom ? (JSON.parse(custom) as string[]) : [];
+    return of([...new Set([...CATEGORIAS_SERVICOS, ...categories])]);
+  }
+
+  addCategory(category: string): Observable<string[]> {
+    const normalized = category.trim();
+    if (!normalized) return this.getCategories();
+    const current = getLocalStorage()?.getItem('nahora_categorias');
+    const categories = current ? (JSON.parse(current) as string[]) : [];
+    if (!categories.some((item) => item.toLowerCase() === normalized.toLowerCase())) {
+      categories.push(normalized);
+      getLocalStorage()?.setItem('nahora_categorias', JSON.stringify(categories));
+    }
+    return this.getCategories();
   }
 
   create(prestador: Prestador): Observable<Prestador> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const prestadores = this.getPrestadores();
         const newPrestador = {
           ...prestador,
           id: `prest-${Date.now()}`,
-          dataCadastro: new Date().toISOString()
+          dataCadastro: new Date().toISOString(),
         };
         prestadores.push(newPrestador);
         this.savePrestadores(prestadores);
@@ -84,10 +92,10 @@ export class PrestadorService {
   }
 
   update(prestador: Prestador): Observable<Prestador> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const prestadores = this.getPrestadores();
-        const index = prestadores.findIndex(p => p.id === prestador.id);
+        const index = prestadores.findIndex((p) => p.id === prestador.id);
         if (index >= 0) {
           prestadores[index] = prestador;
           this.savePrestadores(prestadores);
@@ -101,10 +109,10 @@ export class PrestadorService {
   }
 
   delete(id: string): Observable<void> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const prestadores = this.getPrestadores();
-        const index = prestadores.findIndex(p => p.id === id);
+        const index = prestadores.findIndex((p) => p.id === id);
         if (index >= 0) {
           prestadores.splice(index, 1);
           this.savePrestadores(prestadores);

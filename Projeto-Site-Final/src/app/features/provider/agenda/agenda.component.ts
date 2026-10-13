@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Agendamento, StatusAgendamento, Usuario } from '../../../core/models/types';
 import { AgendamentoService } from '../../../core/services/agendamento.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -12,7 +13,7 @@ import { DateTimePipe, CurrencyPipe } from '../../../shared/pipes/formatting.pip
 @Component({
   selector: 'app-agenda',
   standalone: true,
-  imports: [CommonModule, StatusBadgeComponent, DateTimePipe, CurrencyPipe],
+  imports: [CommonModule, FormsModule, StatusBadgeComponent, DateTimePipe, CurrencyPipe],
   template: `
     <section class="agenda-page">
       <header class="page-heading">
@@ -32,10 +33,22 @@ import { DateTimePipe, CurrencyPipe } from '../../../shared/pipes/formatting.pip
         </button>
       </div>
       <div class="date-navigation" aria-label="Navegação da agenda">
-        <button type="button" (click)="setDate('today')" [class.active]="dateFilter === 'today'">Hoje</button>
-        <button type="button" (click)="setDate('tomorrow')" [class.active]="dateFilter === 'tomorrow'">Amanhã</button>
-        <button type="button" (click)="setDate('week')" [class.active]="dateFilter === 'week'">Próxima semana</button>
-        <button type="button" (click)="setDate('all')" [class.active]="dateFilter === 'all'">Todos</button>
+        <button type="button" (click)="setDate('today')" [class.active]="dateFilter === 'today'">
+          Hoje
+        </button>
+        <button
+          type="button"
+          (click)="setDate('tomorrow')"
+          [class.active]="dateFilter === 'tomorrow'"
+        >
+          Amanhã
+        </button>
+        <button type="button" (click)="setDate('week')" [class.active]="dateFilter === 'week'">
+          Próxima semana
+        </button>
+        <button type="button" (click)="setDate('all')" [class.active]="dateFilter === 'all'">
+          Todos
+        </button>
       </div>
       <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
       <p class="loading-state" *ngIf="loading">Carregando agenda...</p>
@@ -49,7 +62,13 @@ import { DateTimePipe, CurrencyPipe } from '../../../shared/pipes/formatting.pip
             <h2>{{ item.serviceName }}</h2>
             <p>{{ item.clientName }}</p>
             <span>{{ item.agendamento.valor | currency }}</span>
-            <a *ngIf="item.clientPhone" class="contact-link" [href]="whatsappUrl(item.clientPhone, item.clientName)" target="_blank" rel="noopener">
+            <a
+              *ngIf="item.clientPhone"
+              class="contact-link"
+              [href]="whatsappUrl(item.clientPhone, item.clientName)"
+              target="_blank"
+              rel="noopener"
+            >
               Conversar com cliente
             </a>
           </div>
@@ -77,12 +96,26 @@ import { DateTimePipe, CurrencyPipe } from '../../../shared/pipes/formatting.pip
               Cancelar
             </button>
             <button
-              *ngIf="item.agendamento.status !== 'cancelado' && item.agendamento.status !== 'concluido'"
+              *ngIf="
+                item.agendamento.status !== 'cancelado' && item.agendamento.status !== 'concluido'
+              "
               class="btn btn-secondary"
-              (click)="editAppointment(item)"
+              (click)="startEditing(item)"
             >
               Editar horário
             </button>
+            <div class="edit-form" *ngIf="editingId === item.agendamento.id">
+              <label>
+                Novo horário
+                <input type="datetime-local" [(ngModel)]="editingDate" />
+              </label>
+              <button type="button" class="btn btn-success" (click)="saveEditedAppointment(item)">
+                Salvar
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="cancelEditing()">
+                Cancelar
+              </button>
+            </div>
             <button
               *ngIf="item.agendamento.status === 'cancelado'"
               class="btn btn-danger"
@@ -206,6 +239,26 @@ import { DateTimePipe, CurrencyPipe } from '../../../shared/pipes/formatting.pip
         font-size: var(--font-size-sm);
         font-weight: var(--font-weight-semibold);
       }
+      .edit-form {
+        display: grid;
+        grid-column: 2 / -1;
+        gap: var(--space-sm);
+        padding: var(--space-md);
+        background: var(--color-neutral-50);
+        border-radius: var(--radius-md);
+      }
+      .edit-form label {
+        display: grid;
+        gap: var(--space-xs);
+        color: var(--color-neutral-700);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+      }
+      .edit-form input {
+        padding: var(--space-sm);
+        border: 1px solid var(--color-neutral-300);
+        border-radius: var(--radius-md);
+      }
       .appointment-actions {
         display: flex;
         align-items: center;
@@ -263,9 +316,18 @@ import { DateTimePipe, CurrencyPipe } from '../../../shared/pipes/formatting.pip
   ],
 })
 export class AgendaComponent implements OnInit {
-  appointments: { agendamento: Agendamento; clientName: string; clientPhone: string; serviceName: string }[] = [];
-  filteredAppointments: { agendamento: Agendamento; clientName: string; clientPhone: string; serviceName: string }[] =
-    [];
+  appointments: {
+    agendamento: Agendamento;
+    clientName: string;
+    clientPhone: string;
+    serviceName: string;
+  }[] = [];
+  filteredAppointments: {
+    agendamento: Agendamento;
+    clientName: string;
+    clientPhone: string;
+    serviceName: string;
+  }[] = [];
   filters = [
     { label: 'Todos', value: 'todos' },
     { label: 'Pendentes', value: 'pendente' },
@@ -278,6 +340,8 @@ export class AgendaComponent implements OnInit {
   errorMessage = '';
   private prestadorId = '';
   dateFilter: 'all' | 'today' | 'tomorrow' | 'week' = 'all';
+  editingId = '';
+  editingDate = '';
 
   constructor(
     private authService: AuthService,
@@ -337,10 +401,13 @@ export class AgendaComponent implements OnInit {
   }
 
   applyFilter() {
-    const byStatus = this.filter === 'todos'
-      ? this.appointments
-      : this.appointments.filter((item) => item.agendamento.status === this.filter);
-    this.filteredAppointments = byStatus.filter(item => this.matchesDate(item.agendamento.dataHora));
+    const byStatus =
+      this.filter === 'todos'
+        ? this.appointments
+        : this.appointments.filter((item) => item.agendamento.status === this.filter);
+    this.filteredAppointments = byStatus.filter((item) =>
+      this.matchesDate(item.agendamento.dataHora),
+    );
   }
 
   setFilter(value: string) {
@@ -364,28 +431,56 @@ export class AgendaComponent implements OnInit {
     this.applyFilter();
   }
 
-  editAppointment(item: { agendamento: Agendamento; clientName: string; clientPhone: string; serviceName: string }) {
-    const current = item.agendamento.dataHora.slice(0, 16);
-    const next = prompt(`Novo horário para ${item.clientName} (AAAA-MM-DDTHH:mm):`, current);
-    if (!next || next === current) return;
-    this.agendamentoService.rescheduleByPrestador(item.agendamento.id, next, this.prestadorId).subscribe({
-      next: updated => {
-        item.agendamento.dataHora = updated.dataHora;
-        item.agendamento.status = updated.status;
-        this.applyFilter();
-      },
-      error: error => this.errorMessage = error.message || 'Não foi possível editar o agendamento.',
-    });
+  startEditing(item: {
+    agendamento: Agendamento;
+    clientName: string;
+    clientPhone: string;
+    serviceName: string;
+  }) {
+    this.editingId = item.agendamento.id;
+    this.editingDate = item.agendamento.dataHora.slice(0, 16);
+  }
+
+  cancelEditing() {
+    this.editingId = '';
+    this.editingDate = '';
+  }
+
+  saveEditedAppointment(item: {
+    agendamento: Agendamento;
+    clientName: string;
+    clientPhone: string;
+    serviceName: string;
+  }) {
+    if (!this.editingDate) {
+      this.errorMessage = 'Informe a nova data e horário.';
+      return;
+    }
+    this.agendamentoService
+      .rescheduleByPrestador(item.agendamento.id, this.editingDate, this.prestadorId)
+      .subscribe({
+        next: (updated) => {
+          item.agendamento.dataHora = updated.dataHora;
+          item.agendamento.status = updated.status;
+          this.cancelEditing();
+          this.applyFilter();
+        },
+        error: (error) =>
+          (this.errorMessage = error.message || 'Não foi possível editar o agendamento.'),
+      });
   }
 
   deleteAppointment(appointment: Agendamento) {
     if (!confirm('Apagar definitivamente este agendamento cancelado?')) return;
     this.agendamentoService.deleteByPrestador(appointment.id, this.prestadorId).subscribe({
       next: () => {
-        this.appointments = this.appointments.filter(item => item.agendamento.id !== appointment.id);
+        this.appointments = this.appointments.filter(
+          (item) => item.agendamento.id !== appointment.id,
+        );
         this.applyFilter();
       },
-      error: error => this.errorMessage = error.message || 'Não foi possível apagar o agendamento.',
+      error: (error) =>
+        (this.errorMessage = error.message || 'Não foi possível apagar o agendamento.'),
     });
   }
 

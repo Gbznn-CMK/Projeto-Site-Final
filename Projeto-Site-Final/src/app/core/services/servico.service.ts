@@ -5,7 +5,7 @@ import { MOCK_SERVICOS } from '../data/mock-data';
 import { getLocalStorage } from '../utils/storage';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ServicoService {
   private readonly PREFIX = 'nahora_';
@@ -20,25 +20,25 @@ export class ServicoService {
   }
 
   getByPrestador(prestadorId: string): Observable<Servico[]> {
-    return of(this.getServicos().filter(s => s.prestadorId === prestadorId && s.ativo));
+    return of(this.getServicos().filter((s) => s.prestadorId === prestadorId && s.ativo));
   }
 
   getAllByPrestador(prestadorId: string): Observable<Servico[]> {
-    return of(this.getServicos().filter(s => s.prestadorId === prestadorId));
+    return of(this.getServicos().filter((s) => s.prestadorId === prestadorId));
   }
 
   getById(servicoId: string): Observable<Servico | undefined> {
-    return of(this.getServicos().find(s => s.id === servicoId));
+    return of(this.getServicos().find((s) => s.id === servicoId));
   }
 
   create(servico: Servico): Observable<Servico> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const servicos = this.getServicos();
         const newServico = {
           ...servico,
           id: `serv-${Date.now()}`,
-          dataCadastro: new Date().toISOString()
+          dataCadastro: new Date().toISOString(),
         };
         servicos.push(newServico);
         this.saveServicos(servicos);
@@ -49,10 +49,10 @@ export class ServicoService {
   }
 
   update(servico: Servico): Observable<Servico> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const servicos = this.getServicos();
-        const index = servicos.findIndex(s => s.id === servico.id);
+        const index = servicos.findIndex((s) => s.id === servico.id);
         if (index >= 0) {
           servicos[index] = servico;
           this.saveServicos(servicos);
@@ -66,10 +66,10 @@ export class ServicoService {
   }
 
   delete(servicoId: string): Observable<void> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       setTimeout(() => {
         const servicos = this.getServicos();
-        const index = servicos.findIndex(s => s.id === servicoId);
+        const index = servicos.findIndex((s) => s.id === servicoId);
         if (index >= 0) {
           servicos.splice(index, 1);
           this.saveServicos(servicos);

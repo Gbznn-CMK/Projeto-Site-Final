@@ -61,6 +61,7 @@ export interface Agendamento {
   pagamento: MetodoPagamento;
   valor: number;
   notas?: string;
+  clienteConfirmouConclusao?: boolean;
   dataCadastro?: string;
 }
 

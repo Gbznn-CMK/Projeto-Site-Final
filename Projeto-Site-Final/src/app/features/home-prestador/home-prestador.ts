@@ -6,6 +6,8 @@ import { AuthService } from '../../core/services/auth.service';
 import { Agendamento } from '../../core/models/types';
 import { AgendamentoService } from '../../core/services/agendamento.service';
 import { Notificacao, NotificacaoService } from '../../core/services/notificacao.service';
+import { UsuarioService } from '../../core/services/usuario.service';
+import { PrestadorService } from '../../core/services/prestador.service';
 
 @Component({
   selector: 'app-home-prestador',
@@ -20,6 +22,8 @@ export class HomePrestador implements OnInit {
     private readonly auth: AuthService,
     private readonly agendamentoService: AgendamentoService,
     private readonly notificacaoService: NotificacaoService,
+    private readonly usuarioService: UsuarioService,
+    private readonly prestadorService: PrestadorService,
   ) {}
 
   collapsed = false;
@@ -41,12 +45,18 @@ export class HomePrestador implements OnInit {
 
       this.prestadorNome = user.nome;
 
-      this.agendamentoService.getByPrestador(user.id).subscribe((agendamentos) => {
-        this.agendamentos = agendamentos.filter((item) => item.status !== 'cancelado');
-        this.receita = this.agendamentos.reduce((total, item) => total + item.valor, 0);
-      });
-      this.notificacaoService.paraUsuario(user.id, 'prestador').subscribe({
-        next: notificacoes => this.notificacoes = notificacoes,
+      this.usuarioService.getByEmail(user.email).subscribe(coreUser => {
+        if (!coreUser) return;
+        this.prestadorService.getByUsuarioId(coreUser.id).subscribe(prestador => {
+          if (!prestador) return;
+          this.agendamentoService.getByPrestador(prestador.id).subscribe((agendamentos) => {
+            this.agendamentos = agendamentos.filter((item) => item.status !== 'cancelado');
+            this.receita = this.agendamentos.reduce((total, item) => total + item.valor, 0);
+          });
+          this.notificacaoService.paraUsuario(prestador.id, 'prestador').subscribe({
+            next: notificacoes => this.notificacoes = notificacoes,
+          });
+        });
       });
     });
   }

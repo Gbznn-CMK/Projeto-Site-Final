@@ -49,12 +49,14 @@ describe('AuthService', () => {
       }),
     ).toBe(true);
 
-    expect(service.register({
-      nome: 'Outra Ana',
-      email: 'ana@example.com',
-      senha: '12345678',
-      tipoUsuario: 'cliente',
-    })).toBe(false);
+    expect(
+      service.register({
+        nome: 'Outra Ana',
+        email: 'ana@example.com',
+        senha: '12345678',
+        tipoUsuario: 'cliente',
+      }),
+    ).toBe(false);
     service.logout();
     expect(service.login('ANA@EXAMPLE.COM', '12345678')).toBe(true);
     expect(service.currentUser()?.email).toBe('ana@example.com');
