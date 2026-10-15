@@ -2,7 +2,10 @@ import { routes } from './app.routes';
 
 describe('application routes', () => {
   it('registers the public and protected application flows', () => {
-    const paths = routes.map((route) => route.path);
+    const paths = routes.flatMap((route) => [
+      route.path,
+      ...(route.children?.map((child) => child.path) ?? []),
+    ]);
     expect(paths).toEqual(
       expect.arrayContaining([
         'login',
@@ -17,8 +20,10 @@ describe('application routes', () => {
   });
 
   it('protects authenticated pages', () => {
-    expect(routes.find((route) => route.path === 'home-cliente')?.canActivate).toBeTruthy();
-    expect(routes.find((route) => route.path === 'agendamentos')?.canActivate).toBeTruthy();
+    const clientLayout = routes.find((route) => route.children?.some((child) => child.path === 'home-cliente'));
+    const bookingLayout = routes.find((route) => route.children?.some((child) => child.path === 'agendamentos'));
+    expect(clientLayout?.canActivate).toBeTruthy();
+    expect(bookingLayout?.canActivate).toBeTruthy();
     expect(routes.find((route) => route.path === 'login')?.canActivate).toBeFalsy();
   });
 });

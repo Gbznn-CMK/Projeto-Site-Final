@@ -1,0 +1,42 @@
+<app-confirm-modal
+  [open]="confirmationAction !== null"
+  [title]="confirmationAction === 'cancel' ? 'Cancelar agendamento' : 'Confirmar conclusão'"
+  [message]="
+    confirmationAction === 'cancel'
+      ? 'Deseja cancelar este agendamento?'
+      : 'Confirma que o serviço foi concluído?'
+  "
+  (confirmed)="executeConfirmation()"
+  (cancel)="closeConfirmation()"
+/>
+<section class="appointments-page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">Sua agenda</p>
+      <h1>Meus agendamentos</h1>
+      <p class="subtitle">Acompanhe seus próximos atendimentos em um só lugar.</p>
+    </div>
+    <a class="btn btn-primary" routerLink="/buscar">Novo agendamento</a>
+  </div>
+
+  <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+  <p class="loading-state" *ngIf="loading">Carregando agendamentos...</p>
+
+  <div class="appointments-list" *ngIf="!loading && appointments.length">
+    <app-appointment-card
+      *ngFor="let item of appointments"
+      [agendamento]="item.agendamento"
+      [providerName]="item.providerName"
+      [serviceName]="item.serviceName"
+      [isUpcoming]="isUpcoming(item.agendamento)"
+      (cancel)="cancelAppointment($event)"
+      (confirmCompletion)="confirmCompletion($event)"
+    ></app-appointment-card>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && !appointments.length">
+    <h2>Você ainda não tem agendamentos</h2>
+    <p>Encontre um prestador e reserve seu primeiro horário.</p>
+    <a class="btn btn-success" routerLink="/buscar">Buscar prestadores</a>
+  </div>
+</section>

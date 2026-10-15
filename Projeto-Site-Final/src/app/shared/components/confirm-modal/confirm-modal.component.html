@@ -1,12 +1,18 @@
 @if (open) {
-      <div class="backdrop" role="presentation" (click)="cancel.emit()">
-        <section class="modal" role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId" (click)="$event.stopPropagation()">
-          <h2 [id]="titleId">{{ title }}</h2>
-          <p>{{ message }}</p>
-          <div class="actions">
-            <button type="button" class="secondary" (click)="cancel.emit()">Cancelar</button>
-            <button type="button" class="primary" (click)="confirmed.emit()">Confirmar</button>
-          </div>
-        </section>
+  <div class="backdrop" role="presentation" (click)="cancel.emit()">
+    <section
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-labelledby]="titleId"
+      (click)="$event.stopPropagation()"
+    >
+      <h2 [id]="titleId">{{ title }}</h2>
+      <p>{{ message }}</p>
+      <div class="actions">
+        <button type="button" class="secondary" (click)="cancel.emit()">Cancelar</button>
+        <button type="button" class="primary" (click)="confirmed.emit()">Confirmar</button>
       </div>
-    }
+    </section>
+  </div>
+}

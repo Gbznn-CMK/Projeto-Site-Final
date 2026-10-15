@@ -225,8 +225,8 @@ select {
   height: 38px;
   min-width: 38px;
   border-radius: 50%;
-  background: var(--accent-soft);
-  color: var(--accent-dark);
+  background: var(--color-success-light);
+  color: var(--color-success-dark);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -274,7 +274,7 @@ select {
   right: 18px;
   padding: 14px;
   background: #fff;
-  color: var(--text);
+  color: var(--color-neutral-900);
   border-radius: 12px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
   z-index: 40;
@@ -286,7 +286,7 @@ select {
 }
 
 .profile-popover span {
-  color: var(--text-muted);
+  color: var(--color-neutral-500);
   font-size: 12px;
   margin: 4px 0 12px;
 }
@@ -307,7 +307,7 @@ select {
   gap: 8px;
   width: 100%;
   padding: 10px 12px;
-  background: var(--danger);
+  background: var(--color-danger);
   color: #fff;
   border: none;
   border-radius: 10px;

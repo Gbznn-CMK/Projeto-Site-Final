@@ -1,102 +1,79 @@
-import { Routes } from '@angular/router';
-import { HomeCliente } from './features/home-cliente/home-cliente';
-import { HomePrestador } from './features/home-prestador/home-prestador';
-import { LoginComponent } from './features/login/login';
-import { CadastroComponent } from './features/cadastro/cadastro';
-import { AgendarComponent } from './features/client/agendar/agendar.component';
-import { MeusAgendamentosComponent } from './features/client/meus-agendamentos/meus-agendamentos.component';
-import { AgendaComponent } from './features/provider/agenda/agenda.component';
-import { PainelFavoritosComponent } from './components/painel-favoritos/painel-favoritos';
+import { CanMatchFn, Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { ClientHome } from './features/client-home/client-home.component';
+import { ProviderHome } from './features/provider-home/provider-home.component';
+import { LoginComponent } from './features/login/login.component';
+import { RegisterComponent } from './features/register/register.component';
+import { BookingComponent } from './features/client/booking/booking.component';
+import { AppointmentsComponent } from './features/client/appointments/appointments.component';
+import { AgendaComponent } from './features/provider-agenda/agenda.component';
+import { FavoritesPanelComponent } from './components/favorites-panel/favorites-panel.component';
 import { authGuard } from './core/guards/auth.guard';
-import { ServicosPrestadorComponent } from './features/servicos-prestador/servicos-prestador';
-import { DisponibilidadePrestadorComponent } from './features/disponibilidade-prestador/disponibilidade-prestador';
-import { CadastroLojaComponent } from './features/cadastro-loja/cadastro-loja';
-import { PerfilComponent } from './features/perfil-cliente/perfil-cliente';
-import { BuscarComponent } from './features/buscar/buscar';
-import { SacComponent } from './features/support/sac/sac.component';
-import { ConfiguracoesComponent } from './features/configuracoes/configuracoes.component';
+import { ProviderServicesComponent } from './features/provider-services/provider-services.component';
+import { ProviderAvailabilityComponent } from './features/provider-availability/provider-availability.component';
+import { ProviderRegistrationComponent } from './features/provider-registration/provider-registration.component';
+import { ClientProfileComponent } from './features/client-profile/client-profile.component';
+import { SearchComponent } from './features/search/search.component';
+import { ContactComponent } from './features/support/contact/contact.component';
+import { SettingsComponent } from './features/settings/settings.component';
 import { NotFoundComponent } from './shared/pages/not-found/not-found.component';
+import { ClientLayout } from './layouts/client-layout/client-layout.component';
+import { ProviderLayout } from './layouts/provider-layout/provider-layout.component';
+import { AuthService } from './core/services/auth.service';
+import { TipoUsuario } from './core/models/types';
+
+const roleMatch = (role: TipoUsuario): CanMatchFn => () => inject(AuthService).getUserRole() === role;
 
 export const routes: Routes = [
+  // Public paths remain in Portuguese for backwards-compatible deep links.
   { path: '', redirectTo: 'home-cliente', pathMatch: 'full' },
   {
-    path: 'home-cliente',
-    component: HomeCliente,
+    path: '',
+    component: ClientLayout,
+    canMatch: [roleMatch('cliente')],
     canActivate: [authGuard],
     data: { roles: ['cliente'] },
+    children: [
+      { path: 'home-cliente', component: ClientHome },
+      { path: 'buscar', component: SearchComponent },
+      { path: 'agendamentos', component: AppointmentsComponent },
+      { path: 'agendamentos/novo/:prestadorId', component: BookingComponent },
+      { path: 'favoritos', component: FavoritesPanelComponent },
+      { path: 'perfil', component: ClientProfileComponent },
+    ],
   },
   {
-    path: 'home-prestador',
-    component: HomePrestador,
+    path: '',
+    component: ProviderLayout,
+    canMatch: [roleMatch('prestador')],
     canActivate: [authGuard],
     data: { roles: ['prestador'] },
-  },
-  {
-    path: 'perfil',
-    component: PerfilComponent,
-    canActivate: [authGuard],
-    data: { roles: ['cliente', 'prestador'] },
-  },
-  {
-    path: 'buscar',
-    component: BuscarComponent,
-    canActivate: [authGuard],
-    data: { roles: ['cliente'] },
+    children: [
+      { path: 'home-prestador', component: ProviderHome },
+      { path: 'agenda-prestador', component: AgendaComponent },
+      { path: 'servicos-prestador', component: ProviderServicesComponent },
+      { path: 'disponibilidade-prestador', component: ProviderAvailabilityComponent },
+      { path: 'perfil', component: ClientProfileComponent },
+    ],
   },
   { path: 'login', component: LoginComponent },
-  { path: 'cadastro', component: CadastroComponent },
+  { path: 'cadastro', component: RegisterComponent },
   {
     path: 'cadastro-loja',
-    component: CadastroLojaComponent,
+    component: ProviderRegistrationComponent,
     canActivate: [authGuard],
     data: { roles: ['prestador'] },
-  },
-  {
-    path: 'agendamentos',
-    component: MeusAgendamentosComponent,
-    canActivate: [authGuard],
-    data: { roles: ['cliente'] },
-  },
-  {
-    path: 'agendamentos/novo/:prestadorId',
-    component: AgendarComponent,
-    canActivate: [authGuard],
-    data: { roles: ['cliente'] },
   },
   { path: 'agendamentos/novo', redirectTo: 'buscar', pathMatch: 'full' },
   {
-    path: 'favoritos',
-    component: PainelFavoritosComponent,
-    canActivate: [authGuard],
-    data: { roles: ['cliente'] },
-  },
-  {
-    path: 'agenda-prestador',
-    component: AgendaComponent,
-    canActivate: [authGuard],
-    data: { roles: ['prestador'] },
-  },
-  {
-    path: 'servicos-prestador',
-    component: ServicosPrestadorComponent,
-    canActivate: [authGuard],
-    data: { roles: ['prestador'] },
-  },
-  {
-    path: 'disponibilidade-prestador',
-    component: DisponibilidadePrestadorComponent,
-    canActivate: [authGuard],
-    data: { roles: ['prestador'] },
-  },
-  {
     path: 'suporte',
-    component: SacComponent,
+    component: ContactComponent,
     canActivate: [authGuard],
     data: { roles: ['cliente', 'prestador'] },
   },
   {
     path: 'configuracoes',
-    component: ConfiguracoesComponent,
+    component: SettingsComponent,
     canActivate: [authGuard],
     data: { roles: ['cliente', 'prestador'] },
   },

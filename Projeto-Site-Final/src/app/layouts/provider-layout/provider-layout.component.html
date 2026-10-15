@@ -1,0 +1,82 @@
+<div class="app-shell" [class.collapsed]="collapsed">
+  <aside class="sidebar" [class.collapsed]="collapsed">
+    <div class="sidebar-head">
+      <div class="logo-mark">
+        <img src="/img/Logo-branca.png" alt="NaHora Serv" class="logo-img" />
+      </div>
+      <span class="brand-name">NaHora Serv</span
+      ><button type="button" class="collapse-btn" title="Recolher menu" (click)="toggleSidebar()">
+        <img src="/img/seta-pequena-direita.png" alt="" aria-hidden="true" />
+      </button>
+    </div>
+    <nav class="sidebar-nav" aria-label="Menu do prestador">
+      <div class="nav-group">
+        <div class="nav-label">PRESTADOR</div>
+        <a
+          class="nav-item"
+          routerLink="/home-prestador"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          ><img class="nav-icon" src="/img/painel.png" alt="" /><span class="label">Painel</span></a
+        ><a class="nav-item" routerLink="/agenda-prestador" routerLinkActive="active"
+          ><img class="nav-icon" src="/img/dias-do-calendario.png" alt="" /><span class="label"
+            >Agenda</span
+          ></a
+        ><a class="nav-item" routerLink="/servicos-prestador" routerLinkActive="active"
+          ><img class="nav-icon" src="/img/servicos.png" alt="" /><span class="label"
+            >Serviços</span
+          ></a
+        ><a class="nav-item" routerLink="/disponibilidade-prestador" routerLinkActive="active"
+          ><img class="nav-icon" src="/img/despertador.png" alt="" /><span class="label"
+            >Disponibilidade</span
+          ></a
+        >
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">SUPORTE</div>
+        <a class="nav-item" routerLink="/suporte"
+          ><img class="nav-icon" src="/img/SAC.png" alt="" /><span class="label">SAC</span></a
+        ><a class="nav-item" routerLink="/configuracoes"
+          ><img class="nav-icon" src="/img/configuracoes.png" alt="" /><span class="label"
+            >Configurações</span
+          ></a
+        >
+      </div>
+    </nav>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-profile">
+      <div class="profile-row">
+        <a class="avatar" routerLink="/perfil">{{ userInitial }}</a>
+        <div class="profile-info">
+          <strong>{{ userName }}</strong
+          ><small>Prestador</small>
+        </div>
+        <button
+          type="button"
+          class="profile-menu-btn"
+          title="Menu do perfil"
+          (click)="toggleProfileMenu()"
+        >
+          <img src="/img/menu-pontos-vertical.png" alt="" />
+        </button>
+      </div>
+      @if (profileMenuOpen) {
+        <div class="profile-popover">
+          <strong>{{ userName }}</strong
+          ><span>Perfil do prestador</span
+          ><button type="button" (click)="logout()">Sair da conta</button>
+        </div>
+      }
+      <button type="button" class="logout-btn-full" (click)="logout()">
+        <img src="/img/saida.png" alt="" class="logout-icon" /><span class="label">Sair</span>
+      </button>
+    </div>
+  </aside>
+  <main class="main" [class.collapsed]="collapsed">
+    <header class="topbar">
+      <strong>Painel do prestador</strong><span class="topbar-spacer"></span
+      ><a class="topbar-avatar" routerLink="/perfil">{{ userInitial }}</a>
+    </header>
+    <section class="content"><router-outlet /></section>
+  </main>
+</div>

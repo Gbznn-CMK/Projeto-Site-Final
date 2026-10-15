@@ -1,0 +1,87 @@
+<section class="page-heading">
+  <div>
+    <span class="eyebrow">DISPONIBILIDADE</span>
+    <h1>Horários disponíveis</h1>
+    <p>Defina quando seus clientes podem agendar um atendimento.</p>
+  </div>
+  <a class="primary-btn" routerLink="/home-prestador">Voltar ao painel</a>
+</section>
+@if (savedMessage()) {
+  <div class="success-message" role="status">{{ savedMessage() }}</div>
+}
+<section class="availability-layout">
+  <form class="form-card" [formGroup]="availabilityForm" (ngSubmit)="saveAvailability()">
+    <div class="card-heading">
+      <div>
+        <h2>{{ editingId() === null ? 'Criar horário' : 'Editar horário' }}</h2>
+        <p>Adicione uma faixa de atendimento.</p>
+      </div>
+    </div>
+    <label
+      >Dia da semana<select formControlName="dia">
+        <option>Segunda-feira</option>
+        <option>Terça-feira</option>
+        <option>Quarta-feira</option>
+        <option>Quinta-feira</option>
+        <option>Sexta-feira</option>
+        <option>Sábado</option>
+        <option>Domingo</option>
+      </select></label
+    >
+    <div class="form-grid">
+      <label>Início<input type="time" formControlName="inicio" /></label
+      ><label>Fim<input type="time" formControlName="fim" /></label>
+    </div>
+    @if (availabilityForm.controls.fim.hasError('invalidRange')) {
+      <small class="field-error">O horário final deve ser depois do horário inicial.</small>
+    }
+    <div class="form-actions">
+      <button type="submit" class="primary-btn">
+        {{ editingId() === null ? 'Adicionar horário' : 'Salvar alterações' }}
+      </button>
+      @if (editingId() !== null) {
+        <button type="button" class="secondary-btn" (click)="cancelEdit()">Cancelar</button>
+      }
+    </div>
+  </form>
+  <section class="list-card" aria-labelledby="availability-title">
+    <div class="card-heading">
+      <div>
+        <h2 id="availability-title">Minha agenda semanal</h2>
+        <p>{{ horarios().length }} faixa(s) configurada(s)</p>
+      </div>
+    </div>
+    <div class="schedule-list">
+      @for (schedule of horarios(); track schedule.id) {
+        <article class="schedule-row">
+          <div class="day-dot" [class.inactive]="!schedule.ativo"></div>
+          <div class="schedule-info">
+            <strong>{{ schedule.dia }}</strong
+            ><span>{{ schedule.inicio }} às {{ schedule.fim }}</span>
+          </div>
+          <span class="service-status" [class.inactive]="!schedule.ativo">{{
+            schedule.ativo ? 'Disponível' : 'Pausado'
+          }}</span>
+          <div class="schedule-actions">
+            <button type="button" class="text-btn" (click)="editAvailability(schedule)">
+              Editar</button
+            ><button type="button" class="text-btn" (click)="toggleAvailability(schedule.id)">
+              {{ schedule.ativo ? 'Pausar' : 'Ativar' }}</button
+            ><button
+              type="button"
+              class="text-btn danger"
+              (click)="removeAvailability(schedule.id)"
+            >
+              Excluir
+            </button>
+          </div>
+        </article>
+      } @empty {
+        <div class="empty-state">
+          <strong>Nenhum horário configurado</strong
+          ><span>Adicione sua primeira faixa ao lado.</span>
+        </div>
+      }
+    </div>
+  </section>
+</section>

@@ -98,31 +98,7 @@
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1536px;
 
-  /* Compatibility aliases for feature styles being migrated. */
-  --navy-900: #112a62;
-  --navy-800: #172554;
-  --navy: var(--color-primary);
-  --navy-2: #1b2848;
-  --navy-3: #26355e;
-  --navy-tint: var(--color-primary-light);
-  --accent: var(--color-success);
-  --accent-dark: var(--color-success-dark);
-  --accent-soft: #e4f7ee;
-  --accent-mint: var(--color-success-light);
-  --success: #1e9e57;
-  --success-dark: #168448;
-  --danger: var(--color-danger);
-  --danger-dark: var(--color-danger-dark);
-  --danger-text: #c02626;
-  --bg: var(--color-neutral-50);
-  --bg-alt: var(--color-neutral-100);
-  --card: #ffffff;
-  --text: var(--color-neutral-900);
-  --text-muted: var(--color-neutral-500);
-  --border: #e6e9ef;
-  --sidebar-w: 252px;
-  --sidebar-w-collapsed: 78px;
-  --font-body: var(--font-family-base);
-  --font-display: var(--font-family-display);
-  --shadow-card: var(--shadow-md);
+  /* Layout dimensions */
+  --layout-sidebar-width: 252px;
+  --layout-sidebar-collapsed-width: 78px;
 }
