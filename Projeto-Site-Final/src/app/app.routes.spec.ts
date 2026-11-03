@@ -16,13 +16,19 @@ describe('application routes', () => {
         'agendamentos',
         'agendamentos/novo',
         'favoritos',
+        'suporte',
+        'configuracoes',
       ]),
     );
   });
 
   it('protects authenticated pages', () => {
-    const clientLayout = routes.find((route) => route.children?.some((child) => child.path === 'home-cliente'));
-    const bookingLayout = routes.find((route) => route.children?.some((child) => child.path === 'agendamentos'));
+    const clientLayout = routes.find((route) =>
+      route.children?.some((child) => child.path === 'home-cliente'),
+    );
+    const bookingLayout = routes.find((route) =>
+      route.children?.some((child) => child.path === 'agendamentos'),
+    );
     expect(clientLayout?.canActivate).toBeTruthy();
     expect(bookingLayout?.canActivate).toBeTruthy();
     expect(routes.find((route) => route.path === 'login')?.canActivate).toBeFalsy();

@@ -1,12 +1,15 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Favorito, FavoritesService } from '../../core/services/favorites.service';
-import { FavoriteButtonComponent } from '../favorite-button/favorite-button.component';
+import {
+  ProviderCardComponent,
+  ProviderCardData,
+} from '../../shared/components/provider-card/provider-card.component';
 
 @Component({
   selector: 'app-favorites-panel',
   standalone: true,
-  imports: [FavoriteButtonComponent, RouterLink],
+  imports: [ProviderCardComponent, RouterLink],
   templateUrl: './favorites-panel.component.html',
   styleUrl: './favorites-panel.component.css',
 })
@@ -20,9 +23,22 @@ export class FavoritesPanelComponent implements OnInit {
     });
   }
 
-  removerFavorito(id: number): void {
+  removerFavorito(id: string): void {
     this.favoritosService.desfavoritar(id).subscribe(() => {
       this.lojas.update((lojas) => lojas.filter((loja) => loja.id !== id));
     });
+  }
+
+  toProviderCard(loja: Favorito): ProviderCardData {
+    return {
+      id: loja.id,
+      name: loja.nome,
+      image: loja.imagemUrl,
+      category: 'Prestador favorito',
+      address: loja.endereco,
+      hours: loja.horario,
+      rating: 'Novo',
+      stars: '☆☆☆☆☆',
+    };
   }
 }

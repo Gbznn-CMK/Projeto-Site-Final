@@ -7,11 +7,12 @@ import { FavoritesService } from '../../core/services/favorites.service';
 import { ProviderService } from '../../core/services/provider.service';
 import { Notificacao, NotificationService } from '../../core/services/notification.service';
 import { UserService } from '../../core/services/user.service';
+import { ProviderCardComponent } from '../../shared/components/provider-card/provider-card.component';
 
 @Component({
   selector: 'app-client-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, ProviderCardComponent],
   templateUrl: './client-home.component.html',
   styleUrl: './client-home.component.css',
 })
@@ -55,7 +56,7 @@ export class ClientHome implements OnInit {
     this.favoritosService.listarIds().subscribe((ids) => {
       this.favorites = new Set(
         this.providers
-          .filter((provider) => typeof provider.id === 'number' && ids.includes(provider.id))
+          .filter((provider) => ids.includes(String(provider.id)))
           .map((provider) => provider.name),
       );
     });
@@ -176,9 +177,6 @@ export class ClientHome implements OnInit {
     }
 
     const isFavorite = this.favorites.has(providerName);
-    if (typeof provider.id !== 'number') {
-      return;
-    }
     const request = isFavorite
       ? this.favoritosService.desfavoritar(provider.id)
       : this.favoritosService.favoritar(provider.id);

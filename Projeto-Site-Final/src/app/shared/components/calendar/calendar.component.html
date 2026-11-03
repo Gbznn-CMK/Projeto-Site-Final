@@ -6,8 +6,12 @@
     </div>
     <div class="calendar-actions">
       <button type="button" class="today-button" (click)="goToToday()">Hoje</button>
-      <button type="button" class="icon-button" aria-label="Mês anterior" (click)="previousMonth()">‹</button>
-      <button type="button" class="icon-button" aria-label="Próximo mês" (click)="nextMonth()">›</button>
+      <button type="button" class="icon-button" aria-label="Mês anterior" (click)="previousMonth()">
+        ‹
+      </button>
+      <button type="button" class="icon-button" aria-label="Próximo mês" (click)="nextMonth()">
+        ›
+      </button>
     </div>
   </header>
 
@@ -19,13 +23,22 @@
 
   <div class="calendar-grid">
     @for (day of days; track trackDay($index, day)) {
-      <div class="calendar-day" [class.outside-month]="!day.inCurrentMonth" [class.today]="isToday(day)">
+      <div
+        class="calendar-day"
+        [class.outside-month]="!day.inCurrentMonth"
+        [class.today]="isToday(day)"
+      >
         <time [attr.datetime]="day.key">{{ day.dayNumber }}</time>
         <div class="day-events">
           @for (event of eventsFor(day); track trackEvent($index, event)) {
             <article class="calendar-event" [class]="'status-' + (event.status || 'default')">
               <strong>{{ event.title }}</strong>
-              <span>{{ eventTime(event) }}@if (event.subtitle) { · {{ event.subtitle }} }</span>
+              <span
+                >{{ eventTime(event) }}
+                @if (event.subtitle) {
+                  · {{ event.subtitle }}
+                }
+              </span>
             </article>
           }
         </div>

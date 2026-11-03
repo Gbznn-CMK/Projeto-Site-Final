@@ -37,6 +37,8 @@ export const routes: Routes = [
       { path: 'agendamentos/novo/:prestadorId', component: BookingComponent },
       { path: 'favoritos', component: FavoritesPanelComponent },
       { path: 'perfil', component: ClientProfileComponent },
+      { path: 'suporte', component: ContactComponent },
+      { path: 'configuracoes', component: SettingsComponent },
     ],
   },
   {
@@ -50,6 +52,8 @@ export const routes: Routes = [
       { path: 'servicos-prestador', component: ProviderServicesComponent },
       { path: 'disponibilidade-prestador', component: ProviderAvailabilityComponent },
       { path: 'perfil', component: ClientProfileComponent },
+      { path: 'suporte', component: ContactComponent },
+      { path: 'configuracoes', component: SettingsComponent },
     ],
   },
   {
@@ -62,6 +66,8 @@ export const routes: Routes = [
       { path: 'agenda-profissional', component: ProfessionalAgenda },
       { path: 'disponibilidade-profissional', component: ProfessionalHome },
       { path: 'perfil-profissional', component: ClientProfileComponent },
+      { path: 'suporte', component: ContactComponent },
+      { path: 'configuracoes', component: SettingsComponent },
     ],
   },
   { path: 'login', component: LoginComponent },
@@ -73,18 +79,6 @@ export const routes: Routes = [
     data: { roles: ['prestador'] },
   },
   { path: 'agendamentos/novo', redirectTo: 'buscar', pathMatch: 'full' },
-  {
-    path: 'suporte',
-    component: ContactComponent,
-    canActivate: [authGuard],
-    data: { roles: ['cliente', 'prestador', 'profissional'] },
-  },
-  {
-    path: 'configuracoes',
-    component: SettingsComponent,
-    canActivate: [authGuard],
-    data: { roles: ['cliente', 'prestador', 'profissional'] },
-  },
   { path: 'meus-agendamentos', redirectTo: 'agendamentos', pathMatch: 'full' },
   { path: 'prestadores', redirectTo: 'buscar', pathMatch: 'full' },
   // Mantém compatibilidade com links antigos enquanto o fluxo é migrado.

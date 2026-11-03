@@ -1,0 +1,40 @@
+<article class="provider-card">
+  <div class="provider-photo">
+    <img class="provider-photo-img" [src]="provider.image" [alt]="provider.name" />
+    <button
+      type="button"
+      class="favorite-btn"
+      [class.is-favorite]="favorite"
+      [attr.aria-label]="favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'"
+      [attr.aria-pressed]="favorite"
+      (click)="toggleFavorite($event)"
+    >
+      <img
+        [src]="favorite ? '/img/selecionado-fav-preto.png' : '/img/botao-fav-preto.png'"
+        alt=""
+      />
+    </button>
+  </div>
+  <div class="provider-body">
+    <h3>{{ provider.name }}</h3>
+    <div class="provider-cat">{{ provider.category }}</div>
+    <div class="provider-meta">
+      <img class="meta-icon" src="/img/pino-de-localizacao.png" alt="" />
+      {{ provider.address }}
+    </div>
+    <div class="provider-meta">
+      <img class="meta-icon" src="/img/relogio.png" alt="" />
+      {{ provider.hours }}
+    </div>
+    <div class="provider-rating">
+      {{ provider.stars }} <span>{{ provider.rating }}</span>
+    </div>
+    <div class="provider-actions">
+      <button type="button" class="profile-btn" (click)="selectProfile()">Ver Perfil</button>
+      <a class="schedule-btn" [routerLink]="['/agendamentos/novo', provider.id]">
+        <span>Agendar agora</span>
+        <span class="schedule-btn-arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</article>
