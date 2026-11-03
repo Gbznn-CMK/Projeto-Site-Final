@@ -120,22 +120,24 @@ export class SearchComponent {
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
     this.prestadorService.getAll().subscribe((providers) => {
-      this.prestadores.push(
-        ...providers
-          .filter((provider) => !this.prestadores.some((item) => item.id === provider.id))
-          .map((provider) => ({
-            id: provider.id,
-            nome: provider.nomeEstabelecimento,
-            categoria: provider.categoria,
-            avaliacao: 0,
-            numAvaliacoes: 0,
-            precoDesde: 0,
-            foto: provider.foto || '/img/barbearia.webp',
-            favorito: false,
-            latitude: provider.latitude,
-            longitude: provider.longitude,
-          })),
+      const legacyByName = new Map(
+        this.prestadores.map((item) => [item.nome.toLowerCase(), item] as const),
       );
+      this.prestadores = providers.map((provider) => {
+        const legacy = legacyByName.get(provider.nomeEstabelecimento.toLowerCase());
+        return {
+          id: provider.id,
+          nome: provider.nomeEstabelecimento,
+          categoria: provider.categoria,
+          avaliacao: legacy?.avaliacao ?? 0,
+          numAvaliacoes: legacy?.numAvaliacoes ?? 0,
+          precoDesde: legacy?.precoDesde ?? 0,
+          foto: provider.foto || legacy?.foto || '/img/barbearia.webp',
+          favorito: legacy?.favorito ?? false,
+          latitude: provider.latitude ?? legacy?.latitude,
+          longitude: provider.longitude ?? legacy?.longitude,
+        };
+      });
     });
     this.prestadorService.getCategories().subscribe((categories) => {
       this.categorias = ['Todos', ...categories];
