@@ -8,16 +8,18 @@ import { ProviderService } from '../../../core/services/provider.service';
 import { ServiceCatalogService } from '../../../core/services/service-catalog.service';
 import { AppointmentCardComponent } from '../../../shared/components/appointment-card/appointment-card.component';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
+import { CalendarComponent, CalendarEvent } from '../../../shared/components/calendar/calendar.component';
 
 @Component({
   selector: 'app-appointments',
   standalone: true,
-  imports: [CommonModule, RouterLink, AppointmentCardComponent, ConfirmModalComponent],
+  imports: [CommonModule, RouterLink, AppointmentCardComponent, ConfirmModalComponent, CalendarComponent],
   templateUrl: './appointments.component.html',
   styleUrl: './appointments.component.css',
 })
 export class AppointmentsComponent implements OnInit {
   appointments: { agendamento: Agendamento; providerName: string; serviceName: string }[] = [];
+  calendarEvents: CalendarEvent[] = [];
   currentUser?: Usuario;
   loading = true;
   errorMessage = '';
@@ -97,6 +99,7 @@ export class AppointmentsComponent implements OnInit {
       this.agendamentoService.cancel(appointment.id, user.id).subscribe({
         next: () => {
           appointment.status = 'cancelado';
+          this.syncCalendarEvents();
         },
         error: (error) => {
           this.errorMessage = error.message || 'Não foi possível cancelar o agendamento.';
@@ -104,8 +107,10 @@ export class AppointmentsComponent implements OnInit {
       });
     } else {
       this.agendamentoService.confirmCompletionByClient(appointment.id, user.id).subscribe({
-        next: (updated) =>
-          (appointment.clienteConfirmouConclusao = updated.clienteConfirmouConclusao),
+        next: (updated) => {
+          appointment.clienteConfirmouConclusao = updated.clienteConfirmouConclusao;
+          this.syncCalendarEvents();
+        },
         error: (error) =>
           (this.errorMessage = error.message || 'Não foi possível confirmar a conclusão.'),
       });
@@ -123,6 +128,17 @@ export class AppointmentsComponent implements OnInit {
         new Date(first.agendamento.dataHora).getTime() -
         new Date(second.agendamento.dataHora).getTime(),
     );
+    this.syncCalendarEvents();
     this.loading = false;
+  }
+
+  private syncCalendarEvents(): void {
+    this.calendarEvents = this.appointments.map((item) => ({
+      id: item.agendamento.id,
+      start: item.agendamento.dataHora,
+      title: item.serviceName,
+      subtitle: item.providerName,
+      status: item.agendamento.status,
+    }));
   }
 }

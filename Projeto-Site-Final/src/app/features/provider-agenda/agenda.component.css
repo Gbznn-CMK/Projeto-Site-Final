@@ -59,6 +59,7 @@
       .agenda-list {
         display: grid;
         gap: var(--space-md);
+        margin-top: var(--space-xl);
       }
       .agenda-item {
         display: grid;

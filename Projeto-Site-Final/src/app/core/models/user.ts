@@ -1,1 +1,1 @@
-export type UserType = 'cliente' | 'prestador';
+export type UserType = 'cliente' | 'prestador' | 'profissional';

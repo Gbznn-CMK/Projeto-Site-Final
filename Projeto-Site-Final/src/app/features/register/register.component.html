@@ -62,6 +62,20 @@
 
               <span>Quero oferecer meus serviços</span>
             </button>
+
+            <button
+              type="button"
+              class="user-type-option"
+              [class.selected]="registerForm.controls.tipoUsuario.value === 'profissional'"
+              [attr.aria-pressed]="registerForm.controls.tipoUsuario.value === 'profissional'"
+              (click)="selectUserType('profissional')"
+            >
+              <span class="user-type-icon" aria-hidden="true">🧑‍💼</span>
+
+              <strong>Sou profissional</strong>
+
+              <span>Quero atender em um estabelecimento</span>
+            </button>
           </div>
 
           @if (

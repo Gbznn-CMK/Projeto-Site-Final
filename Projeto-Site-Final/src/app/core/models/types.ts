@@ -1,13 +1,15 @@
 // User types
-export type TipoUsuario = 'cliente' | 'prestador' | 'admin';
+export type TipoUsuario = 'cliente' | 'prestador' | 'profissional' | 'admin';
 
 export interface Usuario {
   id: string;
   nome: string;
+  sobrenome?: string;
   email: string;
   telefone: string;
-  tipo: TipoUsuario;
+  cpf?: string;
   foto?: string;
+  tipo: TipoUsuario;
   dataCadastro?: string;
   password?: string; // Only for internal use, not exposed in API responses
 }
@@ -55,7 +57,10 @@ export interface Agendamento {
   id: string;
   clienteId: string;
   prestadorId: string;
+  profissionalId?: string;
   servicoId: string;
+  servicoNome?: string;
+  profissionalNome?: string;
   dataHora: string; // ISO 8601 format
   duracao: number; // minutes
   status: StatusAgendamento;
@@ -83,6 +88,18 @@ export interface Bloqueio {
   duracao: number; // minutes
   motivo?: string;
   dataCadastro?: string;
+}
+
+export interface Profissional {
+  id: string;
+  estabelecimentoId: string;
+  usuarioId: string;
+  nome: string;
+  especialidades: string[];
+  servicosIds: string[];
+  disponibilidade: Disponibilidade[];
+  bloqueios: Bloqueio[];
+  ativo: boolean;
 }
 
 // Support/SAC types

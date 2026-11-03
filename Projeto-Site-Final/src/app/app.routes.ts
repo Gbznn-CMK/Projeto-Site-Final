@@ -19,10 +19,16 @@ import { SettingsComponent } from './features/settings/settings.component';
 import { NotFoundComponent } from './shared/pages/not-found/not-found.component';
 import { ClientLayout } from './layouts/client-layout/client-layout.component';
 import { ProviderLayout } from './layouts/provider-layout/provider-layout.component';
+import { ProfessionalLayout } from './layouts/professional-layout/professional-layout.component';
+import { ProfessionalHome } from './features/professional-home/professional-home.component';
+import { ProfessionalAgenda } from './features/professional-agenda/professional-agenda.component';
 import { AuthService } from './core/services/auth.service';
 import { TipoUsuario } from './core/models/types';
 
-const roleMatch = (role: TipoUsuario): CanMatchFn => () => inject(AuthService).getUserRole() === role;
+const roleMatch =
+  (role: TipoUsuario): CanMatchFn =>
+  () =>
+    inject(AuthService).getUserRole() === role;
 
 export const routes: Routes = [
   // Public paths remain in Portuguese for backwards-compatible deep links.
@@ -56,6 +62,19 @@ export const routes: Routes = [
       { path: 'perfil', component: ClientProfileComponent },
     ],
   },
+  {
+    path: '',
+    component: ProfessionalLayout,
+    canMatch: [roleMatch('profissional')],
+    canActivate: [authGuard],
+    data: { roles: ['profissional'] },
+    children: [
+      { path: 'home-profissional', component: ProfessionalHome },
+      { path: 'agenda-profissional', component: ProfessionalAgenda },
+      { path: 'disponibilidade-profissional', component: ProfessionalHome },
+      { path: 'perfil-profissional', component: ClientProfileComponent },
+    ],
+  },
   { path: 'login', component: LoginComponent },
   { path: 'cadastro', component: RegisterComponent },
   {
@@ -69,13 +88,13 @@ export const routes: Routes = [
     path: 'suporte',
     component: ContactComponent,
     canActivate: [authGuard],
-    data: { roles: ['cliente', 'prestador'] },
+    data: { roles: ['cliente', 'prestador', 'profissional'] },
   },
   {
     path: 'configuracoes',
     component: SettingsComponent,
     canActivate: [authGuard],
-    data: { roles: ['cliente', 'prestador'] },
+    data: { roles: ['cliente', 'prestador', 'profissional'] },
   },
   { path: 'meus-agendamentos', redirectTo: 'agendamentos', pathMatch: 'full' },
   { path: 'prestadores', redirectTo: 'buscar', pathMatch: 'full' },

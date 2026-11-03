@@ -46,7 +46,13 @@
     <div class="sidebar-spacer"></div>
     <div class="sidebar-profile">
       <div class="profile-row">
-        <a class="avatar" routerLink="/perfil">{{ userInitial }}</a>
+        <a class="avatar" routerLink="/perfil">
+          @if (userPhoto) {
+            <img [src]="userPhoto" alt="" />
+          } @else {
+            {{ userInitial }}
+          }
+        </a>
         <div class="profile-info">
           <strong>{{ userName }}</strong
           ><small>Prestador</small>
@@ -75,7 +81,13 @@
   <main class="main" [class.collapsed]="collapsed">
     <header class="topbar">
       <strong>Painel do prestador</strong><span class="topbar-spacer"></span
-      ><a class="topbar-avatar" routerLink="/perfil">{{ userInitial }}</a>
+      ><a class="topbar-avatar" routerLink="/perfil">
+        @if (userPhoto) {
+          <img [src]="userPhoto" alt="" />
+        } @else {
+          {{ userInitial }}
+        }
+      </a>
     </header>
     <section class="content"><router-outlet /></section>
   </main>

@@ -33,7 +33,13 @@ export class LoginComponent {
     this.auth.login(email, senha).subscribe({
       next: ({ usuario }) => {
         this.loginMessage = 'Login realizado com sucesso!';
-        const destination = usuario.tipo === 'prestador' ? '/home-prestador' : '/home-cliente';
+        const destinationByRole = {
+          cliente: '/home-cliente',
+          prestador: '/home-prestador',
+          profissional: '/home-profissional',
+          admin: '/login',
+        } as const;
+        const destination = destinationByRole[usuario.tipo];
         void this.router.navigate([destination]);
       },
       error: () => {

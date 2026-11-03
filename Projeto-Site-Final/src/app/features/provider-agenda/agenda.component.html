@@ -42,6 +42,7 @@
       </div>
       <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
       <p class="loading-state" *ngIf="loading">Carregando agenda...</p>
+      <app-calendar *ngIf="!loading" [events]="calendarEvents" />
       <div class="agenda-list" *ngIf="!loading && filteredAppointments.length">
         <article class="agenda-item" *ngFor="let item of filteredAppointments">
           <div class="date-block">

@@ -37,7 +37,7 @@ export class RegisterComponent {
     private readonly router: Router,
   ) {}
 
-  selectUserType(type: 'cliente' | 'prestador'): void {
+  selectUserType(type: 'cliente' | 'prestador' | 'profissional'): void {
     this.registerForm.controls.tipoUsuario.setValue(type);
     this.registerForm.controls.tipoUsuario.markAsTouched();
   }
@@ -67,7 +67,11 @@ export class RegisterComponent {
         next: () => {
           this.registerMessage = 'Cadastro realizado com sucesso!';
           void this.router.navigate([
-            user.tipoUsuario === 'prestador' ? '/cadastro-loja' : '/home-cliente',
+            user.tipoUsuario === 'prestador'
+              ? '/cadastro-loja'
+              : user.tipoUsuario === 'profissional'
+                ? '/home-profissional'
+                : '/home-cliente',
           ]);
         },
         error: (error: Error) => {
@@ -93,6 +97,6 @@ export class RegisterComponent {
   }
 
   private isUserType(value: string): value is TipoUsuario {
-    return value === 'cliente' || value === 'prestador';
+    return value === 'cliente' || value === 'prestador' || value === 'profissional';
   }
 }

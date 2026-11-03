@@ -1,8 +1,8 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { Usuario } from '../../core/models/types';
 
 export interface UserProfile {
   nome: string;
@@ -10,6 +10,7 @@ export interface UserProfile {
   email: string;
   telefone: string;
   cpf: string;
+  foto: string;
 }
 
 @Component({
@@ -21,37 +22,54 @@ export interface UserProfile {
 })
 export class ClientProfileComponent implements OnInit {
   modalAberta = false;
-  isBrowser: boolean;
-
   usuario: UserProfile = {
-    nome: 'GBznnn',
+    nome: '',
     sobrenome: '',
-    email: 'gbznnn@exemplo.com',
-    telefone: '(21) 98168-6514',
+    email: '',
+    telefone: '',
     cpf: '',
+    foto: '',
   };
 
   dadosEdicao: UserProfile = { ...this.usuario };
 
-  constructor(
-    private readonly auth: AuthService,
-    @Inject(PLATFORM_ID) private platformId: Object,
-  ) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-  }
+  salvando = false;
+  mensagem = '';
+
+  constructor(private readonly auth: AuthService) {}
 
   ngOnInit(): void {
-    if (this.isBrowser) {
-      const savedProfile = localStorage.getItem('user_profile_data');
-      if (savedProfile) {
-        this.usuario = JSON.parse(savedProfile);
-      }
-    }
+    const user = this.auth.currentUser();
+    if (user) this.usuario = this.toProfile(user);
   }
 
   // Getters do perfil
   get userName(): string {
-    return this.auth.currentUser()?.nome || this.usuario.nome || 'Cliente';
+    return [this.usuario.nome, this.usuario.sobrenome].filter(Boolean).join(' ') || 'Usuário';
+  }
+
+  selecionarFoto(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      this.mensagem = 'Selecione um arquivo de imagem.';
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      this.mensagem = 'A foto deve ter no máximo 2 MB.';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        this.dadosEdicao.foto = reader.result;
+        this.mensagem = '';
+      }
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
   }
 
   // Métodos do Modal de Edição
@@ -88,10 +106,47 @@ export class ClientProfileComponent implements OnInit {
   }
 
   salvarPerfil(): void {
-    this.usuario = { ...this.dadosEdicao };
-    if (this.isBrowser) {
-      localStorage.setItem('user_profile_data', JSON.stringify(this.usuario));
+    const nome = [this.dadosEdicao.nome.trim(), this.dadosEdicao.sobrenome.trim()]
+      .filter(Boolean)
+      .join(' ');
+    if (!nome || !this.dadosEdicao.email.trim()) {
+      this.mensagem = 'Nome e e-mail são obrigatórios.';
+      return;
     }
-    this.fecharModal();
+
+    this.salvando = true;
+    this.mensagem = '';
+    this.auth
+      .updateProfile({
+        nome,
+        sobrenome: this.dadosEdicao.sobrenome.trim(),
+        email: this.dadosEdicao.email.trim(),
+        telefone: this.dadosEdicao.telefone.trim(),
+        cpf: this.dadosEdicao.cpf.trim(),
+        foto: this.dadosEdicao.foto,
+      })
+      .subscribe({
+        next: (user) => {
+          this.usuario = this.toProfile(user);
+          this.salvando = false;
+          this.fecharModal();
+        },
+        error: (error: Error) => {
+          this.salvando = false;
+          this.mensagem = error.message || 'Não foi possível salvar o perfil.';
+        },
+      });
+  }
+
+  private toProfile(user: Usuario): UserProfile {
+    const nameParts = user.nome.trim().split(/\s+/);
+    return {
+      nome: nameParts.shift() || '',
+      sobrenome: user.sobrenome || nameParts.join(' '),
+      email: user.email,
+      telefone: user.telefone,
+      cpf: user.cpf || '',
+      foto: user.foto || '',
+    };
   }
 }

@@ -16,7 +16,13 @@ export const authGuard: CanActivateFn = (route) => {
   const allowedRoles = route.data['roles'] as TipoUsuario[] | undefined;
 
   if (allowedRoles && !allowedRoles.includes(userType)) {
-    return router.createUrlTree([userType === 'prestador' ? '/home-prestador' : '/home-cliente']);
+    const homeByRole: Record<TipoUsuario, string> = {
+      cliente: '/home-cliente',
+      prestador: '/home-prestador',
+      profissional: '/home-profissional',
+      admin: '/login',
+    };
+    return router.createUrlTree([homeByRole[userType]]);
   }
 
   return true;

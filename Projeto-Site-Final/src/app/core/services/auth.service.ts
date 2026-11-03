@@ -138,4 +138,29 @@ export class AuthService {
   isUserType(type: TipoUsuario): boolean {
     return this.currentUser$.value?.tipo === type;
   }
+
+  updateProfile(updates: Pick<Usuario, 'nome' | 'sobrenome' | 'email' | 'telefone' | 'cpf' | 'foto'>): Observable<Usuario> {
+    return new Observable((observer) => {
+      const currentUser = this.currentUser$.value;
+      if (!currentUser) {
+        observer.error(new Error('Usuário não autenticado'));
+        return;
+      }
+
+      const usuarios = this.getUsuarios();
+      const index = usuarios.findIndex((usuario) => usuario.id === currentUser.id);
+      if (index < 0) {
+        observer.error(new Error('Usuário não encontrado'));
+        return;
+      }
+
+      const updatedUser = { ...usuarios[index], ...updates };
+      usuarios[index] = updatedUser;
+      this.saveUsuarios(usuarios);
+      this.currentUser$.next(updatedUser);
+      this.currentUser.set(updatedUser);
+      observer.next(updatedUser);
+      observer.complete();
+    });
+  }
 }

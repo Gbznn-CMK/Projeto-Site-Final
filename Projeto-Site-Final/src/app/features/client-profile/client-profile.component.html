@@ -1,11 +1,15 @@
 <!-- Cabeçalho do Perfil -->
 <div class="profile-header">
-  <div class="header-avatar">
+  <div class="header-avatar" [class.has-photo]="usuario.foto">
+    @if (usuario.foto) {
+      <img [src]="usuario.foto" alt="Foto de perfil" />
+    } @else {
     <svg class="avatar-icon" viewBox="0 0 24 24" fill="currentColor">
       <path
         d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
       />
     </svg>
+    }
   </div>
   <div class="header-welcome">
     <h2>Olá, Bem-vindo(a) {{ usuario.nome }}</h2>
@@ -60,6 +64,20 @@
       </div>
 
       <form (ngSubmit)="salvarPerfil()">
+        <div class="photo-editor">
+          <div class="modal-avatar" [class.has-photo]="dadosEdicao.foto">
+            @if (dadosEdicao.foto) {
+              <img [src]="dadosEdicao.foto" alt="Prévia da foto de perfil" />
+            } @else {
+              <span aria-hidden="true">👤</span>
+            }
+          </div>
+          <label class="photo-upload">
+            Alterar foto
+            <input type="file" accept="image/*" (change)="selecionarFoto($event)" />
+          </label>
+        </div>
+
         <div class="input-group">
           <label for="nome">Nome</label>
           <input id="nome" type="text" [(ngModel)]="dadosEdicao.nome" name="nome" required />
@@ -107,8 +125,13 @@
 
         <div class="modal-actions">
           <button type="button" class="btn-cancel" (click)="fecharModal()">Cancelar</button>
-          <button type="submit" class="btn-save">Salvar Alterações</button>
+          <button type="submit" class="btn-save" [disabled]="salvando">
+            {{ salvando ? 'Salvando...' : 'Salvar Alterações' }}
+          </button>
         </div>
+        @if (mensagem) {
+          <p class="form-message" role="alert">{{ mensagem }}</p>
+        }
       </form>
     </div>
   </div>

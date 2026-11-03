@@ -10,6 +10,7 @@ import { UserService } from '../../core/services/user.service';
 import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
 import { DateTimePipe, CurrencyPipe } from '../../shared/pipes/formatting.pipes';
 import { ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal.component';
+import { CalendarComponent, CalendarEvent } from '../../shared/components/calendar/calendar.component';
 
 @Component({
   selector: 'app-provider-agenda',
@@ -21,6 +22,7 @@ import { ConfirmModalComponent } from '../../shared/components/confirm-modal/con
     DateTimePipe,
     CurrencyPipe,
     ConfirmModalComponent,
+    CalendarComponent,
   ],
   templateUrl: './agenda.component.html',
   styleUrl: './agenda.component.css',
@@ -38,6 +40,7 @@ export class AgendaComponent implements OnInit {
     clientPhone: string;
     serviceName: string;
   }[] = [];
+  calendarEvents: CalendarEvent[] = [];
   filters = [
     { label: 'Todos', value: 'todos' },
     { label: 'Pendentes', value: 'pendente' },
@@ -119,6 +122,13 @@ export class AgendaComponent implements OnInit {
     this.filteredAppointments = byStatus.filter((item) =>
       this.matchesDate(item.agendamento.dataHora),
     );
+    this.calendarEvents = this.appointments.map((item) => ({
+      id: item.agendamento.id,
+      start: item.agendamento.dataHora,
+      title: item.serviceName,
+      subtitle: item.clientName,
+      status: item.agendamento.status,
+    }));
   }
 
   setFilter(value: string) {

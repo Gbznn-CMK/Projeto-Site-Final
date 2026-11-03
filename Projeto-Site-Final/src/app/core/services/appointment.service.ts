@@ -120,6 +120,10 @@ export class AppointmentService {
     return of(this.getAgendamentos().filter((a) => a.prestadorId === prestadorId));
   }
 
+  getByProfissional(profissionalId: string): Observable<Agendamento[]> {
+    return of(this.getAgendamentos().filter((a) => a.profissionalId === profissionalId));
+  }
+
   getById(agendamentoId: string): Observable<Agendamento | undefined> {
     return of(this.getAgendamentos().find((a) => a.id === agendamentoId));
   }

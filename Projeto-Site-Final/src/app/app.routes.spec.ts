@@ -12,6 +12,7 @@ describe('application routes', () => {
         'cadastro',
         'home-cliente',
         'home-prestador',
+        'home-profissional',
         'agendamentos',
         'agendamentos/novo',
         'favoritos',

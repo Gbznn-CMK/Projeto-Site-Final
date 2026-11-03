@@ -20,6 +20,9 @@ export class ClientLayout {
   get userInitial(): string {
     return this.userName.charAt(0).toUpperCase();
   }
+  get userPhoto(): string {
+    return this.auth.currentUser()?.foto || '';
+  }
   toggleSidebar(): void {
     this.collapsed = !this.collapsed;
   }

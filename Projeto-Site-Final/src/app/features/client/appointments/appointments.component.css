@@ -34,6 +34,7 @@ h1 {
 .appointments-list {
   display: grid;
   gap: var(--space-lg);
+  margin-top: var(--space-xl);
 }
 .loading-state,
 .empty-state {

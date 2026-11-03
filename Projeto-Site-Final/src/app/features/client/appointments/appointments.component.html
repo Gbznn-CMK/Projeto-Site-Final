@@ -21,6 +21,7 @@
 
   <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
   <p class="loading-state" *ngIf="loading">Carregando agendamentos...</p>
+  <app-calendar *ngIf="!loading" [events]="calendarEvents" />
 
   <div class="appointments-list" *ngIf="!loading && appointments.length">
     <app-appointment-card
