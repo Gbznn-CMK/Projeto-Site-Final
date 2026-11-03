@@ -83,7 +83,7 @@ export class ClientHome implements OnInit {
   }[] = [
     {
       name: 'Barbearia Central',
-      id: 1,
+      id: 'prest-1',
       image: '/img/barbearia.webp',
       category: 'Barbearia',
       address: 'Rua Belterra 291, Bangu, RJ',
@@ -94,7 +94,7 @@ export class ClientHome implements OnInit {
     },
     {
       name: 'Salão da Maria',
-      id: 2,
+      id: 'prest-2',
       image: '/img/salao-maria.png',
       category: 'Salão de Beleza',
       address: 'Av. Paulista 1000, São Paulo, SP',
@@ -105,7 +105,7 @@ export class ClientHome implements OnInit {
     },
     {
       name: 'Nails & More',
-      id: 3,
+      id: 'prest-3',
       image: '/img/manicure.png',
       category: 'Manicure',
       address: 'Rua das Flores 123, Rio de Janeiro, RJ',
@@ -115,15 +115,15 @@ export class ClientHome implements OnInit {
       photos: ['/img/manicure.png'],
     },
     {
-      name: 'Studio Fit',
-      id: 4,
-      image: '/img/studio-fit.png',
-      category: 'Personal Trainer',
-      address: 'Rua Ipiranga 55, Niterói, RJ',
-      hours: '06:00–21:00',
-      rating: '4.6/5',
-      stars: '★★★★☆',
-      photos: ['/img/studio-fit.png'],
+      name: 'Tech Fix',
+      id: 'prest-4',
+      image: '/img/barbearia.webp',
+      category: 'Técnico',
+      address: 'Avenida Brasil 500, Belo Horizonte, MG',
+      hours: '08:00–17:00',
+      rating: 'Novo',
+      stars: '☆☆☆☆☆',
+      photos: ['/img/barbearia.webp'],
     },
   ];
 
