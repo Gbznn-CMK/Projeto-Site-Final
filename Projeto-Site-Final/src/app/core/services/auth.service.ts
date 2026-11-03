@@ -1,0 +1,166 @@
+import { Injectable, signal } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Usuario, TipoUsuario, LoginRequest, CadastroRequest, AuthResponse } from '../models/types';
+import { MOCK_USUARIOS } from '../data/mock-data';
+import { getLocalStorage } from '../utils/storage';
+import { map } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  private readonly PREFIX = 'nahora_';
+  private currentUser$ = new BehaviorSubject<Usuario | null>(null);
+  readonly currentUser = signal<Usuario | null>(null);
+
+  constructor() {
+    this.loadCurrentUser();
+  }
+
+  isAuthenticated(): Observable<boolean> {
+    return this.currentUser$.pipe(map((user) => user !== null));
+  }
+  private loadCurrentUser() {
+    const token = this.getToken();
+    if (!token) return;
+
+    try {
+      const payload = token.split('.')[1];
+      const userId = JSON.parse(atob(payload)).sub;
+      const user = this.getUsuarios().find((usuario) => usuario.id === userId);
+
+      if (user) {
+        this.currentUser$.next(user);
+        this.currentUser.set(user);
+      }
+    } catch {
+      getLocalStorage()?.removeItem(`${this.PREFIX}token`);
+    }
+  }
+
+  private getUsuarios(): Array<Usuario & { password: string }> {
+    const data = getLocalStorage()?.getItem(`${this.PREFIX}usuarios`);
+    return data ? JSON.parse(data) : (MOCK_USUARIOS as Array<Usuario & { password: string }>);
+  }
+
+  private saveUsuarios(usuarios: Array<Usuario & { password: string }>) {
+    getLocalStorage()?.setItem(`${this.PREFIX}usuarios`, JSON.stringify(usuarios));
+  }
+
+  private getToken(): string | null {
+    return getLocalStorage()?.getItem(`${this.PREFIX}token`) ?? null;
+  }
+
+  private setToken(token: string): void {
+    const storage = getLocalStorage();
+    storage?.setItem(`${this.PREFIX}token`, token);
+  }
+  private generateToken(userId: string): string {
+    // Mock JWT token: header.payload.signature
+    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+    const payload = btoa(JSON.stringify({ sub: userId, iat: Date.now() }));
+    const signature = btoa('mock-signature');
+    return `${header}.${payload}.${signature}`;
+  }
+
+  login(email: string, password: string): Observable<AuthResponse> {
+    return new Observable((observer) => {
+      setTimeout(() => {
+        const usuarios = this.getUsuarios();
+        const user = usuarios.find((u) => u.email === email && u.password === password);
+
+        if (user) {
+          const token = this.generateToken(user.id);
+          this.setToken(token);
+
+          this.currentUser$.next(user);
+          this.currentUser.set(user);
+
+          observer.next({ usuario: user, token });
+          observer.complete();
+        } else {
+          observer.error(new Error('Email ou senha inválidos'));
+        }
+      }, 500);
+    });
+  }
+
+  signup(request: CadastroRequest): Observable<AuthResponse> {
+    return new Observable((observer) => {
+      setTimeout(() => {
+        const usuarios = this.getUsuarios();
+
+        // Check if email already exists
+        if (usuarios.some((u) => u.email === request.email)) {
+          observer.error(new Error('Email já cadastrado'));
+          return;
+        }
+
+        // Create new user
+        const newUser: Usuario & { password: string } = {
+          id: `user-${Date.now()}`,
+          nome: request.nome,
+          password: request.password,
+          email: request.email,
+          telefone: request.telefone,
+          tipo: request.tipo,
+          dataCadastro: new Date().toISOString(),
+        };
+
+        usuarios.push(newUser);
+        this.saveUsuarios(usuarios);
+
+        // Login automatically
+        const token = this.generateToken(newUser.id);
+        this.setToken(token);
+        this.currentUser$.next(newUser);
+        this.currentUser.set(newUser);
+        observer.next({ usuario: newUser, token });
+        observer.complete();
+      }, 500);
+    });
+  }
+
+  logout(): void {
+    getLocalStorage()?.removeItem(`${this.PREFIX}token`);
+    this.currentUser$.next(null);
+    this.currentUser.set(null);
+  }
+
+  getCurrentUser(): Observable<Usuario | null> {
+    return this.currentUser$.asObservable();
+  }
+
+  getUserRole(): TipoUsuario | null {
+    return this.currentUser$.value?.tipo || null;
+  }
+
+  isUserType(type: TipoUsuario): boolean {
+    return this.currentUser$.value?.tipo === type;
+  }
+
+  updateProfile(updates: Pick<Usuario, 'nome' | 'sobrenome' | 'email' | 'telefone' | 'cpf' | 'foto'>): Observable<Usuario> {
+    return new Observable((observer) => {
+      const currentUser = this.currentUser$.value;
+      if (!currentUser) {
+        observer.error(new Error('Usuário não autenticado'));
+        return;
+      }
+
+      const usuarios = this.getUsuarios();
+      const index = usuarios.findIndex((usuario) => usuario.id === currentUser.id);
+      if (index < 0) {
+        observer.error(new Error('Usuário não encontrado'));
+        return;
+      }
+
+      const updatedUser = { ...usuarios[index], ...updates };
+      usuarios[index] = updatedUser;
+      this.saveUsuarios(usuarios);
+      this.currentUser$.next(updatedUser);
+      this.currentUser.set(updatedUser);
+      observer.next(updatedUser);
+      observer.complete();
+    });
+  }
+}

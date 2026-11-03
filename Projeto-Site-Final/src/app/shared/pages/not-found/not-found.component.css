@@ -1,0 +1,20 @@
+:host { display: block; min-height: 100vh; }
+    .not-found {
+      display: grid;
+      place-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      text-align: center;
+      color: var(--color-neutral-900, #172033);
+      background: var(--color-neutral-50, #f7f8fa);
+    }
+    .eyebrow {
+      margin: 0 0 .5rem;
+      color: var(--color-primary, #2f6fed);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    h1 { margin: 0 0 .75rem; }
+    p:not(.eyebrow) { margin: 0 0 1.5rem; color: var(--color-neutral-600, #5d6675); }
+    a { color: var(--color-primary, #2f6fed); font-weight: 700; }

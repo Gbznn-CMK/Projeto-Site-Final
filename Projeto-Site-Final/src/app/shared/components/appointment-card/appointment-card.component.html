@@ -1,0 +1,43 @@
+<div class="card appointment-card">
+      <div class="card-header">
+        <div class="appointment-info">
+          <h4 class="provider-name">{{ providerName }}</h4>
+          <p class="service-name">{{ serviceName }}</p>
+        </div>
+        <app-status-badge [status]="agendamento.status"></app-status-badge>
+      </div>
+
+      <div class="appointment-details">
+        <div class="detail-item">
+          <span class="icon">📅</span>
+          <span>{{ agendamento.dataHora | dateTime: 'date' }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="icon">⏰</span>
+          <span>{{ agendamento.dataHora | dateTime: 'time' }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="icon">💰</span>
+          <span>{{ agendamento.valor | currency }}</span>
+        </div>
+        <div class="detail-item" *ngIf="agendamento.notas">
+          <span class="icon">📝</span>
+          <span>{{ agendamento.notas }}</span>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn btn-secondary" (click)="onView()">Ver Detalhes</button>
+        <button class="btn btn-primary" *ngIf="isUpcoming" (click)="onReschedule()">
+          Reagendar
+        </button>
+        <button class="btn btn-danger" *ngIf="isUpcoming" (click)="onCancel()">Cancelar</button>
+        <button
+          class="btn btn-success"
+          *ngIf="agendamento.status === 'concluido' && !agendamento.clienteConfirmouConclusao"
+          (click)="onConfirmCompletion()"
+        >
+          Confirmar conclusão
+        </button>
+      </div>
+    </div>

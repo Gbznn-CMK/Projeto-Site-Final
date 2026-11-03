@@ -1,0 +1,62 @@
+<section class="page-heading">
+  <div>
+    <span class="eyebrow">ÁREA DO PRESTADOR</span>
+    <h1>Meu painel</h1>
+    <p>Acompanhe o movimento do seu negócio.</p>
+  </div>
+
+  <a class="primary-btn" routerLink="/agenda-prestador">Ver agenda</a>
+</section>
+
+<section class="metrics-grid" aria-label="Resumo do negócio">
+  <article class="metric-card">
+    <div class="metric-copy">
+      <span>Agendamentos ativos</span>
+      <strong>{{ agendamentosAtivos }}</strong>
+    </div>
+    <div class="metric-icon metric-icon-calendar">
+      <img src="/img/agendamenteo-ativ.png" alt="" />
+    </div>
+  </article>
+
+  <article class="metric-card">
+    <div class="metric-copy">
+      <span>Aguardando confirmação</span>
+      <strong>0</strong>
+    </div>
+    <div class="metric-icon metric-icon-confirmation">
+      <img src="/img/aguard-confir.png" alt="" />
+    </div>
+  </article>
+
+  <article class="metric-card">
+    <div class="metric-copy">
+      <span>Serviços cadastrados</span>
+      <strong>0</strong>
+    </div>
+    <div class="metric-icon metric-icon-services">
+      <img src="/img/servicos-cadas.png" alt="" />
+    </div>
+  </article>
+
+  <article class="metric-card">
+    <div class="metric-copy">
+      <span>Receita prevista</span>
+      <strong>{{ receitaPrevista }}</strong>
+    </div>
+    <div class="metric-icon metric-icon-revenue">
+      <img src="/img/receita.png" alt="" />
+    </div>
+  </article>
+</section>
+
+<section class="agenda-section">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">AGENDA</span>
+      <h2>Gerencie seus atendimentos</h2>
+    </div>
+    <a routerLink="/agenda-prestador">Abrir agenda <span aria-hidden="true">›</span></a>
+  </div>
+  <p class="empty-state">Os atendimentos aparecerão na agenda conforme forem recebidos.</p>
+</section>

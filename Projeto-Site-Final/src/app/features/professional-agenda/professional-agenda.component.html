@@ -1,0 +1,15 @@
+<section class="professional-agenda-page">
+  <header class="page-heading">
+    <div>
+      <span class="eyebrow">ÁREA DO PROFISSIONAL</span>
+      <h1>Minha agenda</h1>
+      <p>Visualize seus atendimentos por dia e horário.</p>
+    </div>
+  </header>
+
+  <app-calendar [events]="calendarEvents" />
+
+  @if (!calendarEvents.length) {
+    <p class="empty-message">Ainda não existem atendimentos vinculados ao seu perfil.</p>
+  }
+</section>

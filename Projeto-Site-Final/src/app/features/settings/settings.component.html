@@ -1,0 +1,30 @@
+<section class="settings-page">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">Sua conta</p>
+      <h1>Configurações</h1>
+      <p class="subtitle">Mantenha seus dados pessoais atualizados.</p>
+    </div>
+  </header>
+  <form class="settings-card" (ngSubmit)="save()" #settingsForm="ngForm">
+    <h2>Dados pessoais</h2>
+    <label class="field"
+      ><span>Nome completo</span><input name="nome" [(ngModel)]="draft.nome" required /></label
+    ><label class="field"
+      ><span>E-mail</span
+      ><input type="email" name="email" [(ngModel)]="draft.email" required /></label
+    ><label class="field"
+      ><span>Telefone</span><input type="tel" name="telefone" [(ngModel)]="draft.telefone" required
+    /></label>
+    <div class="account-info">
+      <span>Tipo de conta</span><strong>{{ getTypeLabel() }}</strong>
+    </div>
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit" [disabled]="settingsForm.invalid || saving">
+        {{ saving ? 'Salvando...' : 'Salvar alterações' }}
+      </button>
+    </div>
+  </form>
+</section>

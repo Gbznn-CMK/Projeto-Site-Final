@@ -6,9 +6,9 @@
     "types": []
   },
   "include": [
-    "src/**/*.ts"
+    "Projeto-Site-Final/src/**/*.ts"
   ],
   "exclude": [
-    "src/**/*.spec.ts"
+    "Projeto-Site-Final/src/**/*.spec.ts"
   ]
 }

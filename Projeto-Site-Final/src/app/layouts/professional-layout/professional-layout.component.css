@@ -1,0 +1,9 @@
+@import '../provider-layout/provider-layout.component.css';
+
+:host {
+  display: block;
+}
+
+.nav-label {
+  color: #8bd8b2;
+}

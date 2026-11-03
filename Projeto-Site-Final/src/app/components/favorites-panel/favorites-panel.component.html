@@ -1,0 +1,53 @@
+<section class="hero page-hero">
+  <div>
+    <div class="hero-eyebrow">ÁREA DO CLIENTE</div>
+    <h1>Meus favoritos</h1>
+    <p>Tenha seus prestadores preferidos sempre à mão.</p>
+  </div>
+  <a class="hero-btn" routerLink="/home-cliente" fragment="busca-prestadores">Encontrar serviços</a>
+</section>
+
+<section class="section-head">
+  <div>
+    <span>PARA VOCÊ</span>
+    <h2>Prestadores favoritos</h2>
+  </div>
+</section>
+
+@if (lojas().length === 0) {
+  <div class="empty-state">
+    <strong>Você ainda não tem lojas favoritas.</strong>
+    <span>Adicione prestadores na página inicial para encontrá-los aqui.</span>
+  </div>
+} @else {
+  <div class="provider-grid">
+    @for (loja of lojas(); track loja.id) {
+      <article class="provider-card">
+        <div class="provider-photo">
+          <img class="provider-photo-img" [src]="loja.imagemUrl" [alt]="loja.nome" />
+        </div>
+        <div class="provider-body">
+          <h3>{{ loja.nome }}</h3>
+          <div class="provider-cat">Prestador favorito</div>
+          <div class="provider-meta">
+            <img class="meta-icon" src="/img/pino-de-localizacao.png" alt="" />
+            {{ loja.endereco }}
+          </div>
+          <div class="provider-meta">
+            <img class="meta-icon" src="/img/relogio.png" alt="" />
+            {{ loja.horario }}
+          </div>
+          <div class="provider-actions favorite-actions">
+            <app-favorite-button
+              [lojaId]="loja.id"
+              [ativoInicial]="true"
+              (favoritoAlterado)="removerFavorito(loja.id)"
+            >
+            </app-favorite-button>
+            <a class="schedule-btn" routerLink="/buscar">Agendar</a>
+          </div>
+        </div>
+      </article>
+    }
+  </div>
+}
