@@ -1,5 +1,4 @@
-import { CanMatchFn, Routes } from '@angular/router';
-import { inject } from '@angular/core';
+import { Routes } from '@angular/router';
 import { ClientHome } from './features/client-home/client-home.component';
 import { ProviderHome } from './features/provider-home/provider-home.component';
 import { LoginComponent } from './features/login/login.component';
@@ -22,13 +21,6 @@ import { ProviderLayout } from './layouts/provider-layout/provider-layout.compon
 import { ProfessionalLayout } from './layouts/professional-layout/professional-layout.component';
 import { ProfessionalHome } from './features/professional-home/professional-home.component';
 import { ProfessionalAgenda } from './features/professional-agenda/professional-agenda.component';
-import { AuthService } from './core/services/auth.service';
-import { TipoUsuario } from './core/models/types';
-
-const roleMatch =
-  (role: TipoUsuario): CanMatchFn =>
-  () =>
-    inject(AuthService).getUserRole() === role;
 
 export const routes: Routes = [
   // Public paths remain in Portuguese for backwards-compatible deep links.
@@ -36,7 +28,6 @@ export const routes: Routes = [
   {
     path: '',
     component: ClientLayout,
-    canMatch: [roleMatch('cliente')],
     canActivate: [authGuard],
     data: { roles: ['cliente'] },
     children: [
@@ -51,7 +42,6 @@ export const routes: Routes = [
   {
     path: '',
     component: ProviderLayout,
-    canMatch: [roleMatch('prestador')],
     canActivate: [authGuard],
     data: { roles: ['prestador'] },
     children: [
@@ -65,7 +55,6 @@ export const routes: Routes = [
   {
     path: '',
     component: ProfessionalLayout,
-    canMatch: [roleMatch('profissional')],
     canActivate: [authGuard],
     data: { roles: ['profissional'] },
     children: [
