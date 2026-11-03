@@ -41,7 +41,7 @@ export class SettingsComponent implements OnInit {
     if (!this.currentUser || !this.draft.nome || !this.draft.email || !this.draft.telefone) return;
     this.saving = true;
     this.errorMessage = '';
-    this.usuarioService
+    this.authService
       .updateProfile({
         ...this.currentUser,
         nome: this.draft.nome.trim(),
