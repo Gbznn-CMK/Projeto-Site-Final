@@ -31,11 +31,16 @@ export class SettingsComponent implements OnInit {
     });
   }
   getTypeLabel() {
-    return this.currentUser?.tipo === 'prestador'
-      ? 'Prestador'
-      : this.currentUser?.tipo === 'admin'
-        ? 'Administrador'
-        : 'Cliente';
+    switch (this.currentUser?.tipo) {
+      case 'prestador':
+        return 'Prestador';
+      case 'profissional':
+        return 'Profissional';
+      case 'admin':
+        return 'Administrador';
+      default:
+        return 'Cliente';
+    }
   }
   save() {
     if (!this.currentUser || !this.draft.nome || !this.draft.email || !this.draft.telefone) return;

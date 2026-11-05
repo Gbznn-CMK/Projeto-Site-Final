@@ -41,45 +41,13 @@
 <div class="resultados-info">{{ prestadoresFiltrados.length }} prestador(es) encontrado(s)</div>
 
 @if (prestadoresFiltrados.length > 0) {
-  <div class="produtos-grid">
+  <div class="provider-grid">
     @for (prestador of prestadoresFiltrados; track prestador.id) {
-      <div class="produto-card">
-        <div class="produto-imagem">
-          <img [src]="prestador.foto" [alt]="prestador.nome" (error)="onImagemErro($event)" />
-          <button
-            class="fav-btn"
-            [class.ativo]="prestador.favorito"
-            (click)="toggleFavorito(prestador, $event)"
-            [title]="prestador.favorito ? 'Remover dos favoritos' : 'Adicionar aos favoritos'"
-          >
-            {{ prestador.favorito ? '★' : '☆' }}
-          </button>
-        </div>
-
-        <div class="produto-info">
-          <span class="produto-categoria">{{ prestador.categoria }}</span>
-          <h3 class="produto-nome">{{ prestador.nome }}</h3>
-
-          <div class="produto-avaliacao">
-            <span class="estrela">⭐</span>
-            <span class="nota">{{ prestador.avaliacao }}</span>
-            <span class="qtd-avaliacoes">({{ prestador.numAvaliacoes }})</span>
-          </div>
-
-          <div class="produto-preco">
-            <span class="preco-label">A partir de</span>
-            <span class="preco-valor">R$ {{ prestador.precoDesde }}</span>
-            @if (prestador.distanciaKm !== undefined) {
-              <span class="produto-distancia"
-                >{{ prestador.distanciaKm | number: '1.1-1' }} km</span
-              >
-            }
-          </div>
-          <a [routerLink]="['/agendamentos/novo', prestador.id]">
-            <button type="button" class="btn-agendar">Agendar</button>
-          </a>
-        </div>
-      </div>
+      <app-provider-card
+        [provider]="toProviderCard(prestador)"
+        [favorite]="prestador.favorito"
+        (favoriteChange)="toggleFavorito(prestador, $event)"
+      />
     }
   </div>
 } @else {
