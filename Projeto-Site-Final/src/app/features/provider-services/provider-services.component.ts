@@ -26,10 +26,10 @@ export class ProviderServicesComponent {
   readonly savedMessage = signal('');
   readonly servicos = signal<ServicoPrestador[]>([]);
   private prestadorId = '';
-
+  
   readonly serviceForm = this.formBuilder.nonNullable.group({
     nome: ['', [Validators.required, Validators.minLength(3)]],
-    categoria: ['Barbearia', Validators.required],
+    categoria: ['Geral', Validators.required],
     duracaoMinutos: [30, [Validators.required, Validators.min(5)]],
     preco: [0, [Validators.required, Validators.min(0)]],
     descricao: ['', [Validators.required, Validators.maxLength(180)]],
@@ -94,11 +94,11 @@ export class ProviderServicesComponent {
   editService(service: ServicoPrestador): void {
     this.editingId.set(service.id);
     this.serviceForm.setValue({
-      nome: service.nome,
-      categoria: service.categoria,
-      duracaoMinutos: service.duracaoMinutos,
-      preco: service.preco,
-      descricao: service.descricao,
+      nome: service.nome ?? '',
+      categoria: service.categoria ?? 'Geral',
+      duracaoMinutos: service.duracaoMinutos ?? 30,
+      preco: service.preco ?? 0,
+      descricao: service.descricao ?? '',
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -127,7 +127,7 @@ export class ProviderServicesComponent {
     this.editingId.set(null);
     this.serviceForm.reset({
       nome: '',
-      categoria: 'Barbearia',
+      categoria: 'Geral',
       duracaoMinutos: 30,
       preco: 0,
       descricao: '',
