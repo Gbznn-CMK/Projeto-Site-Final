@@ -41,54 +41,14 @@
 </div>
 
 <div class="provider-grid">
-  <article class="provider-card" *ngFor="let provider of filteredProviders">
-    <div class="provider-photo">
-      <img class="provider-photo-img" [src]="provider.image" [alt]="provider.name" />
-      <button
-        type="button"
-        class="favorite-btn"
-        [class.is-favorite]="isFavorite(provider.name)"
-        [attr.aria-label]="
-          isFavorite(provider.name) ? 'Remover dos favoritos' : 'Adicionar aos favoritos'
-        "
-        [attr.aria-pressed]="isFavorite(provider.name)"
-        (click)="$event.stopPropagation(); toggleFavorite(provider.name)"
-      >
-        <img
-          [src]="
-            isFavorite(provider.name)
-              ? '/img/selecionado-fav-preto.png'
-              : '/img/botao-fav-preto.png'
-          "
-          alt=""
-        />
-      </button>
-    </div>
-    <div class="provider-body">
-      <h3>{{ provider.name }}</h3>
-      <div class="provider-cat">{{ provider.category }}</div>
-      <div class="provider-meta">
-        <img class="meta-icon" src="/img/pino-de-localizacao.png" alt="" />
-        {{ provider.address }}
-      </div>
-      <div class="provider-meta">
-        <img class="meta-icon" src="/img/relogio.png" alt="Horário" />
-        {{ provider.hours }}
-      </div>
-      <div class="provider-rating">
-        {{ provider.stars }} <span>{{ provider.rating }}</span>
-      </div>
-      <div class="provider-actions">
-        <button type="button" class="profile-btn" (click)="openProviderProfile(provider)">
-          Ver Perfil
-        </button>
-        <a class="schedule-btn" [routerLink]="['/agendamentos/novo', provider.id]">
-          <span>Agendar agora</span>
-          <span class="schedule-btn-arrow" aria-hidden="true">→</span>
-        </a>
-      </div>
-    </div>
-  </article>
+  @for (provider of filteredProviders; track provider.id) {
+    <app-provider-card
+      [provider]="provider"
+      [favorite]="isFavorite(provider.name)"
+      (favoriteChange)="toggleFavorite(provider.name)"
+      (profileSelect)="openProviderProfile(provider)"
+    />
+  }
   <div class="empty-state" *ngIf="filteredProviders.length === 0">
     <strong>Nenhum prestador encontrado.</strong>
     <span>Tente buscar por outro nome, serviço ou localização.</span>

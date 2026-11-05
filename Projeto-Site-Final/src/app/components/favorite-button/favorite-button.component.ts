@@ -8,7 +8,7 @@ import { FavoritesService } from '../../core/services/favorites.service';
   styleUrl: './favorite-button.component.css',
 })
 export class FavoriteButtonComponent {
-  @Input() lojaId!: number;
+  @Input() lojaId!: string;
   @Input() set ativoInicial(v: boolean) {
     this.ativo.set(v);
   }

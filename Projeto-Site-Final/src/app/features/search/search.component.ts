@@ -1,9 +1,13 @@
 import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { CATEGORIAS_SERVICOS } from '../../core/models/types';
 import { ProviderService } from '../../core/services/provider.service';
+import { FavoritesService } from '../../core/services/favorites.service';
+import {
+  ProviderCardComponent,
+  ProviderCardData,
+} from '../../shared/components/provider-card/provider-card.component';
 
 export interface Prestador {
   id: string | number;
@@ -12,6 +16,8 @@ export interface Prestador {
   avaliacao: number;
   numAvaliacoes: number;
   precoDesde: number;
+  endereco: string;
+  horario: string;
   foto: string;
   favorito: boolean;
   latitude?: number;
@@ -22,7 +28,7 @@ export interface Prestador {
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, ProviderCardComponent],
   templateUrl: './search.component.html',
   styleUrl: './search.component.css',
 })
@@ -47,6 +53,8 @@ export class SearchComponent {
       avaliacao: 4.8,
       numAvaliacoes: 132,
       precoDesde: 35,
+      endereco: 'Rua Belterra 291, Bangu, RJ',
+      horario: '09:00–18:00',
       foto: '/img/barbearia.webp',
       favorito: false,
       latitude: -22.875,
@@ -59,6 +67,8 @@ export class SearchComponent {
       avaliacao: 4.6,
       numAvaliacoes: 98,
       precoDesde: 50,
+      endereco: 'Av. Paulista 1000, São Paulo, SP',
+      horario: '09:00–19:00',
       foto: '/img/salao-maria.png',
       favorito: true,
       latitude: -23.561,
@@ -71,6 +81,8 @@ export class SearchComponent {
       avaliacao: 4.9,
       numAvaliacoes: 210,
       precoDesde: 25,
+      endereco: 'Rua das Flores 123, Rio de Janeiro, RJ',
+      horario: '10:00–18:00',
       foto: '/img/manicure.png',
       favorito: false,
       latitude: -22.906,
@@ -83,6 +95,8 @@ export class SearchComponent {
       avaliacao: 4.7,
       numAvaliacoes: 64,
       precoDesde: 80,
+      endereco: 'Avenida Brasil 500, Belo Horizonte, MG',
+      horario: '08:00–17:00',
       foto: '/img/studio-fit.png',
       favorito: false,
       latitude: -22.883,
@@ -95,6 +109,8 @@ export class SearchComponent {
       avaliacao: 4.5,
       numAvaliacoes: 47,
       precoDesde: 40,
+      endereco: 'Rua das Palmeiras 120, Rio de Janeiro, RJ',
+      horario: '09:00–18:00',
       foto: '/img/pet-shop.jpg',
       favorito: false,
       latitude: -22.906,
@@ -107,6 +123,8 @@ export class SearchComponent {
       avaliacao: 4.4,
       numAvaliacoes: 71,
       precoDesde: 60,
+      endereco: 'Rua XV de Novembro 777, Curitiba, PR',
+      horario: '09:00–18:00',
       foto: '/img/bem-star.jpg',
       favorito: false,
       latitude: -25.429,
@@ -117,8 +135,16 @@ export class SearchComponent {
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private readonly prestadorService: ProviderService,
+    private readonly favoritosService: FavoritesService,
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+    this.favoritosService.listarIds().subscribe((ids) => {
+      this.favoriteIds = new Set(ids);
+      this.prestadores = this.prestadores.map((prestador) => ({
+        ...prestador,
+        favorito: ids.includes(String(prestador.id)),
+      }));
+    });
     this.prestadorService.getAll().subscribe((providers) => {
       const legacyByName = new Map(
         this.prestadores.map((item) => [item.nome.toLowerCase(), item] as const),
@@ -132,8 +158,10 @@ export class SearchComponent {
           avaliacao: legacy?.avaliacao ?? 0,
           numAvaliacoes: legacy?.numAvaliacoes ?? 0,
           precoDesde: legacy?.precoDesde ?? 0,
+          endereco: provider.endereco,
+          horario: provider.horarioFuncionamento,
           foto: provider.foto || legacy?.foto || '/img/barbearia.webp',
-          favorito: legacy?.favorito ?? false,
+          favorito: this.favoriteIds.has(String(provider.id)),
           latitude: provider.latitude ?? legacy?.latitude,
           longitude: provider.longitude ?? legacy?.longitude,
         };
@@ -143,6 +171,8 @@ export class SearchComponent {
       this.categorias = ['Todos', ...categories];
     });
   }
+
+  private favoriteIds = new Set<string>();
 
   // ---------- Lógica da Busca ----------
   get prestadoresFiltrados(): Prestador[] {
@@ -221,9 +251,28 @@ export class SearchComponent {
     this.categoriaSelecionada = categoria;
   }
 
-  toggleFavorito(prestador: Prestador, event: Event): void {
-    event.stopPropagation();
-    prestador.favorito = !prestador.favorito;
+  toProviderCard(prestador: Prestador): ProviderCardData {
+    return {
+      id: prestador.id,
+      name: prestador.nome,
+      image: prestador.foto,
+      category: prestador.categoria,
+      address: prestador.endereco,
+      hours: prestador.horario,
+      rating: `${prestador.avaliacao}/5`,
+      stars: '★★★★★',
+    };
+  }
+
+  toggleFavorito(prestador: Prestador, favorite: boolean): void {
+    const request = favorite
+      ? this.favoritosService.favoritar(prestador.id)
+      : this.favoritosService.desfavoritar(prestador.id);
+    request.subscribe(() => {
+      prestador.favorito = favorite;
+      if (favorite) this.favoriteIds.add(String(prestador.id));
+      else this.favoriteIds.delete(String(prestador.id));
+    });
   }
 
   limparBusca(): void {
