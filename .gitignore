@@ -1,36 +1,35 @@
 # Dependencies
-Projeto-Site-Final/node_modules/
+/node_modules/
+/frontend/node_modules/
 
 # Angular build output and cache
-Projeto-Site-Final/dist/
-Projeto-Site-Final/.angular/
-Projeto-Site-Final/frontend/.angular
-frontend\.angular
+/.angular/
+/frontend/.angular/
+/dist/
+/frontend/dist/
 
-# Local environment files
-Projeto-Site-Final/.env
-Projeto-Site-Final/.env.*
-!Projeto-Site-Final/.env.example
-Projeto-Site-Final/.local.env
+# TypeScript / build output
+/tmp/
+/out-tsc/
+/bazel-out/
 
-# Editor and operating system files
-.vscode/
-.idea/
-.DS_Store
-Thumbs.db# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# Environment files
+.env
+.env.*
+!.env.example
+.local.env
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
+# Test / coverage / cache
+/coverage/
+/.sass-cache/
+/.history/
 
-# Node
-/node_modules
+# Node logs
 npm-debug.log
 yarn-error.log
 
 # IDEs and editors
+.vscode/
 .idea/
 .project
 .classpath
@@ -39,27 +38,13 @@ yarn-error.log
 .settings/
 *.sublime-workspace
 
-# Visual Studio Code
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/mcp.json
-.history/*
-
-# Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
-__screenshots__/
-
 # System files
 .DS_Store
 Thumbs.db
 
-
+# Miscellaneous
+/connect.lock
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
