@@ -3,8 +3,8 @@
     <a class="brand" routerLink="/home-prestador" aria-label="Voltar ao painel do prestador"
       >NaHora<strong>Serv</strong></a
     >
-    <p class="eyebrow">Segundo passo do cadastro</p>
-    <h1 id="store-title">Cadastre sua loja</h1>
+    <p class="eyebrow">{{ existingProviderId ? 'Dados da loja' : 'Segundo passo do cadastro' }}</p>
+    <h1 id="store-title">{{ existingProviderId ? 'Editar minha loja' : 'Cadastre sua loja' }}</h1>
     <p class="intro">Essas informações serão exibidas para clientes que procuram seus serviços.</p>
 
     <form [formGroup]="lojaForm" (ngSubmit)="onSubmit()">
@@ -107,7 +107,9 @@
         </div>
       }
 
-      <button type="submit">Criar loja e cadastrar serviços</button>
+      <button type="submit">
+        {{ existingProviderId ? 'Salvar alterações' : 'Criar loja e cadastrar serviços' }}
+      </button>
     </form>
   </section>
 </main>

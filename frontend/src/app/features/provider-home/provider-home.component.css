@@ -41,7 +41,24 @@
   color: #06301d;
   padding: 12px 18px;
   border-radius: 10px;
-  text-decoration: none;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.provider-app .page-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.provider-app .secondary-btn {
+  background: #fff;
+  color: var(--color-neutral-900);
+  border: 1px solid var(--color-neutral-300);
+  padding: 12px 18px;
+  border-radius: 10px;
   font-weight: 700;
   white-space: nowrap;
 }

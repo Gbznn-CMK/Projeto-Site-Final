@@ -132,8 +132,14 @@
         flex-wrap: wrap;
       }
       .btn {
-        padding: var(--space-sm) var(--space-md);
+        min-height: 42px;
+        padding: 10px 14px;
         color: white;
+        border: 0;
+        border-radius: var(--radius-md);
+        font-weight: var(--font-weight-semibold);
+        white-space: nowrap;
+        cursor: pointer;
       }
       .btn-success {
         background: var(--color-success-dark);

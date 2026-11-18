@@ -35,11 +35,31 @@ export class ProviderRegistrationComponent implements OnInit {
   categorias: string[] = [];
   novaCategoria = '';
   coordenadas?: { latitude: number; longitude: number };
+  existingProviderId = '';
 
   ngOnInit(): void {
     this.prestadorService.getCategories().subscribe((categories) => (this.categorias = categories));
     this.auth.getCurrentUser().subscribe((user) => {
       this.currentUser = user;
+      if (user) {
+        this.prestadorService.getByUsuarioId(user.id).subscribe((provider) => {
+          if (!provider) return;
+          this.existingProviderId = provider.id;
+          this.lojaForm.patchValue({
+            nome: provider.nomeEstabelecimento,
+            categoria: provider.categoria,
+            endereco: provider.endereco,
+            cep: provider.cep || '',
+            horario: provider.horarioFuncionamento,
+            imagemUrl: '',
+          });
+          this.fotos = [...(provider.fotos?.length ? provider.fotos : provider.foto ? [provider.foto] : [])];
+          this.coordenadas =
+            provider.latitude !== undefined && provider.longitude !== undefined
+              ? { latitude: provider.latitude, longitude: provider.longitude }
+              : this.coordenadas;
+        });
+      }
     });
     if (typeof navigator !== 'undefined' && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -63,8 +83,8 @@ export class ProviderRegistrationComponent implements OnInit {
       return;
     }
 
-    this.prestadorService.create({
-      id: '',
+    const provider = {
+      id: this.existingProviderId,
       usuarioId: user.id,
       nomeEstabelecimento: this.lojaForm.controls.nome.value,
       categoria: this.lojaForm.controls.categoria.value,
@@ -76,10 +96,18 @@ export class ProviderRegistrationComponent implements OnInit {
       fotos: this.fotos,
       latitude: this.coordenadas?.latitude,
       longitude: this.coordenadas?.longitude,
-    }).subscribe({
+    };
+
+    const request = this.existingProviderId
+      ? this.prestadorService.update(provider)
+      : this.prestadorService.create(provider);
+
+    request.subscribe({
       next: () => void this.router.navigate(['/servicos-prestador']),
       error: () => {
-        this.erroFoto = 'Não foi possível cadastrar o estabelecimento agora.';
+        this.erroFoto = this.existingProviderId
+          ? 'Não foi possível atualizar o estabelecimento agora.'
+          : 'Não foi possível cadastrar o estabelecimento agora.';
       },
     });
   }

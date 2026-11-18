@@ -21,6 +21,10 @@ body {
   overflow-x: hidden;
 }
 
+a {
+  text-decoration: none;
+}
+
 button,
 input,
 textarea,

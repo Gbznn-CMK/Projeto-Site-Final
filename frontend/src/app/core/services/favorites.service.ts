@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { ProviderService } from './provider.service';
 
 export interface Favorito {
   id: string;
@@ -48,13 +49,29 @@ export class FavoritesService {
     },
   ];
 
+  constructor(private readonly providerService: ProviderService) {}
+
   listarIds(): Observable<string[]> {
     return of(this.readIds());
   }
 
   listarDetalhes(): Observable<Favorito[]> {
     const ids = new Set(this.readIds());
-    return of(this.lojas.filter((loja) => ids.has(loja.id)));
+    const detalhadas = this.lojas.filter((loja) => ids.has(loja.id));
+    this.providerService.getAll().subscribe((providers) => {
+      providers.forEach((provider) => {
+        if (!ids.has(provider.id) || detalhadas.some((loja) => loja.id === provider.id)) return;
+        detalhadas.push({
+          id: provider.id,
+          nome: provider.nomeEstabelecimento,
+          endereco: provider.endereco,
+          horario: provider.horarioFuncionamento,
+          disponivel: true,
+          imagemUrl: provider.foto || '/img/barbearia.webp',
+        });
+      });
+    });
+    return of(detalhadas);
   }
 
   favoritar(lojaId: string | number): Observable<void> {
