@@ -9,6 +9,7 @@ Projeto-Site-Final/.angular/
 Projeto-Site-Final/.env
 Projeto-Site-Final/.env.*
 !Projeto-Site-Final/.env.example
+Projeto-Site-Final/.local.env
 
 # Editor and operating system files
 .vscode/
