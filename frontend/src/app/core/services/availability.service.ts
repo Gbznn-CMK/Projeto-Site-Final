@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Agendamento, Disponibilidade, Bloqueio, TimeSlot } from '../models/types';
 import { MOCK_DISPONIBILIDADES, MOCK_BLOQUEIOS } from '../data/mock-data';
 import { AppointmentService } from './appointment.service';
@@ -74,83 +74,60 @@ export class AvailabilityService {
     data: Date,
     duracaoMinutos: number,
   ): Observable<TimeSlot[]> {
-    return new Observable((observer) => {
-      setTimeout(() => {
-        const diaSemana = data.getDay() === 0 ? 6 : data.getDay() - 1; // Convert JS day to 0=Mon
-        const disponibilidades = this.getDisponibilidades().filter(
-          (d) => d.prestadorId === prestadorId && d.diaSemana === diaSemana && d.ativo,
-        );
+    const diaSemana = data.getDay() === 0 ? 6 : data.getDay() - 1;
+    const disponibilidades = this.getDisponibilidades().filter(
+      (d) => d.prestadorId === prestadorId && d.diaSemana === diaSemana && d.ativo,
+    );
 
-        if (disponibilidades.length === 0) {
-          observer.next([]);
-          observer.complete();
-          return;
-        }
+    if (disponibilidades.length === 0) {
+      return of([]);
+    }
 
-        // Generate all possible slots
-        const allSlots: string[] = [];
-        disponibilidades.forEach((d) => {
-          const endOfService = this.timeToMinutes(d.horaFim);
-          allSlots.push(
-            ...this.generateTimeSlots(d.horaInicio, d.horaFim).filter(
-              (hora) => this.timeToMinutes(hora) + duracaoMinutos <= endOfService,
-            ),
-          );
-        });
-
-        // Get blocked times for this date
-        const dateKey = this.getDateKey(data);
-        const bloqueios = this.loadBloqueios().filter((b) => {
-          const bloqueioDate = b.dataHora.split('T')[0];
-          return b.prestadorId === prestadorId && bloqueioDate === dateKey;
-        });
-
-        const agendamentos = this.loadAgendamentos().filter((agendamento) => {
-          return (
-            agendamento.prestadorId === prestadorId &&
-            agendamento.dataHora.split('T')[0] === dateKey &&
-            agendamento.status !== 'cancelado'
-          );
-        });
-
-        // Get appointments for this date (via agendamento service)
-        // For now, we'll assume appointments are checked elsewhere
-        // This service only checks blocking
-
-        const timeSlots: TimeSlot[] = allSlots.map((hora) => {
-          // Check if this slot is blocked
-          const isBlocked = bloqueios.some((b) => {
-            const bloqueioHora = b.dataHora.split('T')[1].substring(0, 5);
-            const bloqueioEndTime = this.addMinutesToTime(bloqueioHora, b.duracao);
-            const slotEndTime = this.addMinutesToTime(hora, duracaoMinutos);
-
-            const bloqueioStart = this.timeToMinutes(bloqueioHora);
-            const bloqueioEnd = this.timeToMinutes(bloqueioEndTime);
-            const slotStart = this.timeToMinutes(hora);
-            const slotEnd = this.timeToMinutes(slotEndTime);
-
-            return !(slotEnd <= bloqueioStart || slotStart >= bloqueioEnd);
-          });
-
-          const isBooked = agendamentos.some((agendamento) => {
-            const appointmentTime = agendamento.dataHora.split('T')[1].substring(0, 5);
-            const appointmentStart = this.timeToMinutes(appointmentTime);
-            const appointmentEnd = appointmentStart + agendamento.duracao;
-            const slotStart = this.timeToMinutes(hora);
-            const slotEnd = slotStart + duracaoMinutos;
-            return !(slotEnd <= appointmentStart || slotStart >= appointmentEnd);
-          });
-
-          return {
-            hora,
-            disponivel: !isBlocked && !isBooked,
-          };
-        });
-
-        observer.next(timeSlots);
-        observer.complete();
-      }, 300);
+    const allSlots: string[] = [];
+    disponibilidades.forEach((d) => {
+      const endOfService = this.timeToMinutes(d.horaFim);
+      allSlots.push(
+        ...this.generateTimeSlots(d.horaInicio, d.horaFim).filter(
+          (hora) => this.timeToMinutes(hora) + duracaoMinutos <= endOfService,
+        ),
+      );
     });
+
+    const dateKey = this.getDateKey(data);
+    const bloqueios = this.loadBloqueios().filter((b) => {
+      const bloqueioDate = b.dataHora.split('T')[0];
+      return b.prestadorId === prestadorId && bloqueioDate === dateKey;
+    });
+    const agendamentos = this.loadAgendamentos().filter(
+      (agendamento) =>
+        agendamento.prestadorId === prestadorId &&
+        agendamento.dataHora.split('T')[0] === dateKey &&
+        agendamento.status !== 'cancelado',
+    );
+
+    const timeSlots: TimeSlot[] = [...new Set(allSlots)].map((hora) => {
+      const isBlocked = bloqueios.some((b) => {
+        const bloqueioHora = b.dataHora.split('T')[1].substring(0, 5);
+        const bloqueioStart = this.timeToMinutes(bloqueioHora);
+        const bloqueioEnd = bloqueioStart + b.duracao;
+        const slotStart = this.timeToMinutes(hora);
+        const slotEnd = slotStart + duracaoMinutos;
+        return !(slotEnd <= bloqueioStart || slotStart >= bloqueioEnd);
+      });
+
+      const isBooked = agendamentos.some((agendamento) => {
+        const appointmentTime = agendamento.dataHora.split('T')[1].substring(0, 5);
+        const appointmentStart = this.timeToMinutes(appointmentTime);
+        const appointmentEnd = appointmentStart + agendamento.duracao;
+        const slotStart = this.timeToMinutes(hora);
+        const slotEnd = slotStart + duracaoMinutos;
+        return !(slotEnd <= appointmentStart || slotStart >= appointmentEnd);
+      });
+
+      return { hora, disponivel: !isBlocked && !isBooked };
+    });
+
+    return of(timeSlots);
   }
 
   private loadAgendamentos(): Agendamento[] {

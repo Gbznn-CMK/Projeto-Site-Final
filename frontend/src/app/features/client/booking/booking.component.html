@@ -51,10 +51,11 @@
         <span>Data do atendimento</span>
         <input
           type="date"
-          [(ngModel)]="date"
           name="date"
           [min]="minimumDate"
-          (change)="loadTimeSlots()"
+          [value]="date"
+          (input)="onDateInput($event)"
+          (change)="onDateInput($event)"
         />
       </label>
 

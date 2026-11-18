@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -25,6 +25,7 @@ import { CurrencyPipe, DurationPipe } from '../../../shared/pipes/formatting.pip
   styleUrl: './booking.component.css',
 })
 export class BookingComponent implements OnInit {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   prestador?: Prestador;
   servicos: Servico[] = [];
   selectedService?: Servico;
@@ -35,12 +36,13 @@ export class BookingComponent implements OnInit {
   selectedTime = '';
   payment: MetodoPagamento = 'pix';
   notes = '';
-  minimumDate = new Date().toISOString().split('T')[0];
+  minimumDate = this.toDateInputValue(new Date());
   loading = true;
   loadingSlots = false;
   saving = false;
   errorMessage = '';
   successMessage = '';
+  private slotsRequest = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -89,11 +91,19 @@ export class BookingComponent implements OnInit {
 
   selectService(servico: Servico) {
     this.selectedService = servico;
+    if (this.step === 2 && this.date) {
+      this.loadTimeSlots();
+    }
   }
 
   nextStep() {
-    if (this.step === 1 && this.selectedService) this.step = 2;
-    else if (this.step === 2 && this.date && this.selectedTime) this.step = 3;
+    if (this.step === 1 && this.selectedService) {
+      this.step = 2;
+      if (!this.date) this.date = this.minimumDate;
+      setTimeout(() => this.loadTimeSlots(), 0);
+    } else if (this.step === 2 && this.date && this.selectedTime) {
+      this.step = 3;
+    }
     this.errorMessage = '';
   }
 
@@ -103,13 +113,18 @@ export class BookingComponent implements OnInit {
   }
 
   loadTimeSlots() {
+    const requestId = ++this.slotsRequest;
+    const requestDate = this.date;
     this.selectedTime = '';
     this.timeSlots = [];
     this.errorMessage = '';
-    if (!this.date || !this.selectedService || !this.prestador) return;
+    if (!requestDate || !this.selectedService || !this.prestador) {
+      this.loadingSlots = false;
+      return;
+    }
 
     this.loadingSlots = true;
-    const selectedDate = new Date(`${this.date}T00:00:00`);
+    const selectedDate = new Date(`${requestDate}T00:00:00`);
     this.disponibilidadeService
       .getHorariosDisponiveis(
         this.prestador.id,
@@ -119,14 +134,28 @@ export class BookingComponent implements OnInit {
       )
       .subscribe({
         next: (slots) => {
+          if (requestId !== this.slotsRequest || this.date !== requestDate) return;
           this.timeSlots = slots;
           this.loadingSlots = false;
+          this.changeDetector.markForCheck();
         },
         error: () => {
+          if (requestId !== this.slotsRequest || this.date !== requestDate) return;
           this.errorMessage = 'Não foi possível carregar os horários.';
           this.loadingSlots = false;
+          this.changeDetector.markForCheck();
         },
       });
+  }
+
+  onDateInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.onDateChange(input.value);
+  }
+
+  onDateChange(value: string): void {
+    this.date = value;
+    this.loadTimeSlots();
   }
 
   confirmBooking() {
@@ -171,5 +200,12 @@ export class BookingComponent implements OnInit {
   private setLoadError(message: string) {
     this.errorMessage = message;
     this.loading = false;
+  }
+
+  private toDateInputValue(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }
