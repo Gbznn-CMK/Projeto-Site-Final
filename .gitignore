@@ -4,6 +4,8 @@ Projeto-Site-Final/node_modules/
 # Angular build output and cache
 Projeto-Site-Final/dist/
 Projeto-Site-Final/.angular/
+Projeto-Site-Final/frontend/.angular
+frontend\.angular
 
 # Local environment files
 Projeto-Site-Final/.env
@@ -59,3 +61,5 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+

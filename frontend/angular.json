@@ -11,13 +11,13 @@
       "projectType": "application",
       "schematics": {},
       "root": "",
-      "sourceRoot": "Projeto-Site-Final/src",
+      "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "browser": "Projeto-Site-Final/src/main.ts",
+            "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
@@ -26,16 +26,16 @@
               }
             ],
             "styles": [
-              "Projeto-Site-Final/src/styles.css",
-              "Projeto-Site-Final/src/app/shared/styles/global.css"
+              "src/styles.css",
+              "src/app/shared/styles/global.css"
             ],
-            "server": "Projeto-Site-Final/src/main.server.ts",
+            "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {
               "allowedHosts": []
             },
             "ssr": {
-              "entry": "Projeto-Site-Final/src/server.ts"
+              "entry": "./src/server.ts"
             }
           },
           "configurations": {
