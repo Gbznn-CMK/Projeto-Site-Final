@@ -8,7 +8,7 @@
     ]
   },
   "include": [
-    "Projeto-Site-Final/src/**/*.d.ts",
-    "Projeto-Site-Final/src/**/*.spec.ts"
+    "src/**/*.d.ts",
+    "src/**/*.spec.ts"
   ]
 }

@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Agendamento, Prestador, Servico } from '../../../core/models/types';
+import type { Agendamento } from '../../../core/models/types';
 import { StatusBadgeComponent } from '../status-badge/status-badge.component';
 import { DateTimePipe, CurrencyPipe } from '../../pipes/formatting.pipes';
 
